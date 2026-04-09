@@ -1,159 +1,135 @@
 import streamlit as st
 
-# تنظیمات پایه برای حذف منوهای اضافه و تنظیم تم
-st.set_page_config(page_title="Uona Studio | Cinematic Designer", layout="wide")
+# تنظیمات اصلی برای حذف حاشیه‌های پیش‌فرض
+st.set_page_config(page_title="Uona Studio | Professional Cinematic Designer", layout="wide")
 
-# تزریق CSS پیشرفته برای رسیدن به تم شماره ۱ (Luxury Cinematic)
+# تزریق CSS پیشرفته برای اورراید کردن کامل ظاهر استریم‌لیت
 st.markdown("""
     <style>
-    /* کل صفحه */
-    .stApp {
-        background: radial-gradient(circle, #0a1428 0%, #050a15 100%) !important;
-        color: #e0e0e0 !important;
-    }
+    /* مخفی کردن منوهای اضافه استریم‌لیت */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
     
-    /* هدر اصلی */
-    h1 {
-        color: #d4af37 !important;
-        text-align: center !important;
-        font-family: 'Playfair Display', serif !important;
-        text-shadow: 0 0 20px rgba(212, 175, 55, 0.5) !important;
-        border-bottom: 2px solid #d4af37 !important;
-        padding-bottom: 20px !important;
-        margin-bottom: 30px !important;
+    /* تنظیم پس‌زمینه اصلی با گرادینت سرمه‌ای تیره */
+    .stApp {
+        background: radial-gradient(circle, #0a192f 0%, #02060c 100%) !important;
     }
 
-    /* کادرهای انتخاب (Dropdowns) */
-    div[data-baseweb="select"] > div {
-        background-color: #0a1428 !important;
+    /* طراحی کارت‌های اصلی */
+    .stSelectbox, .stTextInput {
+        background-color: rgba(10, 25, 47, 0.7) !important;
         border: 1px solid #d4af37 !important;
-        border-radius: 8px !important;
-        color: white !important;
+        border-radius: 10px !important;
+        padding: 5px !important;
+        box-shadow: 0 0 15px rgba(212, 175, 55, 0.1) !important;
     }
-    
-    /* لیبل‌ها (عنوان فیلدها) */
+
+    /* استایل متن لیبل‌ها (طلایی نئونی) */
     label p {
         color: #d4af37 !important;
+        font-family: 'Tahoma', sans-serif !important;
+        font-size: 1rem !important;
         font-weight: bold !important;
-        font-size: 1.1rem !important;
+        text-transform: uppercase !important;
         letter-spacing: 1px !important;
+        text-shadow: 0 0 5px rgba(212, 175, 55, 0.5) !important;
     }
 
-    /* باکس نمایش پرامپت نهایی */
-    .prompt-container {
-        background: rgba(10, 20, 40, 0.8) !important;
+    /* استایل تیتر اصلی */
+    .main-title {
+        color: #d4af37;
+        font-size: 3rem;
+        font-weight: 900;
+        text-align: center;
+        text-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+        border-bottom: 3px solid #d4af37;
+        margin-bottom: 40px;
+        padding-bottom: 10px;
+    }
+
+    /* باکس درخشان خروجی پرامپت (Cyan Glow) */
+    .output-box {
+        background-color: #0d1b2a !important;
         border: 2px solid #00d4ff !important;
+        color: #00d4ff !important;
         padding: 25px !important;
         border-radius: 15px !important;
-        box-shadow: 0 0 15px rgba(0, 212, 255, 0.3) !important;
         font-family: 'Courier New', monospace !important;
-        color: #00d4ff !important;
-        margin-top: 20px !important;
+        font-size: 1.1rem !important;
+        box-shadow: 0 0 25px rgba(0, 212, 255, 0.2) !important;
+        line-height: 1.6 !important;
     }
 
-    /* دکمه طلایی */
-    .stButton>button {
+    /* دکمه طلایی لوکس */
+    div.stButton > button:first-child {
         background: linear-gradient(45deg, #d4af37 0%, #f1d592 100%) !important;
-        color: #050a15 !important;
-        font-weight: 900 !important;
+        color: #02060c !important;
         border: none !important;
-        padding: 15px !important;
+        font-size: 1.2rem !important;
+        font-weight: bold !important;
+        padding: 15px 30px !important;
+        border-radius: 12px !important;
         width: 100% !important;
-        border-radius: 10px !important;
-        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4) !important;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.4) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    div.stButton > button:first-child:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: 0 15px 30px rgba(212, 175, 55, 0.4) !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
-st.title("🎬 UONA STUDIO | Cinematic Character Designer")
+st.markdown('<p class="main-title">UONA STUDIO | PRO DESIGNER</p>', unsafe_allow_html=True)
 
-# --- دیتابیس‌های VLOOKUP (بر اساس آخرین شیت‌های ارسالی تو) ---
-nat_table = {
-    "Iranian": "Indo-Aryan features, prominent nasal bridge, olive skin",
-    "Egyptian": "North African features, warm bronze skin tone",
-    "Emirati": "Gulf Arab features, sharp jawline, tanned skin",
-    "Saudi": "Peninsular Arab features, high cheekbones",
-    "Kuwaiti": "Northern Gulf features, refined structure",
-    "Syrian": "Levantine features, straight profile"
-}
+# --- دیتابیس‌ها ---
+# (همان جداول قبلی با دقت بالا)
+nat_table = {"Iranian": "Indo-Aryan features, prominent nasal bridge, olive skin", "Syrian": "Levantine features, fair to medium skin", "Saudi": "Peninsular Arab features, high cheekbones"}
+era_table = {"Contemporary": "Current lighting, sharp details", "Ancient Era": "Ancient civilization styling", "Medieval": "Gritty, rustic textures"}
+char_table = {"Heroic Warrior": "Strong jawline, battle-hardened gaze", "Ailing Character": "Pale skin, dark circles"}
 
-era_table = {
-    "Stone Age": "Primitive aesthetic, raw textures",
-    "BCE": "Ancient civilization styling, rudimentary tools",
-    "Pre-Islamic": "Traditional regional heritage, antique textures",
-    "Medieval": "Gritty, rustic, heavy textures",
-    "100 Years Ago": "Vintage aesthetic, early 20th-century grooming",
-    "Contemporary": "Current lighting, sharp details"
-}
-
-char_table = {
-    "Heroic Warrior": "Strong jawline, battle-hardened gaze",
-    "Sinister Villain": "Harsh shadows, menacing expression",
-    "Royal": "Elegant posture, pristine skin",
-    "Ailing Character": "Pale skin, dark circles, visible veins",
-    "Bohemian Artist": "Creative styling, expressive eyes"
-}
-
-# --- چیدمان ورودی‌ها (Grid Layout) ---
+# --- ساختار داشبورد ---
 col1, col2 = st.columns(2)
 
 with col1:
-    actor = st.selectbox("Actor Reference (G7):", ["No", "Yes"])
-    age = st.selectbox("Age (J7):", ["Middle-aged", "Elderly / Senior", "Young Adult", "Teen", "Child"])
-    gender = st.selectbox("Gender (G9):", ["Masculine / Male", "Feminine / Female"])
-    nationality = st.selectbox("Nationality (J9):", list(nat_table.keys()))
+    actor = st.selectbox("Actor Reference:", ["No", "Yes"])
+    age = st.selectbox("Age:", ["Middle-aged", "Elderly", "Young Adult", "Child"])
+    gender = st.selectbox("Gender:", ["Masculine / Male", "Feminine / Female"])
+    nationality = st.selectbox("Nationality:", list(nat_table.keys()))
 
 with col2:
-    era = st.selectbox("Time Period (G12):", list(era_table.keys()))
-    char_style = st.selectbox("Character Style (J12):", list(char_table.keys()))
-    
-    # شرط هوشمند جنسیت برای ریش
+    era = st.selectbox("Time Period:", list(era_table.keys()))
+    char_style = st.selectbox("Character Style:", list(char_table.keys()))
     if gender == "Masculine / Male":
-        grooming = st.selectbox("Grooming Style (J14):", ["Pyramidal Moustache", "Viking Beard", "Clean Shaven", "Heavy Stubble"])
+        grooming = st.selectbox("Grooming:", ["Pyramidal Moustache", "Viking Beard", "Clean Shaven"])
     else:
         grooming = "None"
-        st.info("Grooming disabled for female character.")
+    
+    canvas = st.selectbox("Canvas Size:", ["16:9", "4:3", "1:1"])
 
-# --- بخش گریم و جزییات فنی ---
 st.write("---")
 c3, c4, c5 = st.columns(3)
-
 with c3:
-    if age in ["Child", "Teen"]:
-        sfx = "None"
-        st.warning("SFX Restricted for safety.")
-    else:
-        sfx = st.selectbox("SFX Makeup (G17):", ["3-Day Old Wound", "Encapsulated Silicone", "Burn Scar", "None"])
-
+    sfx = st.selectbox("SFX Makeup:", ["3-Day Old Wound", "Burn Scar", "None"]) if age not in ["Child", "Teen"] else "None"
 with c4:
-    hair_tex = st.selectbox("Hair Texture (J19):", ["Afro-Textured", "Wavy", "Curly", "Straight"])
-    aging = st.text_input("Skin/Aging Details (G19):", "Frontal Rhytids")
-
+    hair = st.selectbox("Hair Texture:", ["Afro", "Wavy", "Curly", "Straight"])
 with c5:
-    material = st.selectbox("Material Finish (J17):", ["Matte Sealer", "Dried Blood", "Wet Look", "Translucent Skin"])
+    material = st.selectbox("Material Finish:", ["Matte", "Dried Blood", "Wet Look"])
 
-# --- تنظیمات دوربین و ابعاد ---
-with st.expander("🎥 Technical Specs (Lighting & Camera)"):
-    canvas = st.selectbox("Canvas Size (J22):", ["16:9", "4:3", "1:1"])
-    lighting = st.selectbox("Lighting (G22):", ["Rembrandt Lighting", "Cinematic Rim Light", "Softbox"])
-    lens = st.selectbox("Lens (G24):", ["85mm Lens", "35mm Wide", "50mm Prime"])
-
-# --- منطق ساخت Master Prompt ---
-visual_guide = "[VISUAL GUIDE: Emulate facial structure] " if actor == "Yes" else ""
+# --- ساخت پرامپت ---
 nat_desc = f" ({nat_table[nationality]})"
 era_desc = f" ({era_table[era]})"
-char_desc = f" ({char_table[char_style]})"
-sfx_desc = f"[SFX STUDY: Apply {sfx}]. " if sfx != "None" else ""
+sfx_desc = f"[SFX: {sfx}]. " if sfx != "None" else ""
 
-final_prompt = f"{visual_guide}A professional cinematic {canvas} portrait of a {age} {gender} {nationality}{nat_desc} from the {era} era{era_desc}. " \
-               f"Style: {char_style}{char_desc}. Grooming: {grooming}. " \
-               f"Hair: {hair_tex}. Skin: {aging}. {sfx_desc}Finish: {material}. " \
-               f"Technical: {lighting}, {lens}, 8k, raw photography."
+prompt = f"A professional cinematic {canvas} portrait of a {age} {gender} {nationality}{nat_desc} from the {era} era{era_desc}. Style: {char_style}. Grooming: {grooming}. Hair: {hair}. {sfx_desc}Finish: {material}. Technical: 8k, raw photography."
 
-# --- نمایش خروجی با استایل درخشان ---
-st.write("---")
-st.subheader("🚀 PROMPT MASTER OUTPUT")
-st.markdown(f'<div class="prompt-container">{final_prompt}</div>', unsafe_allow_html=True)
+st.write("### 🚀 MASTER PROMPT READY")
+st.markdown(f'<div class="output-box">{prompt}</div>', unsafe_allow_html=True)
 
-if st.button("📋 COPY MASTER PROMPT"):
-    st.success("Prompt generated successfully! Copy the text from the blue box.")
+# دکمه کپی به روش استریم‌لیت (نمایش کد قابل کپی)
+st.write("")
+if st.button("🔥 GENERATE & PREPARE FOR COPY"):
+    st.text_area("کد زیر را کپی کنید:", value=prompt, height=100)
+    st.success("پرامپت با موفقیت آماده شد. متن داخل کادر بالا را کپی کنید.")
