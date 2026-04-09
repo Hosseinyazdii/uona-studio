@@ -3,91 +3,97 @@ import streamlit as st
 # تنظیمات اصلی
 st.set_page_config(page_title="UONA AI DASHBOARD", layout="wide")
 
-# CSS حرفه‌ای برای استایل سینماتیک و رفع مشکل اسکرول
+# CSS حرفه‌ای با بک‌گراند تصویری و افکت‌های نوری
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@300;400;700;900&family=Playfair+Display:ital,wght@1,900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@300;400;700;900&display=swap');
 
-    /* رفع مشکل اسکرول و تنظیم پس‌زمینه */
-    html, body, [data-testid="stAppViewContainer"] {
-        background-color: #0b1d2e !important;
-        overflow-y: auto !important;
+    /* تنظیم بک‌گراند کل صفحه */
+    .stApp {
+        background-image: url("https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=2342&q=80");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
     }
 
-    /* هدر فیروزه‌ای لاکچری */
+    /* لایه تیره روی بک‌گراند برای خوانایی بیشتر */
+    .stApp::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(5, 15, 26, 0.85); /* تاریک کردن بک‌گراند */
+        z-index: -1;
+    }
+
+    /* هدر سینماتیک */
     .header-box {
-        background-color: #050f1a;
+        background: rgba(0, 212, 255, 0.05);
+        backdrop-filter: blur(10px);
         border-bottom: 2px solid #00d4ff;
-        padding: 20px;
-        margin-bottom: 30px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        padding: 25px;
+        margin-bottom: 35px;
+        text-align: center;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.6);
     }
     .header-title {
         color: #00d4ff;
         font-family: 'Cinzel', serif;
-        font-size: 2.2rem;
-        letter-spacing: 6px;
+        font-size: 2.5rem;
+        letter-spacing: 8px;
+        text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
         margin: 0;
-        text-align: center;
     }
 
-    /* استایل لیبل‌ها - قدرتمند و سینماتیک */
+    /* کادرهای ورودی شیشه‌ای */
+    div[data-baseweb="select"] > div, .stTextInput>div>div>input {
+        background-color: rgba(26, 58, 90, 0.6) !important;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(0, 212, 255, 0.4) !important;
+        color: white !important;
+        border-radius: 8px !important;
+    }
+
     label p {
         color: #00d4ff !important;
         font-family: 'Montserrat', sans-serif !important;
         font-weight: 700 !important;
-        font-size: 0.95rem !important;
         text-transform: uppercase !important;
-        letter-spacing: 1px !important;
-    }
-    
-    /* نشانه اجباری (دایره زرد) */
-    .req-mark { color: #ffcc00; margin-right: 8px; font-size: 1.1rem; }
-
-    /* استایل فیلدهای ورودی متنی */
-    .stTextInput>div>div>input {
-        background-color: #1a3a5a !important;
-        color: #ffffff !important;
-        border: 1px solid rgba(0, 212, 255, 0.3) !important;
-        font-family: 'Montserrat', sans-serif !important;
+        letter-spacing: 1.5px !important;
     }
 
-    /* کادر MASTER PROMPT (دقیقاً مشابه اکسل) */
+    /* کادر MASTER PROMPT اکسل */
     .master-header {
-        background-color: #00f2ff;
+        background: linear-gradient(90deg, #00f2ff, #0088ff);
         color: #000000;
-        padding: 12px;
+        padding: 15px;
         font-weight: 900;
-        font-size: 1.4rem;
-        border-radius: 4px 4px 0 0;
+        font-size: 1.5rem;
+        border-radius: 8px 8px 0 0;
         font-family: 'Montserrat', sans-serif;
         text-align: center;
-        box-shadow: 0 -5px 15px rgba(0, 212, 255, 0.2);
     }
     .master-box {
         background-color: #ffffff;
         color: #111111;
         padding: 30px;
-        border-radius: 0 0 4px 4px;
-        border-left: 5px solid #00f2ff;
+        border-radius: 0 0 8px 8px;
+        border-left: 8px solid #00f2ff;
         font-family: 'Montserrat', sans-serif;
-        font-size: 1.2rem;
+        font-size: 1.25rem;
         line-height: 1.8;
-        min-height: 450px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        min-height: 480px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.8);
     }
 
-    /* جداکننده سینماتیک */
-    hr { border-top: 1px solid rgba(0, 212, 255, 0.2) !important; margin: 40px 0 !important; }
+    /* نوار اسکرول زیبا */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #050f1a; }
+    ::-webkit-scrollbar-thumb { background: #00d4ff; border-radius: 10px; }
     </style>
     """, unsafe_allow_html=True)
 
-# هدر اصلی
-st.markdown("""
-    <div class="header-box">
-        <p class="header-title">UONA STUDIO | PROMPT BUILDER</p>
-    </div>
-    """, unsafe_allow_html=True)
+# هدر
+st.markdown('<div class="header-box"><p class="header-title">UONA STUDIO</p></div>', unsafe_allow_html=True)
 
 # دیتابیس‌ها
 nat_table = {"Iranian": "Indo-Aryan features", "Syrian": "Levantine features", "Saudi": "Peninsular Arab features"}
@@ -97,7 +103,6 @@ era_table = {"Contemporary": "Current lighting", "Ancient Era": "Ancient texture
 col_form, col_gap, col_master = st.columns([1.6, 0.1, 1])
 
 with col_form:
-    # بخش اول: پایه (اجباری با دایره زرد)
     r1c1, r1c2 = st.columns(2)
     with r1c1:
         actor = st.selectbox("🟡 Actore:", ["No", "Yes"])
@@ -108,42 +113,31 @@ with col_form:
 
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # بخش دوم: استایل و زمان
     r2c1, r2c2 = st.columns(2)
     with r2c1:
         era = st.selectbox("Time Period:", list(era_table.keys()))
-        hair_color = st.text_input("Hair & Beard Color:", placeholder="Enter color (e.g. Salt & Pepper)")
+        hair_color = st.text_input("Hair & Beard Color:", placeholder="e.g. Salt & Pepper")
     with r2c2:
         char_style = st.selectbox("Character Type:", ["Heroic Warrior", "Ailing", "Royal"])
         grooming = st.selectbox("Grooming Style:", ["Viking Beard", "Pyramidal Moustache"])
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # بخش سوم: فنی و SFX
     r3c1, r3c2 = st.columns(2)
     with r3c1:
         sfx = st.selectbox("SFX Makeup:", ["3-Day Old Wound", "Burn Scar", "None"])
-        aging = st.text_input("Aging Details:", placeholder="Enter details (e.g. Forehead Furrows)")
+        aging = st.text_input("Aging Details:", placeholder="e.g. Forehead Furrows")
         lighting = st.selectbox("Lighting:", ["Rembrandt Lighting", "Rim Light"])
     with r3c2:
-        material = st.text_input("Material:", placeholder="Enter material (e.g. Matte Sealer)")
+        material = st.text_input("Material:", placeholder="e.g. Matte Sealer")
         hair_tex = st.selectbox("Hair Texture:", ["Afro", "Wavy", "Straight"])
         canvas = st.selectbox("Bible Size:", ["Aspect Ratio 16:9", "1:1"])
 
-# ساخت پرامپت نهایی
+# ساخت پرامپت
 nat_desc = f" ({nat_table[nationality]})"
 visual_guide = "[VISUAL GUIDE: Emulate facial structure] " if actor == "Yes" else ""
-final_prompt = f"{visual_guide}A professional cinematic {canvas} portrait of a {gender} {age} {nationality}{nat_desc} from the {era} era. " \
-               f"Character style: {char_style}. Grooming: {grooming}. Hair Color: {hair_color}, Texture: {hair_tex}. " \
-               f"Skin: {aging}. SFX: {sfx}. Material: {material}. Technical: {lighting}, 8k, raw photography, subsurface scattering."
+final_prompt = f"{visual_guide}A professional cinematic {canvas} portrait of a {gender} {age} {nationality}{nat_desc} from the {era} era. Character style: {char_style}. Grooming: {grooming}. Hair Color: {hair_color}, Texture: {hair_tex}. Skin: {aging}. SFX: {sfx}. Material: {material}. Technical: {lighting}, 8k, raw photography."
 
 with col_master:
     st.markdown('<div class="master-header">📖 MASTER PROMPT</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="master-box">{final_prompt}</div>', unsafe_allow_html=True)
-    
-    st.markdown("""
-        <div style='text-align: center; color: #00d4ff; font-family: Montserrat; padding-top: 20px;'>
-            <p style='font-size: 0.9rem; opacity: 0.8;'>لطفاً برای کپی کردن، متن داخل کادر سفید را انتخاب کنید</p>
-            <p style='font-size: 0.8rem; letter-spacing: 1px;'>CLICK INSIDE THE BOX TO SELECT ALL</p>
-        </div>
-        """, unsafe_allow_html=True)
