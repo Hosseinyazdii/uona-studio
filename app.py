@@ -1,10 +1,9 @@
 import streamlit as st
-from streamlit_extras.add_vertical_space import add_vertical_space
 
 # تنظیمات اصلی
 st.set_page_config(page_title="UONA STUDIO", layout="wide")
 
-# CSS برای دیزاین لوکس و دکمه کپی
+# CSS حرفه‌ای برای دیزاین لوکس و دکمه کپی
 st.markdown("""
     <style>
     .stApp { background: radial-gradient(circle, #0a192f 0%, #02060c 100%) !important; }
@@ -15,7 +14,6 @@ st.markdown("""
         font-family: 'monospace' !important; font-size: 1.1rem !important;
         box-shadow: 0 0 20px rgba(0, 212, 255, 0.2) !important;
     }
-    /* استایل دکمه کپی */
     .stButton>button {
         background: #d4af37 !important; color: #02060c !important;
         font-weight: bold !important; border-radius: 8px !important; width: 100% !important;
@@ -32,14 +30,13 @@ st.markdown('<p class="main-title">UONA STUDIO | CINEMATIC DESIGNER</p>', unsafe
 nat_table = {"Iranian": "Indo-Aryan features, prominent nasal bridge, olive skin", "Syrian": "Levantine features", "Saudi": "Peninsular Arab features", "Egyptian": "North African features", "Emirati": "Gulf Arab features", "Kuwaiti": "Northern Gulf features"}
 era_table = {"Contemporary": "Current lighting, sharp details", "Ancient Era": "Ancient styling", "Medieval": "Gritty textures", "50 Years Ago": "Analog film look"}
 
-# پنل مدیریت (Dashboard)
+# پنل مدیریت
 c1, c2 = st.columns(2)
 with c1:
     actor = st.selectbox("Actor Reference:", ["No", "Yes"])
     age = st.selectbox("Age:", ["Middle-aged", "Elderly", "Young Adult", "Child"])
     gender = st.selectbox("Gender:", ["Masculine / Male", "Feminine / Female"])
     nationality = st.selectbox("Nationality:", list(nat_table.keys()))
-
 with c2:
     era = st.selectbox("Time Period:", list(era_table.keys()))
     char_style = st.selectbox("Character Style:", ["Heroic Warrior", "Ailing Character", "Royal"])
@@ -62,17 +59,22 @@ sfx_text = f"[SFX: {sfx}]. " if sfx != "None" else ""
 
 final_prompt = f"A professional cinematic {canvas} portrait of a {age} {gender} {nationality}{nat_desc} from the {era} era{era_desc}. Style: {char_style}. Grooming: {grooming}. Hair: {hair}. {sfx_text}Finish: {material}. Technical: 8k, raw photography."
 
-# خروجی نهایی بدون لاین‌های اضافه
 st.markdown("### 🚀 MASTER PROMPT READY")
 st.markdown(f'<div class="output-box">{final_prompt}</div>', unsafe_allow_html=True)
 
-add_vertical_space(1)
+# ایجاد فاصله بدون نیاز به کتابخانه خارجی
+st.write("")
 
-# دکمه کپی واقعی (نیاز به کتابخانه ندارد، از جاوا اسکریپت استفاده می‌کند)
+# دکمه کپی هوشمند
 if st.button("🔥 CLICK TO COPY PROMPT"):
     st.components.v1.html(f"""
         <script>
-        navigator.clipboard.writeText("{final_prompt}");
+        const el = document.createElement('textarea');
+        el.value = "{final_prompt}";
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
         alert("Prompt Copied to Clipboard!");
         </script>
     """, height=0)
