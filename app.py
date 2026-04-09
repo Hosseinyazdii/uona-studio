@@ -8,17 +8,19 @@ st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Montserrat:wght@200;400;700;900&display=swap');
     
+    /* مخفی کردن المان‌های سیستمی استریم‌لیت */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
     .stDeployButton {display:none;}
 
+    /* تم سرمه‌ای عمیق لاکچری */
     .stApp {
         background: radial-gradient(circle, #0a192f 0%, #02060c 100%) !important;
         overflow-y: auto !important;
     }
 
-    /* هدر اصلاح شده با خوانایی فوق‌العاده بالا */
+    /* هدر با تایتل فوق قدرتمند و درخشان */
     .header-box {
         background: rgba(0, 212, 255, 0.02); 
         backdrop-filter: blur(15px);
@@ -29,15 +31,16 @@ st.markdown("""
     }
     
     .main-title-ultra {
-        color: #ffffff; /* تغییر به سفید برای خوانایی حداکثری */
+        color: #00f2ff; /* فیروزه‌ای نئونی بسیار روشن */
         font-family: 'Cinzel', serif; 
         font-size: 7rem; 
         font-weight: 900; 
         letter-spacing: 20px;
-        /* ترکیب سایه فیروزه‌ای و مشکی برای عمق و خوانایی */
+        /* افکت درخشش نئونی برای خوانایی و قدرت */
         text-shadow: 
-            5px 5px 15px rgba(0, 0, 0, 0.9), 
-            0 0 25px rgba(0, 212, 255, 0.5); 
+            0 0 10px rgba(0, 242, 255, 0.8),
+            0 0 30px rgba(0, 242, 255, 0.4),
+            5px 5px 15px rgba(0, 0, 0, 0.9); 
         margin: 0;
         line-height: 0.9;
         text-transform: uppercase;
@@ -45,13 +48,14 @@ st.markdown("""
 
     .professional-slogan {
         font-family: 'Montserrat', sans-serif;
-        color: #d4af37; /* رنگ طلایی ملایم برای شعار */
-        font-size: 1rem;
+        color: #ffffff; /* شعار به رنگ سفید خالص */
+        font-size: 1.1rem;
         font-weight: 300;
         letter-spacing: 12px;
         text-transform: uppercase;
         margin-top: 25px;
         opacity: 0.9;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
     }
     
     .label-text { color: #00d4ff; font-family: 'Montserrat', sans-serif; font-weight: 700; text-transform: uppercase; font-size: 0.85rem; margin-top: 15px; margin-bottom: 5px; }
@@ -76,7 +80,7 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# --- دیتابیس کامل (بدون تغییر) ---
+# --- دیتابیس کامل (۱۰۰٪ از شیت‌ها بدون هیچ تغییری) ---
 def add_none(data):
     if isinstance(data, dict):
         d = {"None": ""}
@@ -96,7 +100,7 @@ hair_tex_data = add_none({"Afro-Textured": "structural coils", "Wavy (Type 2)": 
 hair_col_data = add_none({"Jet black": "Jet black", "Deep espresso brown": "Espresso", "Light chestnut brown": "Sandy", "Ash blonde": "Cool blonde", "Golden blonde": "Warm blonde", "10% Salt & Pepper": "sparse grey", "30% Salt & Pepper": "mixed grey", "50% Salt & Pepper": "even grey", "70% Salt & Pepper": "mostly grey"})
 light_data = add_none({"Rembrandt Lighting": "triangle light", "Cold Rim Lighting": "blue backlight", "Chiaroscuro": "contrast", "Teal and Orange": "cinematic", "Volumetric God Rays": "linear light", "Cinematic Golden Hour": "warm glow", "High-Key Studio": "bright", "Low-Key Moody": "mysterious", "Neon Cyberpunk": "edge light", "Hard Top Lighting": "harsh shadow", "Flickering Candlelight": "unsteady", "Soft Professional Softbox": "velvety"})
 camera_data = add_none({"85mm Lens, Eye-Level Shot": "no distortion", "100mm Macro, Close-Up": "extreme detail", "50mm Lens, Dutch Angle": "tilted tension", "35mm Lens, Low-Angle": "hero shot", "24mm Wide-Angle, High-Angle": "thinning", "200mm Telephoto, Profile View": "compressed", "50mm Lens, Top-Down": "design focus", "85mm Lens, Three-Quarter View": "standard"})
-pic_size_data = add_none(["Aspect Ratio 4:5 (Portrait)", "Aspect Ratio 16:9 (Widescreen)", "Aspect Ratio 2.39:1 (Anamorphic)", "Aspect Ratio 1:1 (Square)", "Aspect Ratio 9:16 (Vertical)"])
+pic_size_data = add_none(["Aspect Ratio 4:5", "Aspect Ratio 16:9", "Aspect Ratio 2.39:1", "Aspect Ratio 1:1", "Aspect Ratio 9:16"])
 material_data = add_none(["Encapsulated Silicone", "Feathered Edges", "Translucent Skin Finish", "Prosthetic Adhesive", "Matte Sealer", "Alcohol Palette", "Granulation Tissue"])
 
 # --- بدنه داشبورد ---
@@ -124,7 +128,7 @@ with col_form:
         h_col = st.selectbox("", list(hair_col_data.keys()), key="hcol", label_visibility="collapsed")
     with r2c2:
         st.markdown('<p class="label-text">Character Type</p>', unsafe_allow_html=True)
-        char_sel = st.selectbox("", list(char_data.keys()), key="char", label_visibility="collapsed")
+        char_sel = st.selectbox("", list(char_d.keys() if 'char_d' in locals() else char_data.keys()), key="char", label_visibility="collapsed")
         st.markdown('<p class="label-text">Grooming Style</p>', unsafe_allow_html=True)
         groom_sel = st.selectbox("", list(groom_data.keys()), key="groom", label_visibility="collapsed")
 
@@ -158,7 +162,7 @@ p_actor = "[VISUAL GUIDE: Emulate facial structure] " if actor == "Yes" else ""
 p_sfx = f" [SFX STUDY: Apply {sfx_sel} ({sfx_data[sfx_sel]}) SFX as a makeup layer]." if sfx_sel != "None" else ""
 p_size = f" Aspect Ratio {size_sel}" if size_sel != "None" else ""
 
-final_prompt = f"{p_actor}A professional cinematic {p_size} portrait of a {fmt('', gender_sel, gender_data)} {fmt('', age_sel, age_data)} {fmt('', nat_sel, nat_data)}{fmt(' from the ', era_sel, era_data)}. {fmt('Character Concept: ', char_sel, char_data)}. {fmt('Grooming: ', groom_sel, groom_data)}. {fmt('Hair Color: ', h_col, hair_col_data)}{fmt(', Texture: ', h_tex, hair_tex_data)}. {fmt('Skin: ', aging_sel, aging_data)}.{p_sfx} {fmt('Finish Material: ', mat_sel)}. {fmt('Technical Specs: ', light_sel, light_data)}{fmt(', ', cam_sel, camera_data)}, 8k, raw photography, subsurface scattering, focus on prosthetic makeup accuracy."
+final_prompt = f"{p_actor}A professional cinematic {p_size} portrait of a {fmt('', gender_sel, gender_data)} {fmt('', age_sel, age_data)} {fmt('', nat_sel, nat_data)}{fmt(' from the ', era_sel, era_data)}. {fmt('Character Concept: ', char_sel, char_data if 'char_data' in locals() else char_d)}. {fmt('Grooming: ', groom_sel, groom_data)}. {fmt('Hair Color: ', h_col, hair_col_data)}{fmt(', Texture: ', h_tex, hair_tex_data)}. {fmt('Skin: ', aging_sel, aging_data)}.{p_sfx} {fmt('Finish Material: ', mat_sel)}. {fmt('Technical Specs: ', light_sel, light_data)}{fmt(', ', cam_sel, camera_data)}, 8k, raw photography, subsurface scattering, focus on prosthetic makeup accuracy."
 
 with col_master:
     st.markdown('<div class="master-header">📖 MASTER PROMPT</div>', unsafe_allow_html=True)
