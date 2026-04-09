@@ -1,14 +1,14 @@
 import streamlit as st
+from datetime import datetime
 
 # 1. تنظیمات اصلی
 st.set_page_config(page_title="UONA STUDIO | AI DASHBOARD", layout="wide")
 
-# 2. استایل اختصاصی (گرادینت سرمه‌ای تیره + متون فیروزه‌ای)
+# 2. استایل اختصاصی (سرمه‌ای تیره لوکس + فوتر فیکس)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@300;400;700;900&display=swap');
     
-    /* گرادینت سرمه‌ای تیره برای کل صفحه */
     .stApp {
         background: linear-gradient(135deg, #0a192f 0%, #02060c 100%) !important;
         overflow-y: auto !important;
@@ -23,7 +23,6 @@ st.markdown("""
         text-shadow: 0 0 15px rgba(0, 212, 255, 0.5); margin: 0;
     }
     
-    /* استایل لیبل‌ها و ستاره قرمز */
     .label-text { color: #00d4ff; font-family: 'Montserrat', sans-serif; font-weight: 700; text-transform: uppercase; font-size: 0.85rem; margin-bottom: 5px; }
     .star { color: #ff4b4b; }
 
@@ -31,12 +30,29 @@ st.markdown("""
     .master-box { background-color: #ffffff; color: #111; padding: 25px; border-radius: 0 0 8px 8px; border-left: 10px solid #00f2ff; font-family: 'Montserrat', sans-serif; font-size: 1.1rem; line-height: 1.7; min-height: 520px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); user-select: all !important; }
     
     div[data-baseweb="select"] > div, .stTextInput>div>div>input { background-color: rgba(26, 58, 90, 0.6) !important; color: white !important; border: 1px solid rgba(0, 212, 255, 0.4) !important; border-radius: 8px !important; }
+
+    /* استایل فوتر حرفه‌ای */
+    .footer {
+        position: relative;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: rgba(2, 6, 12, 0.8);
+        color: #556a8b;
+        text-align: center;
+        padding: 25px 0;
+        font-family: 'Montserrat', sans-serif;
+        border-top: 1px solid rgba(0, 212, 255, 0.1);
+        margin-top: 50px;
+    }
+    .footer-content { font-size: 0.85rem; letter-spacing: 1px; }
+    .footer-rights { color: #00d4ff; font-weight: 700; }
     </style>
     """, unsafe_allow_html=True)
 
 st.markdown('<div class="header-box"><p class="header-title">UONA STUDIO | PROMPT BUILDER</p></div>', unsafe_allow_html=True)
 
-# 3. توابع کمکی برای مدیریت دیتا
+# 3. دیتابیس (بدون تغییر - ۱۰۰٪ دیتای اکسل)
 def add_none(data):
     if isinstance(data, dict):
         new_dict = {"None": ""}
@@ -44,7 +60,6 @@ def add_none(data):
         return new_dict
     return ["None"] + data
 
-# --- دیتابیس کامل (۱۰۰٪ از شیت‌ها) ---
 gender_data = add_none({"Masculine / Male": "strong bone structure", "Feminine / Female": "softer facial contours", "Androgynous": "blend features"})
 age_data = add_none({"Child / Pre-adolescent": "textureless skin", "Adolescent / Teenager": "oily skin texture", "Young Adult (Early 20s)": "peak elasticity", "Middle-aged (Late 40s)": "initial sagging", "Elderly / Senior": "collagen loss", "Ancient / Centenarian": "paper-thin skin"})
 nat_data = add_none({"Iranian": "Indo-Aryan features, prominent nasal bridge", "Egyptian": "North African features", "Emirati": "Gulf Arab features", "Saudi": "Peninsular Arab features", "Kuwaiti": "Northern Gulf features", "Syrian": "Levantine features", "American": "Diverse features", "Indian": "South Asian features", "Chinese": "East Asian features", "African": "Sub-Saharan features", "European": "Caucasian features", "Turkish": "Eurasian features"})
@@ -125,3 +140,14 @@ with col_master:
     st.markdown('<div class="master-header">📖 MASTER PROMPT</div>', unsafe_allow_html=True)
     st.markdown('<div style="text-align:center; color:#00d4ff; font-family:Tahoma; font-size:0.85rem; padding:10px;">لطفاً برای کپی کردن، روی متن داخل کادر زیر کلیک کنید<br>Please click on the text inside the box below to copy</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="master-box">{final_prompt}</div>', unsafe_allow_html=True)
+
+# 6. نمایش فوتر حرفه‌ای
+current_year = datetime.now().year
+st.markdown(f"""
+    <div class="footer">
+        <div class="footer-content">
+            © {current_year} <span class="footer-rights">UONA GROUP</span>. ALL RIGHTS RESERVED. <br>
+            PROFESSIONAL CINEMATIC CHARACTER DESIGN AI SYSTEM | EST. 2024
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
