@@ -3,7 +3,7 @@ import streamlit as st
 # تنظیمات پایه
 st.set_page_config(page_title="UONA STUDIO", layout="wide")
 
-# CSS حرفه‌ای برای ظاهر لوکس و هدر سه‌زبانه
+# CSS حرفه‌ای با اصلاح رنگ راهنما
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&family=Montserrat:wght@100;400;900&display=swap');
@@ -29,17 +29,23 @@ st.markdown("""
         opacity: 0.7; margin-top: -10px !important;
     }
 
-    /* بخش MASTER PROMPT READY */
+    /* بخش MASTER PROMPT READY (آبی نئونی) */
     .master-ready {
         font-family: 'Montserrat', sans-serif !important; color: #00d4ff !important;
         font-size: 1.6rem !important; font-weight: 900 !important; letter-spacing: 5px !important;
         text-align: center; margin-top: 40px !important; text-shadow: 0 0 12px rgba(0, 212, 255, 0.6);
     }
 
-    /* استایل راهنمای سه‌زبانه */
+    /* استایل راهنمای سه‌زبانه (هم‌رنگ با Master Prompt - آبی نئونی) */
     .lang-guide {
-        text-align: center; color: #d4af37; font-family: 'Tahoma', sans-serif;
-        font-size: 0.9rem; margin-bottom: 15px; opacity: 0.9; line-height: 1.8;
+        text-align: center; 
+        color: #00d4ff !important; /* تغییر رنگ از زرد به آبی نئونی */
+        font-family: 'Tahoma', sans-serif;
+        font-size: 0.85rem; 
+        margin-bottom: 15px; 
+        opacity: 0.8; 
+        line-height: 1.6;
+        text-shadow: 0 0 5px rgba(0, 212, 255, 0.3);
     }
 
     /* کادر درخشان خروجی نهایی */
@@ -66,7 +72,7 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# دیتابیس‌ها
+# دیتابیس‌ها (بر اساس ملیت‌های منطقه GCC و ایران)
 nat_table = {"Iranian": "Indo-Aryan features, prominent nasal bridge", "Syrian": "Levantine features", "Saudi": "Peninsular Arab features", "Egyptian": "North African features", "Emirati": "Gulf Arab features", "Kuwaiti": "Northern Gulf features"}
 era_table = {"Contemporary": "Current lighting", "Stone Age": "Primitive textures", "Medieval": "Gritty textures", "100 Years Ago": "Vintage film grain"}
 
@@ -101,7 +107,7 @@ final_prompt = f"A professional cinematic {canvas} portrait of a {age} {gender} 
 # خروجی نهایی
 st.markdown('<div class="master-ready">🚀 MASTER PROMPT READY 🚀</div>', unsafe_allow_html=True)
 
-# راهنمای سه‌زبانه
+# راهنمای سه‌زبانه (رنگ آبی نئونی هماهنگ با Master Prompt)
 st.markdown("""
     <div class="lang-guide">
         لطفاً برای کپی کردن، روی متن داخل کادر زیر کلیک کنید<br>
