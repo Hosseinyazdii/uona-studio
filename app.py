@@ -1,7 +1,7 @@
 import streamlit as st
 from datetime import datetime
 
-# 1. تنظیمات اصلی و امنیت بصری
+# 1. تنظیمات پایه و امنیت بصری
 st.set_page_config(page_title="UONA STUDIO | AI DASHBOARD", layout="wide")
 
 st.markdown("""
@@ -18,47 +18,40 @@ st.markdown("""
         overflow-y: auto !important;
     }
 
-    /* هدر با تایتل فوق قدرتمند و درشت */
+    /* هدر اصلاح شده با خوانایی فوق‌العاده بالا */
     .header-box {
-        background: rgba(0, 212, 255, 0.03); 
-        backdrop-filter: blur(10px);
-        border-bottom: 2px solid #00d4ff; 
-        padding: 50px 20px; 
-        margin-bottom: 35px; 
+        background: rgba(0, 212, 255, 0.02); 
+        backdrop-filter: blur(15px);
+        border-bottom: 2px solid rgba(0, 212, 255, 0.3); 
+        padding: 60px 20px; 
+        margin-bottom: 40px; 
         text-align: center;
     }
     
-    .title-wrapper {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-    }
-
     .main-title-ultra {
-        color: #00d4ff; 
+        color: #ffffff; /* تغییر به سفید برای خوانایی حداکثری */
         font-family: 'Cinzel', serif; 
-        font-size: 6.5rem; /* سایز بسیار بزرگ و قدرتمند */
+        font-size: 7rem; 
         font-weight: 900; 
-        letter-spacing: 18px; /* فاصله حروف برای ابهت بیشتر */
-        text-shadow: 0 0 40px rgba(0, 212, 255, 0.7), 0 0 10px rgba(0, 212, 255, 0.4); 
+        letter-spacing: 20px;
+        /* ترکیب سایه فیروزه‌ای و مشکی برای عمق و خوانایی */
+        text-shadow: 
+            5px 5px 15px rgba(0, 0, 0, 0.9), 
+            0 0 25px rgba(0, 212, 255, 0.5); 
         margin: 0;
-        line-height: 1;
+        line-height: 0.9;
         text-transform: uppercase;
     }
 
     .professional-slogan {
         font-family: 'Montserrat', sans-serif;
-        color: #ffffff;
-        font-size: 0.9rem;
-        font-weight: 200;
-        letter-spacing: 10px;
+        color: #d4af37; /* رنگ طلایی ملایم برای شعار */
+        font-size: 1rem;
+        font-weight: 300;
+        letter-spacing: 12px;
         text-transform: uppercase;
-        opacity: 0.7;
-        margin-top: 15px;
-        padding-top: 10px;
-        border-top: 1px solid rgba(0, 212, 255, 0.2);
+        margin-top: 25px;
+        opacity: 0.9;
     }
     
     .label-text { color: #00d4ff; font-family: 'Montserrat', sans-serif; font-weight: 700; text-transform: uppercase; font-size: 0.85rem; margin-top: 15px; margin-bottom: 5px; }
@@ -69,7 +62,7 @@ st.markdown("""
     
     div[data-baseweb="select"] > div, .stTextInput>div>div>input { background-color: rgba(26, 58, 90, 0.6) !important; color: white !important; border: 1px solid rgba(0, 212, 255, 0.4) !important; border-radius: 8px !important; }
 
-    .footer { width: 100%; color: #ffffff; text-align: center; padding: 40px 0; font-family: 'Montserrat', sans-serif; border-top: 1px solid rgba(0, 212, 255, 0.2); margin-top: 80px; background: rgba(0,0,0,0.3); }
+    .footer { width: 100%; color: #ffffff; text-align: center; padding: 40px 0; font-family: 'Montserrat', sans-serif; border-top: 1px solid rgba(0, 212, 255, 0.2); margin-top: 80px; background: rgba(0,0,0,0.4); }
     .footer-content { font-size: 1rem; letter-spacing: 2px; opacity: 0.9; }
     .footer-rights { color: #00f2ff; font-weight: 900; font-size: 1.3rem; text-shadow: 0 0 10px rgba(0, 242, 255, 0.5); }
     </style>
@@ -78,14 +71,12 @@ st.markdown("""
 # اجرای هدر جدید
 st.markdown("""
     <div class="header-box">
-        <div class="title-wrapper">
-            <h1 class="main-title-ultra">UONA STUDIO</h1>
-            <span class="professional-slogan">The Art of Cinematic Transformation</span>
-        </div>
+        <h1 class="main-title-ultra">UONA STUDIO</h1>
+        <div class="professional-slogan">The Art of Cinematic Transformation</div>
     </div>
     """, unsafe_allow_html=True)
 
-# --- دیتابیس کامل (۱۰۰٪ از شیت‌ها بدون هیچ تغییری) ---
+# --- دیتابیس کامل (بدون تغییر) ---
 def add_none(data):
     if isinstance(data, dict):
         d = {"None": ""}
@@ -95,7 +86,7 @@ def add_none(data):
 
 gender_data = add_none({"Masculine / Male": "strong bone structure", "Feminine / Female": "softer facial contours", "Androgynous": "blend features"})
 age_data = add_none({"Child / Pre-adolescent": "textureless skin", "Adolescent / Teenager": "oily skin texture", "Young Adult (Early 20s)": "peak elasticity", "Middle-aged (Late 40s)": "initial sagging", "Elderly / Senior": "collagen loss", "Ancient / Centenarian": "paper-thin skin"})
-nat_data = add_none({"Iranian": "Indo-Aryan features, prominent nasal bridge, olive skin", "Egyptian": "North African features", "Emirati": "Gulf Arab features", "Saudi": "Peninsular Arab features", "Kuwaiti": "Northern Gulf features", "Syrian": "Levantine features", "American": "Diverse features", "Indian": "South Asian features", "Chinese": "East Asian features", "African": "Sub-Saharan features", "European": "Caucasian features", "Turkish": "Eurasian features"})
+nat_data = add_none({"Iranian": "Indo-Aryan features, prominent nasal bridge", "Egyptian": "North African features", "Emirati": "Gulf Arab features", "Saudi": "Peninsular Arab features", "Kuwaiti": "Northern Gulf features", "Syrian": "Levantine features", "American": "Diverse features", "Indian": "South Asian features", "Chinese": "East Asian features", "African": "Sub-Saharan features", "European": "Caucasian features", "Turkish": "Eurasian features"})
 era_data = add_none({"Stone Age / Prehistoric": "Primitive aesthetic", "BCE (Before Common Era)": "Ancient styling", "Pre-Islamic Era": "Traditional heritage", "Ancient Era (Hellenistic/Roman)": "Classical features", "Medieval / Dark Ages": "Gritty textures", "200 Years Ago": "Regency style", "150 Years Ago": "Victorian Era", "100 Years Ago": "Roaring 20s", "50 Years Ago": "1970s Retro", "Contemporary / Modern Day": "Current lighting", "Futuristic / Cyberpunk": "Neon accents", "Post-Apocalyptic": "Weathered textures"})
 char_data = add_none({"Heroic Warrior": "Strong jawline", "Sinister Villain": "Harsh shadows", "Scholar / Intellectual": "Refined appearance", "Royal / Aristocratic": "Elegant posture", "Mercenary / Outlaw": "Rugged textures", "Mystic / Shaman": "Otherworldly look", "Corporate Executive / CEO": "Clean-cut", "Elite Athlete": "Defined muscularity", "Bohemian Artist": "Creative styling", "Average Citizen": "Naturalistic", "Blue-collar / Technician": "Grime", "Academic Student": "Youthful", "High-fashion Model": "Angular features", "Retiree / Grandparent": "Dignified aging", "Urban / Street Style": "Modern edge", "Rural / Outdoorsman": "Sun-damaged skin", "Red Carpet / Gala Guest": "Glamorous", "Ailing / Sickly Character": "Pale skin"})
 groom_data = add_none({"Saudi Anchor Beard": "sharp angled", "Pyramidal Moustache": "wide base", "Clean Shaven": "smooth skin", "Light Stubble": "short even", "Heavy Stubble": "rough texture", "Designer Stubble": "trimmed edges", "Shadow Fade Beard": "faded sides", "Goatee (No Mustache)": "chin beard", "Classic Goatee": "connected", "Van Dyke": "pointed", "Anchor Beard": "thin defined", "Short Boxed Beard": "square edges", "Medium Boxed Beard": "clean appearance", "Long Full Beard": "natural growth", "Unkempt Beard": "messy", "Scruffy Beard": "patchy", "Wild Beard": "chaotic", "Bedouin Beard": "weathered", "Viking Beard": "braided", "Medieval Beard": "period growth", "Philosopher Beard": "soft", "Warrior Beard": "rugged", "Graying Patches": "gray strands", "Split Texture Beard": "dual-textured", "Short Sideburns": "above ear", "Mid-Ear Sideburns": "tragus level", "Long Sideburns": "ear lobe", "Extra-Long Sideburns": "pass lobe", "High Sideburns": "temple level", "Tapered Length": "faded", "Square Sideburns": "clean edges", "Pointed Sideburns": "triangle point", "Rounded Sideburns": "circular", "Pencil Sideburns": "thin line", "Flared Sideburns": "wide look", "Angled Sideburns": "slanted", "Mutton Chops": "wide full", "Friendly Mutton Chops": "connected", "Soul Patch": "below lip"})
@@ -103,7 +94,7 @@ sfx_data = add_none({"Fresh Katana Slash": "active bleeding", "Glass Laceration"
 aging_data = add_none({"Deep Nasolabial Folds": "smile lines", "Pronounced Crow's Feet": "eye wrinkles", "Hooded Eyelids / Ptosis": "sagging lids", "Dermal Crepiness": "paper skin", "Visible Liver Spots": "age spots", "Sagging Jowls": "loose skin", "Frontal Rhytids": "forehead ridges", "Periorbital Hollows": "sunken eyes", "Vertical Lip Lines": "mouth wrinkles", "Age-related Telangiectasia": "capillaries"})
 hair_tex_data = add_none({"Afro-Textured": "structural coils", "Wavy (Type 2)": "S-shape", "Curly (Type 3)": "ringlets", "Straight (Sleek)": "linear", "Coarse & Wiry": "irregular graying", "Fine & Wispy": "translucent", "Disheveled & Matted": "weathered", "Braided / Cornrows": "interlocking"})
 hair_col_data = add_none({"Jet black": "Jet black", "Deep espresso brown": "Espresso", "Light chestnut brown": "Sandy", "Ash blonde": "Cool blonde", "Golden blonde": "Warm blonde", "10% Salt & Pepper": "sparse grey", "30% Salt & Pepper": "mixed grey", "50% Salt & Pepper": "even grey", "70% Salt & Pepper": "mostly grey"})
-light_data = add_none({"Rembrandt Lighting": "triangle light", "Cold Rim Lighting": "blue backlight", "Chiaroscuro": "contrast", "Teal and Orange Lighting": "cinematic", "Volumetric God Rays": "linear light", "Cinematic Golden Hour": "warm glow", "High-Key Studio Lighting": "bright", "Low-Key Moody Lighting": "dark", "Neon Cyberpunk Rim Light": "edge light", "Hard Top Lighting": "harsh shadow", "Flickering Candlelight": "unsteady", "Soft Professional Softbox": "velvety"})
+light_data = add_none({"Rembrandt Lighting": "triangle light", "Cold Rim Lighting": "blue backlight", "Chiaroscuro": "contrast", "Teal and Orange": "cinematic", "Volumetric God Rays": "linear light", "Cinematic Golden Hour": "warm glow", "High-Key Studio": "bright", "Low-Key Moody": "mysterious", "Neon Cyberpunk": "edge light", "Hard Top Lighting": "harsh shadow", "Flickering Candlelight": "unsteady", "Soft Professional Softbox": "velvety"})
 camera_data = add_none({"85mm Lens, Eye-Level Shot": "no distortion", "100mm Macro, Close-Up": "extreme detail", "50mm Lens, Dutch Angle": "tilted tension", "35mm Lens, Low-Angle": "hero shot", "24mm Wide-Angle, High-Angle": "thinning", "200mm Telephoto, Profile View": "compressed", "50mm Lens, Top-Down": "design focus", "85mm Lens, Three-Quarter View": "standard"})
 pic_size_data = add_none(["Aspect Ratio 4:5 (Portrait)", "Aspect Ratio 16:9 (Widescreen)", "Aspect Ratio 2.39:1 (Anamorphic)", "Aspect Ratio 1:1 (Square)", "Aspect Ratio 9:16 (Vertical)"])
 material_data = add_none(["Encapsulated Silicone", "Feathered Edges", "Translucent Skin Finish", "Prosthetic Adhesive", "Matte Sealer", "Alcohol Palette", "Granulation Tissue"])
