@@ -3,24 +3,27 @@ import streamlit as st
 # تنظیمات اصلی
 st.set_page_config(page_title="UONA STUDIO", layout="wide")
 
-# CSS حرفه‌ای برای دیزاین لوکس و دکمه کپی
+# CSS حرفه‌ای برای دیزاین لوکس
 st.markdown("""
     <style>
     .stApp { background: radial-gradient(circle, #0a192f 0%, #02060c 100%) !important; }
-    .main-title { color: #d4af37; font-size: 2.5rem; font-weight: 900; text-align: center; text-shadow: 0 0 15px rgba(212, 175, 55, 0.5); margin-bottom: 30px; }
+    .main-title { color: #d4af37; font-size: 2.8rem; font-weight: 900; text-align: center; text-shadow: 0 0 15px rgba(212, 175, 55, 0.5); margin-bottom: 20px; }
     .output-box { 
         background-color: #0d1b2a !important; border: 2px solid #00d4ff !important; 
-        color: #00d4ff !important; padding: 20px !important; border-radius: 12px !important; 
-        font-family: 'monospace' !important; font-size: 1.1rem !important;
+        color: #00d4ff !important; padding: 25px !important; border-radius: 12px !important; 
+        font-family: 'Courier New', monospace !important; font-size: 1.1rem !important;
         box-shadow: 0 0 20px rgba(0, 212, 255, 0.2) !important;
+        line-height: 1.6;
     }
     .stButton>button {
-        background: #d4af37 !important; color: #02060c !important;
-        font-weight: bold !important; border-radius: 8px !important; width: 100% !important;
-        border: none !important; height: 3.5rem !important; font-size: 1.1rem !important;
+        background: linear-gradient(45deg, #d4af37, #f1d592) !important; color: #02060c !important;
+        font-weight: bold !important; border-radius: 10px !important; width: 100% !important;
+        border: none !important; height: 4rem !important; font-size: 1.2rem !important;
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3) !important;
     }
-    label p { color: #d4af37 !important; font-weight: bold !important; }
+    label p { color: #d4af37 !important; font-weight: bold !important; font-size: 1.1rem !important; }
     div[data-baseweb="select"] > div { background-color: #0a1428 !important; border: 1px solid #d4af37 !important; color: white !important; }
+    hr { border-top: 1px solid #d4af37 !important; opacity: 0.3; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -28,7 +31,7 @@ st.markdown('<p class="main-title">UONA STUDIO | CINEMATIC DESIGNER</p>', unsafe
 
 # دیتابیس‌ها
 nat_table = {"Iranian": "Indo-Aryan features, prominent nasal bridge, olive skin", "Syrian": "Levantine features", "Saudi": "Peninsular Arab features", "Egyptian": "North African features", "Emirati": "Gulf Arab features", "Kuwaiti": "Northern Gulf features"}
-era_table = {"Contemporary": "Current lighting, sharp details", "Ancient Era": "Ancient styling", "Medieval": "Gritty textures", "50 Years Ago": "Analog film look"}
+era_table = {"Contemporary": "Current lighting, sharp details", "Stone Age": "Primitive textures, raw aesthetic", "Medieval": "Gritty textures", "100 Years Ago": "Vintage film grain"}
 
 # پنل مدیریت
 c1, c2 = st.columns(2)
@@ -39,43 +42,41 @@ with c1:
     nationality = st.selectbox("Nationality:", list(nat_table.keys()))
 with c2:
     era = st.selectbox("Time Period:", list(era_table.keys()))
-    char_style = st.selectbox("Character Style:", ["Heroic Warrior", "Ailing Character", "Royal"])
-    grooming = st.selectbox("Grooming:", ["Pyramidal Moustache", "Viking Beard", "Clean Shaven"]) if gender == "Masculine / Male" else "None"
+    char_style = st.selectbox("Character Style:", ["Heroic Warrior", "Ailing Character", "Royal", "Scholar"])
+    grooming = st.selectbox("Grooming:", ["Pyramidal Moustache", "Viking Beard", "Clean Shaven", "Heavy Stubble"]) if gender == "Masculine / Male" else "None"
     canvas = st.selectbox("Canvas Size:", ["16:9", "4:3", "1:1"])
 
-st.write("---")
+st.markdown("---")
 c3, c4, c5 = st.columns(3)
 with c3:
-    sfx = st.selectbox("SFX Makeup:", ["3-Day Old Wound", "Burn Scar", "None"]) if age not in ["Child", "Teen"] else "None"
+    sfx = st.selectbox("SFX Makeup:", ["3-Day Old Wound", "Burn Scar", "Bruise", "None"]) if age not in ["Child", "Teen"] else "None"
 with c4:
     hair = st.selectbox("Hair Texture:", ["Afro", "Wavy", "Curly", "Straight"])
 with c5:
-    material = st.selectbox("Material Finish:", ["Matte", "Dried Blood", "Wet Look"])
+    material = st.selectbox("Material Finish:", ["Matte", "Dried Blood", "Wet Look", "Translucent Skin"])
 
-# ساخت پرامپت
+# ساخت پرامپت نهایی
 nat_desc = f" ({nat_table[nationality]})"
 era_desc = f" ({era_table[era]})"
 sfx_text = f"[SFX: {sfx}]. " if sfx != "None" else ""
 
-final_prompt = f"A professional cinematic {canvas} portrait of a {age} {gender} {nationality}{nat_desc} from the {era} era{era_desc}. Style: {char_style}. Grooming: {grooming}. Hair: {hair}. {sfx_text}Finish: {material}. Technical: 8k, raw photography."
+final_prompt = f"A professional cinematic {canvas} portrait of a {age} {gender} {nationality}{nat_desc} from the {era} era{era_desc}. Style: {char_style}. Grooming: {grooming}. Hair: {hair}. {sfx_text}Finish: {material}. Technical: 8k, raw photography, subsurface scattering."
 
+# نمایش خروجی
 st.markdown("### 🚀 MASTER PROMPT READY")
-st.markdown(f'<div class="output-box">{final_prompt}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="output-box" id="p_text">{final_prompt}</div>', unsafe_allow_html=True)
 
-# ایجاد فاصله بدون نیاز به کتابخانه خارجی
-st.write("")
+st.write("") # فاصله
 
-# دکمه کپی هوشمند
+# دکمه کپی هوشمند با نسخه جاوا اسکریپت پایدارتر
 if st.button("🔥 CLICK TO COPY PROMPT"):
+    # استفاده از کلیپ‌بورد مدرن
     st.components.v1.html(f"""
         <script>
-        const el = document.createElement('textarea');
-        el.value = "{final_prompt}";
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
-        alert("Prompt Copied to Clipboard!");
+        const text = `{final_prompt}`;
+        navigator.clipboard.writeText(text).then(() => {{
+            alert("Prompt Copied to Clipboard!");
+        }});
         </script>
     """, height=0)
-    st.success("پرامپت با موفقیت به کلیپ‌بورد منتقل شد.")
+    st.success("پرامپت برای کپی آماده شد!")
