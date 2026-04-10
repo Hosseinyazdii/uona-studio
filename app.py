@@ -16,6 +16,7 @@ st.markdown("""
     #MainMenu, footer, header {visibility: hidden;}
     .stDeployButton {display:none;}
 
+    /* هدر سفید درخشان و خوانا */
     .nav-bar {
         display: flex; align-items: center; padding: 10px 50px;
         background: rgba(2, 6, 12, 0.8); border-bottom: 1px solid rgba(0, 242, 255, 0.2);
@@ -27,9 +28,10 @@ st.markdown("""
     }
     .slogan-main { font-family: 'Montserrat'; color: #00f2ff; font-size: 0.75rem; letter-spacing: 5px; text-transform: uppercase; }
 
+    /* استایل دکمه‌های پورتال برای خوانایی متن */
     .stButton > button {
-        background-color: #00f2ff !important;
-        color: #000000 !important;
+        background-color: #00f2ff !important; /* رنگ فیروزه‌ای درخشان */
+        color: #000000 !important; /* متن مشکی عمیق برای خوانایی */
         border: none !important;
         border-radius: 50px !important;
         font-family: 'Montserrat' !important;
@@ -50,6 +52,7 @@ st.markdown("""
         border-radius: 15px; padding: 20px; text-align: center; backdrop-filter: blur(10px);
     }
     
+    /* فرم و لیبل‌ها */
     .label-text { color: #00d4ff; font-family: 'Montserrat'; font-weight: 700; text-transform: uppercase; font-size: 0.7rem; margin-top: 8px; }
     .star { color: #ff4b4b; }
     
@@ -60,6 +63,7 @@ st.markdown("""
         line-height: 1.6; height: 380px; overflow-y: auto;
     }
     
+    /* فوتر نرمال و مینی‌مال */
     .footer { 
         position: fixed; bottom: 0; width: 100%; text-align: center; padding: 15px; 
         border-top: 1px solid rgba(0, 242, 255, 0.1); background: rgba(0,0,0,0.5);
@@ -71,7 +75,7 @@ st.markdown("""
 
 if 'page' not in st.session_state: st.session_state.page = 'home'
 
-# --- هدر ---
+# --- هدر ثابت ---
 h_col1, h_col2 = st.columns([1, 6])
 with h_col1:
     try: st.image("image.png", width=90)
@@ -79,7 +83,7 @@ with h_col1:
 with h_col2:
     st.markdown('<h1 class="title-main">UONA STUDIO</h1><div class="slogan-main">The Art of Cinematic Transformation</div>', unsafe_allow_html=True)
 
-# --- پورتال ---
+# --- پورتال اصلی ---
 if st.session_state.page == 'home':
     st.markdown("<br><br><h3 style='text-align:center; color:white; font-family:Cinzel; letter-spacing:4px;'>SELECT DESIGN MODULE</h3>", unsafe_allow_html=True)
     c1, c2, c3, c4 = st.columns(4)
@@ -118,38 +122,34 @@ elif st.session_state.page == 'cinematic':
         "Skin Conditions": ["1st Degree Sunburn", "2nd Degree Burn", "Bilateral Vitiligo", "Diffuse Hyperpigmentation"]
     }
     aging_d = add_n({"Deep Nasolabial Folds": "smile lines", "Pronounced Crow's Feet": "eye wrinkles", "Hooded Eyelids": "sagging lids", "Dermal Crepiness": "paper skin", "Visible Liver Spots": "age spots", "Sagging Jowls": "loose skin", "Frontal Rhytids": "forehead ridges", "Periorbital Hollows": "sunken eyes", "Vertical Lip Lines": "mouth wrinkles", "Age-related Telangiectasia": "capillaries"})
+    h_tex_d = add_n({"Afro": "coils", "Wavy": "S-shape", "Curly": "ringlets", "Straight": "silky", "Coarse": "rough", "Fine": "wispy", "Matted": "weathered", "Braided": "patterns"})
+    h_col_d = add_n({"Jet black": "Natural black", "Espresso": "Dark chocolate", "Chestnut": "Sandy", "Ash blonde": "Cool blonde", "Golden blonde": "Warm blonde", "10% Grey": "sparse", "30% Grey": "mixed", "50% Grey": "even", "70% Grey": "mostly grey"})
     light_d = add_n({"Rembrandt": "triangle light", "Cold Rim": "blue backlight", "Chiaroscuro": "contrast", "Teal and Orange": "cinematic", "God Rays": "linear", "Golden Hour": "sunset", "High-Key": "bright", "Low-Key": "moody", "Neon Cyberpunk": "edge light", "Hard Top": "harsh shadow", "Candlelight": "unsteady", "Softbox": "velvety"})
     cam_d = add_n({"85mm Eye-Level": "no distortion", "100mm Macro": "extreme detail", "50mm Dutch": "tilted tension", "35mm Low-Angle": "hero shot", "24mm High-Angle": "thinning", "200mm Profile": "compressed", "50mm Top-Down": "design focus", "85mm Three-Quarter": "standard"})
     size_l = add_n(["4:5 (Portrait)", "16:9 (Widescreen)", "2.39:1 (Anamorphic)", "1:1 (Square)", "9:16 (Vertical)"])
+    mat_l = add_n(["Encapsulated Silicone", "Feathered Edges", "Translucent Skin", "Prosthetic Adhesive", "Matte Sealer", "Alcohol Palette", "Granulation Tissue"])
 
     c_form, c_master = st.columns([1.8, 1])
     with c_form:
         f1, f2 = st.columns(2)
         with f1:
             st.markdown('<p class="label-text">Actor Reference <span class="star">*</span></p>', unsafe_allow_html=True)
-            actor = st.selectbox("Actor Reference", ["None", "No", "Yes"], key="act", label_visibility="collapsed")
+            actor = st.selectbox("", ["None", "No", "Yes"], key="act", label_visibility="collapsed")
             st.markdown('<p class="label-text">Gender & Age <span class="star">*</span></p>', unsafe_allow_html=True)
-            gen = st.selectbox("Gender", list(gender_d.keys()), key="gen", label_visibility="collapsed")
-            age = st.selectbox("Age Range", list(age_d.keys()), key="age", label_visibility="collapsed")
-            st.markdown('<p class="label-text">Skin Aging & Texture</p>', unsafe_allow_html=True)
-            age_tex = st.selectbox("Aging Details", list(aging_d.keys()), key="atex", label_visibility="collapsed")
-            st.markdown('<p class="label-text">SFX Category <span class="star">*</span></p>', unsafe_allow_html=True)
-            s_cat = st.selectbox("SFX Category", ["None"] + list(sfx_cats.keys()), key="scat", label_visibility="collapsed")
-            st.markdown('<p class="label-text">Specific Trauma / Wound</p>', unsafe_allow_html=True)
-            s_type = st.selectbox("Specific Wound", sfx_cats[s_cat] if s_cat != "None" else ["None"], key="stype", label_visibility="collapsed")
+            gen = st.selectbox("", list(gender_d.keys()), key="gen", label_visibility="collapsed")
+            age = st.selectbox("", list(age_d.keys()), key="age", label_visibility="collapsed")
+            st.markdown('<p class="label-text">SFX Category & Trauma</p>', unsafe_allow_html=True)
+            s_cat = st.selectbox("", ["None"] + list(sfx_cats.keys()), key="scat", label_visibility="collapsed")
+            s_type = st.selectbox("", sfx_cats[s_cat] if s_cat != "None" else ["None"], key="stype", label_visibility="collapsed")
         with f2:
             st.markdown('<p class="label-text">Nationality & Era <span class="star">*</span></p>', unsafe_allow_html=True)
-            nat = st.selectbox("Nationality", list(nat_d.keys()), key="nat", label_visibility="collapsed")
-            era = st.selectbox("Historical Era", list(era_d.keys()), key="era", label_visibility="collapsed")
-            st.markdown('<p class="label-text">Character Concept & Grooming</p>', unsafe_allow_html=True)
-            char = st.selectbox("Character Concept", list(char_d.keys()), key="char", label_visibility="collapsed")
-            groom = st.selectbox("Grooming Style", list(groom_d.keys()), key="groom", label_visibility="collapsed")
-            st.markdown('<p class="label-text">Camera & Lens Perspective <span class="star">*</span></p>', unsafe_allow_html=True)
-            cam = st.selectbox("Camera Perspective", list(cam_d.keys()), key="cam", label_visibility="collapsed")
-            st.markdown('<p class="label-text">Lighting Environment</p>', unsafe_allow_html=True)
-            light = st.selectbox("Lighting Environment", list(light_d.keys()), key="light", label_visibility="collapsed")
-            st.markdown('<p class="label-text">Frame Size / Aspect Ratio</p>', unsafe_allow_html=True)
-            size_sel = st.selectbox("Aspect Ratio", size_l, key="psize", label_visibility="collapsed")
+            nat = st.selectbox("", list(nat_d.keys()), key="nat", label_visibility="collapsed")
+            era = st.selectbox("", list(era_d.keys()), key="era", label_visibility="collapsed")
+            st.markdown('<p class="label-text">Character & Grooming</p>', unsafe_allow_html=True)
+            char = st.selectbox("", list(char_d.keys()), key="char", label_visibility="collapsed")
+            groom = st.selectbox("", list(groom_d.keys()), key="groom", label_visibility="collapsed")
+            st.markdown('<p class="label-text">Camera & Lens Detail <span class="star">*</span></p>', unsafe_allow_html=True)
+            cam = st.selectbox("", list(cam_d.keys()), key="cam", label_visibility="collapsed")
 
     def f(p, v, d=None):
         if v == "None" or not v: return ""
@@ -158,16 +158,14 @@ elif st.session_state.page == 'cinematic':
 
     p_actor = "[VISUAL GUIDE: Emulate facial structure] " if actor == "Yes" else ""
     p_sfx = f" [SFX STUDY: Apply {s_type} SFX as a makeup layer]." if s_type != "None" else ""
-    p_size = f" Aspect Ratio {size_sel}" if size_sel != "None" else ""
-    p_aging = f", with {f('', age_tex, aging_d)}" if age_tex != "None" else ""
     
-    final_prompt = f"{p_actor}A professional cinematic{p_size} portrait of a {f('', gen, gender_d)} {f('', age, age_d)}{p_aging} {f('', nat, nat_d)}{f(' from the ', era, era_d)}. {f('Concept: ', char, char_d)}. {f('Grooming: ', groom, groom_d)}.{p_sfx} Technical: {f('', light, light_d)}, {f('', cam, cam_d)}, 8k, raw photography."
+    final_prompt = f"{p_actor}A professional cinematic portrait of a {f('', gen, gender_d)} {f('', age, age_d)} {f('', nat, nat_d)}{f(' from the ', era, era_d)}. {f('Concept: ', char, char_d)}. {f('Grooming: ', groom, groom_d)}. {f('Skin: ', aging_d[list(aging_d.keys())[0]], aging_d)}.{p_sfx} Technical: {f('', light_d[list(light_d.keys())[0]], light_d)}, {f('', cam, cam_d)}, 8k, raw photography."
 
     with c_master:
         st.markdown('<div class="master-header">📖 MASTER PROMPT</div>', unsafe_allow_html=True)
         st.markdown(f'<div class="master-box">{final_prompt}</div>', unsafe_allow_html=True)
 
-# 6. فوتر
+# 6. فوتر نرمال
 st.markdown(f"""
     <div class="footer">
         © {datetime.now().year} <span class="uona-tag">UONA GROUP</span>. ALL RIGHTS RESERVED. | 
