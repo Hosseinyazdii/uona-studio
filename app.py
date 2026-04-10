@@ -1,5 +1,6 @@
 import streamlit as st
 from datetime import datetime
+import os
 
 # 1. تنظیمات پایه و حذف اسکرول
 st.set_page_config(page_title="UONA STUDIO | AI SYSTEM", layout="wide", initial_sidebar_state="collapsed")
@@ -16,7 +17,6 @@ st.markdown("""
     #MainMenu, footer, header {visibility: hidden;}
     .stDeployButton {display:none;}
 
-    /* هدر */
     .nav-bar {
         display: flex; align-items: center; padding: 10px 50px;
         background: rgba(2, 6, 12, 0.8); border-bottom: 1px solid rgba(0, 242, 255, 0.2);
@@ -26,7 +26,7 @@ st.markdown("""
         letter-spacing: 12px; margin: 0; text-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
     }
 
-    /* استایل دکمه‌های پورتال با افکت Shadow Serif */
+    /* افکت Shadow Serif برای دکمه‌های پورتال */
     .stButton > button {
         background-color: #00f2ff !important;
         color: #000000 !important;
@@ -37,7 +37,7 @@ st.markdown("""
         text-transform: uppercase;
         letter-spacing: 1px;
         font-size: 1rem !important;
-        box-shadow: 3px 3px 0px rgba(0,0,0,0.5); /* Shadow effect */
+        box-shadow: 3px 3px 0px rgba(0,0,0,0.5); /* Shadow Serif Effect */
         transition: 0.3s;
     }
     .stButton > button:hover { background-color: #ffffff !important; transform: scale(1.05); }
@@ -55,22 +55,25 @@ st.markdown("""
         line-height: 1.5; height: 320px; overflow-y: auto;
     }
     
-    /* فوتر با رنگ سرمه‌ای برای UONA GROUP */
+    /* فوتر مینی‌مال با رنگ سرمه‌ای برای برند */
     .footer { 
         position: fixed; bottom: 0; width: 100%; text-align: center; padding: 10px; 
         border-top: 1px solid rgba(0, 242, 255, 0.1); background: rgba(0,0,0,0.6);
-        color: #ffffff; font-family: 'Montserrat'; font-size: 0.7rem;
+        color: #ffffff; font-family: 'Montserrat'; font-size: 0.65rem; font-weight: 300;
     }
-    .uona-tag { color: #001f3f !important; font-weight: 900; } /* سرمه‌ای تیره */
+    .uona-tag { color: #0a192f !important; font-weight: 900; background: rgba(0, 242, 255, 0.2); padding: 2px 6px; border-radius: 4px; }
     </style>
     """, unsafe_allow_html=True)
 
 if 'page' not in st.session_state: st.session_state.page = 'home'
 
-# --- هدر ---
+# --- هدر ثابت با اصلاح نام فایل لوگو ---
 h_col1, h_col2 = st.columns([1, 6])
 with h_col1:
-    st.image("logo.png", width=90) # استفاده از فایل لوگو در گیت‌هاب
+    if os.path.exists("logo.PNG"):
+        st.image("logo.PNG", width=90)
+    else:
+        st.markdown("<div style='width:80px; height:80px; background:#00f2ff; border-radius:10px; display:flex; align-items:center; justify-content:center; color:black; font-weight:900;'>UONA</div>", unsafe_allow_html=True)
 with h_col2:
     st.markdown('<h1 class="title-main">UONA STUDIO</h1>', unsafe_allow_html=True)
 
@@ -101,48 +104,53 @@ elif st.session_state.page == 'cinematic':
             
             st.markdown('<p class="label-text">Age Range</p>', unsafe_allow_html=True)
             age_opt = ["Elderly", "Middle-aged", "Young Adult", "Child"]
-            age = st.selectbox("", add_options(age_opt), key="age", label_visibility="collapsed")
-            if age == "Others": age = st.text_input("Type Age...", key="age_custom")
+            age_val = st.selectbox("", add_options(age_opt), key="age", label_visibility="collapsed")
+            age = st.text_input("Type Age...", key="age_custom") if age_val == "Others" else age_val
+
+            st.markdown('<p class="label-text">Hair & Beard Color</p>', unsafe_allow_html=True)
+            h_col_opt = ["Jet Black", "Espresso Brown", "Ash Blonde", "Salt & Pepper"]
+            h_col_val = st.selectbox("", add_options(h_col_opt), key="hcol", label_visibility="collapsed")
+            h_col = st.text_input("Type Color...", key="hcol_custom") if h_col_val == "Others" else h_col_val
 
             st.markdown('<p class="label-text">Hair Texture</p>', unsafe_allow_html=True)
             h_tex_opt = ["Afro", "Wavy", "Curly", "Straight", "Matted"]
-            h_tex = st.selectbox("", add_options(h_tex_opt), key="htex", label_visibility="collapsed")
-            if h_tex == "Others": h_tex = st.text_input("Type Texture...", key="htex_custom")
+            h_tex_val = st.selectbox("", add_options(h_tex_opt), key="htex", label_visibility="collapsed")
+            h_tex = st.text_input("Type Texture...", key="htex_custom") if h_tex_val == "Others" else h_tex_val
 
         with f2:
             st.markdown('<p class="label-text">Nationality</p>', unsafe_allow_html=True)
             nat_opt = ["Iranian", "Saudi", "European", "African", "Asian"]
-            nat = st.selectbox("", add_options(nat_opt), key="nat", label_visibility="collapsed")
-            if nat == "Others": nat = st.text_input("Type Nationality...", key="nat_custom")
+            nat_val = st.selectbox("", add_options(nat_opt), key="nat", label_visibility="collapsed")
+            nat = st.text_input("Type Nationality...", key="nat_custom") if nat_val == "Others" else nat_val
 
             st.markdown('<p class="label-text">SFX Trauma</p>', unsafe_allow_html=True)
             sfx_opt = ["Katana Slash", "Glass Wound", "Bruise", "Burn"]
-            sfx = st.selectbox("", add_options(sfx_opt), key="sfx", label_visibility="collapsed")
-            if sfx == "Others": sfx = st.text_input("Type SFX...", key="sfx_custom")
+            sfx_val = st.selectbox("", add_options(sfx_opt), key="sfx", label_visibility="collapsed")
+            sfx = st.text_input("Type SFX...", key="sfx_custom") if sfx_val == "Others" else sfx_val
 
             st.markdown('<p class="label-text">Material Finish</p>', unsafe_allow_html=True)
             mat_opt = ["Silicone", "Matte Sealer", "Alcohol Palette"]
-            mat = st.selectbox("", add_options(mat_opt), key="mat", label_visibility="collapsed")
-            if mat == "Others": mat = st.text_input("Type Material...", key="mat_custom")
+            mat_val = st.selectbox("", add_options(mat_opt), key="mat", label_visibility="collapsed")
+            mat = st.text_input("Type Material...", key="mat_custom") if mat_val == "Others" else mat_val
 
         with f3:
             st.markdown('<p class="label-text">Grooming Style</p>', unsafe_allow_html=True)
             groom_opt = ["Clean Shaven", "Full Beard", "Stubble"]
-            groom = st.selectbox("", add_options(groom_opt), key="groom", label_visibility="collapsed")
-            if groom == "Others": groom = st.text_input("Type Grooming...", key="groom_custom")
+            groom_val = st.selectbox("", add_options(groom_opt), key="groom", label_visibility="collapsed")
+            groom = st.text_input("Type Grooming...", key="groom_custom") if groom_val == "Others" else groom_val
 
             st.markdown('<p class="label-text">Camera & Lens</p>', unsafe_allow_html=True)
             cam_opt = ["85mm Eye-Level", "100mm Macro", "35mm Low-Angle"]
-            cam = st.selectbox("", add_options(cam_opt), key="cam", label_visibility="collapsed")
-            if cam == "Others": cam = st.text_input("Type Camera...", key="cam_custom")
+            cam_val = st.selectbox("", add_options(cam_opt), key="cam", label_visibility="collapsed")
+            cam = st.text_input("Type Camera...", key="cam_custom") if cam_val == "Others" else cam_val
 
             st.markdown('<p class="label-text">Frame Size</p>', unsafe_allow_html=True)
             size_opt = ["4:5 (Portrait)", "16:9 (Widescreen)", "1:1 (Square)"]
-            size = st.selectbox("", add_options(size_opt), key="size", label_visibility="collapsed")
-            if size == "Others": size = st.text_input("Type Size...", key="size_custom")
+            size_val = st.selectbox("", add_options(size_opt), key="size", label_visibility="collapsed")
+            size = st.text_input("Type Size...", key="size_custom") if size_val == "Others" else size_val
 
     # فرمول Master Prompt
-    final_p = f"A professional cinematic portrait of a {age} {nat}. Concept: {groom}. Texture: {h_tex}. SFX: {sfx}. Material: {mat}. Technical: {cam}, {size}, 8k raw photography."
+    final_p = f"A professional cinematic portrait of a {age} {nat}. Concept: {groom}. Hair: {h_col} ({h_tex}). SFX: {sfx}. Material: {mat}. Technical: {cam}, {size}, 8k raw photography."
 
     with c_master:
         st.markdown('<div style="background:#00f2ff; color:black; padding:8px; font-weight:900; text-align:center;">📖 MASTER PROMPT</div>', unsafe_allow_html=True)
