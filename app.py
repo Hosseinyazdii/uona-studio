@@ -19,7 +19,7 @@ def save_user(u, p):
     users[u] = p
     with open(DB_FILE, "w") as f: json.dump(users, f)
 
-# 2. استایل
+# 2. استایل (اصلاح دقیق باگ‌های تصویری لاگین و تب‌ها)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@800&family=Montserrat:wght@300;400;700;900&display=swap');
@@ -40,6 +40,48 @@ st.markdown("""
         color: #00e5ff !important; 
         font-family: 'Montserrat' !important; font-weight: 700 !important; 
         text-transform: uppercase !important; font-size: 0.75rem !important; 
+    }
+
+    /* 🔴 اصلاح باکس‌های یوزرنیم و پسورد (خروج از حالت سفید کورکننده) */
+    div[data-baseweb="input"] > div {
+        background-color: rgba(0, 20, 40, 0.8) !important;
+        border: 1px solid rgba(0, 242, 255, 0.5) !important;
+        border-radius: 10px !important;
+    }
+    div[data-baseweb="input"] input {
+        color: #ffffff !important;
+        font-weight: bold !important;
+    }
+
+    /* 🔴 اصلاح دایره‌ها و متن‌های رادیو باتن (Login/Register) */
+    div[role="radiogroup"] { 
+        background: rgba(0, 242, 255, 0.05); padding: 10px 20px; 
+        border-radius: 10px; border: 1px solid rgba(0, 242, 255, 0.2); 
+    }
+    div[role="radiogroup"] label p { color: #ffffff !important; }
+
+    /* 🔴 اصلاح رنگ تب‌های PROMPT BUILDER و HISTORY */
+    .stTabs [data-baseweb="tab-list"] button {
+        color: #7b8ea8 !important;
+        font-family: 'Cinzel', serif !important;
+        font-size: 1.1rem !important;
+        background-color: transparent !important;
+    }
+    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
+        color: #00f2ff !important;
+        border-bottom: 2px solid #00f2ff !important;
+    }
+
+    /* 🔴 اصلاح رنگ متن تاریخچه‌های ذخیره شده */
+    div[data-testid="stExpander"] {
+        background-color: rgba(255, 255, 255, 0.03) !important;
+        border: 1px solid rgba(0, 242, 255, 0.2) !important;
+        border-radius: 10px !important;
+    }
+    div[data-testid="stExpander"] summary p {
+        color: #00f2ff !important;
+        font-family: 'Montserrat', sans-serif !important;
+        font-weight: bold !important;
     }
 
     /* استایل پایه دکمه‌ها */
@@ -81,7 +123,6 @@ if not st.session_state.auth_status:
     with col_r:
         st.markdown("<h1 style='color:#ffffff; font-family:Cinzel; margin-top:80px; text-shadow: 0 0 15px #00f2ff;'>UONA ACCESS</h1>", unsafe_allow_html=True)
         
-        # دایره‌های کنار Login و Register برگردانده شد
         mode = st.radio("SELECT MODE", ["Login", "Register"], horizontal=True)
         u_name = st.text_input("USERNAME", placeholder="Enter your username...")
         u_pass = st.text_input("PASSWORD", type="password", placeholder="Enter your password...")
@@ -89,14 +130,12 @@ if not st.session_state.auth_status:
         users_db = load_users()
         
         if mode == "Login":
-            # دکمه ورود: فیروزه‌ای
             st.markdown("""<style>div.stButton > button { background-color: #00f2ff !important; color: #000000 !important; box-shadow: 0 0 15px rgba(0, 242, 255, 0.4); }</style>""", unsafe_allow_html=True)
             if st.button("SIGN IN"):
                 if u_name in users_db and users_db[u_name] == u_pass:
                     st.session_state.auth_status = True; st.session_state.user = u_name; st.rerun()
                 else: st.error("Access Denied: Invalid Credentials")
         else:
-            # دکمه ثبت‌نام: صورتی نئونی
             st.markdown("""<style>div.stButton > button { background-color: #ff00aa !important; color: #ffffff !important; box-shadow: 0 0 15px rgba(255, 0, 170, 0.4); }</style>""", unsafe_allow_html=True)
             if st.button("CREATE ACCOUNT"):
                 if u_name and u_pass:
@@ -106,7 +145,7 @@ if not st.session_state.auth_status:
                     st.warning("Please fill both fields.")
     st.stop()
 
-# دکمه‌های داخل برنامه به رنگ فیروزه‌ای برگردند
+# برگرداندن دکمه‌های فرم‌ها به فیروزه‌ای
 st.markdown("""<style>div.stButton > button { background-color: #00f2ff !important; color: #000000 !important; box-shadow: 0 0 15px rgba(0, 242, 255, 0.3); }</style>""", unsafe_allow_html=True)
 
 # --- هدر اصلی نرم‌افزار ---
