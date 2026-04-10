@@ -295,19 +295,41 @@ st.markdown("""
     #MainMenu, footer, header {visibility: hidden;}
     .stDeployButton {display:none;}
 
-    /* 🔴 جادوی تبدیل دکمه لوگو به متن دقیقاً مثل قبل */
-    div[data-testid="stMarkdownContainer"]:has(.logo-marker) { display: none !important; }
-    div[data-testid="stMarkdownContainer"]:has(.logo-marker) + div[data-testid="stButton"] button {
-        background: transparent !important; border: none !important; box-shadow: none !important;
-        padding: 0 !important; justify-content: flex-start !important; margin-top: 5px !important;
+    /* 🔴 کد جادویی نابود کردن کادر دکمه لوگو */
+    div.element-container:has(.logo-marker) + div.element-container button {
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        min-height: 0 !important;
+        height: auto !important;
+        display: flex !important;
+        justify-content: flex-start !important;
     }
-    div[data-testid="stMarkdownContainer"]:has(.logo-marker) + div[data-testid="stButton"] button p {
-        color: #00f2ff !important; font-family: 'Cinzel', serif !important;
-        font-size: 1.5rem !important; font-weight: 900 !important; text-transform: uppercase !important;
+    div.element-container:has(.logo-marker) + div.element-container button:hover,
+    div.element-container:has(.logo-marker) + div.element-container button:active,
+    div.element-container:has(.logo-marker) + div.element-container button:focus {
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
     }
-    div[data-testid="stMarkdownContainer"]:has(.logo-marker) + div[data-testid="stButton"] button:hover p {
-        color: #ffffff !important; text-shadow: 0 0 15px #00f2ff !important; transform: scale(1.02) !important; transition: 0.3s;
+    div.element-container:has(.logo-marker) + div.element-container button p {
+        color: #00f2ff !important;
+        font-family: 'Cinzel', serif !important;
+        font-size: 1.5rem !important;
+        font-weight: 900 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        text-transform: uppercase !important;
+        transition: all 0.3s ease !important;
     }
+    div.element-container:has(.logo-marker) + div.element-container button:hover p {
+        color: #ffffff !important;
+        text-shadow: 0 0 15px #00f2ff !important;
+        transform: scale(1.02) !important;
+    }
+    /* پایان کدهای لوگو */
 
     .title-main { font-family: 'Cinzel'; color: #ffffff !important; font-size: 2.5rem; font-weight: 800; letter-spacing: 10px; margin: 0; text-shadow: 0 0 15px rgba(0, 242, 255, 0.5); }
     .subtitle { color: #00f2ff; font-family: 'Montserrat'; font-size: 0.8rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 30px;}
@@ -406,7 +428,7 @@ if st.session_state.route == 'login':
     st.stop()
 
 # ==========================================
-# SHARED HEADER (WITH CLICKABLE TEXT LOGO)
+# SHARED HEADER (WITH INVISIBLE BUTTON)
 # ==========================================
 if st.session_state.route != 'login':
     badge_color = "#ffaa00" if "Apex" in st.session_state.plan or "MASTER" in st.session_state.plan else "#00f2ff"
@@ -414,7 +436,7 @@ if st.session_state.route != 'login':
     c_head1, c_head2 = st.columns([1, 3])
     
     with c_head1:
-        # مارکر پنهان برای اعمال CSS روی این دکمه خاص
+        # مارکر نامرئی که به CSS می‌گوید دکمه بعدی را کاملا به متن تبدیل کند
         st.markdown('<span class="logo-marker"></span>', unsafe_allow_html=True)
         if st.button("UONA STUDIO", key="top_home_btn"):
             st.session_state.step = 1
