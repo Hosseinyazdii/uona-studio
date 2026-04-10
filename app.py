@@ -247,9 +247,7 @@ def smart_select(label, options, key, help_dict=None):
     else:
         st.session_state.draft[key] = sel
 
-# 🔴 آپدیت موتور پرامپت: اضافه شدن سه رخ، فریم زیبا و تایپوگرافی سن
 def generate_prompt(draft):
-    # اضافه شدن نمای سه رخ و کادر زیبا
     base_p = f"Professional cinematic portrait, beautifully framed composition, three-quarter profile angle, {draft['size']}, {draft['cam']}, {draft['light']}. "
     
     char_val = draft['char']
@@ -278,7 +276,6 @@ def generate_prompt(draft):
             sfx_p += f"APEX PROGRESSION STAGE: {sfx_prog_val}. "
         sfx_p += "Note: This is a safe simulation, artificial makeup.] "
 
-    # 🔴 اضافه شدن دستور متنی نوشتن سن زیر عکس
     typo_p = f"Typography overlay: clearly written text '{age_val}' at the bottom margin of the image. " if age_val and age_val != "None" else ""
         
     return base_p + char_p + groom_p + sfx_p + typo_p + "8k resolution, raw photo, highly detailed."
@@ -320,9 +317,6 @@ st.markdown("""
     
     .step-indicator { display: flex; justify-content: space-between; margin-bottom: 30px; color: #4a5d73; font-family: 'Montserrat'; font-size: 0.7rem; font-weight: 900; }
     .step-active { color: #00f2ff; text-shadow: 0 0 8px #00f2ff; }
-
-    .nav-top { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0, 242, 255, 0.2); padding-bottom: 10px; margin-bottom: 20px; }
-    .module-title { font-family: 'Cinzel'; color: #008b8b !important; text-shadow: 0 0 12px rgba(255, 215, 0, 0.8) !important; letter-spacing: 3px; font-weight: 900; }
 
     div[data-testid="stExpander"] { background: rgba(10, 25, 47, 0.6) !important; border: 1px solid rgba(0, 242, 255, 0.2) !important; border-radius: 12px !important; backdrop-filter: blur(10px); margin-bottom: 15px; transition: all 0.3s ease; }
     div[data-testid="stExpander"]:hover { border-color: rgba(0, 242, 255, 0.6) !important; box-shadow: 0 5px 20px rgba(0, 242, 255, 0.15); }
@@ -401,21 +395,29 @@ if st.session_state.route == 'login':
     st.stop()
 
 # ==========================================
-# SHARED HEADER (WITH TIER BADGE)
+# 🔴 SHARED HEADER (WITH CLICKABLE LOGO)
 # ==========================================
 if st.session_state.route != 'login':
     badge_color = "#ffaa00" if "Apex" in st.session_state.plan or "MASTER" in st.session_state.plan else "#00f2ff"
     
-    st.markdown(f"""
-        <div class="nav-top">
-            <div><span style="color:#00f2ff; font-family:Cinzel; font-size:1.5rem; font-weight:900;">UONA STUDIO</span></div>
-            <div style="display: flex; align-items: center;">
+    c_head1, c_head2 = st.columns([1, 3])
+    
+    with c_head1:
+        # دکمه لوگو که کاربر را به هوم (داشبورد) برمی‌گرداند
+        if st.button("UONA STUDIO", key="home_btn", use_container_width=True):
+            st.session_state.step = 1
+            go_to('dashboard')
+            
+    with c_head2:
+        st.markdown(f"""
+            <div style="display: flex; justify-content: flex-end; align-items: center; height: 100%; padding-top: 10px;">
                 <span style="color:{badge_color}; font-family:Cinzel; font-weight:bold; font-size:0.7rem; border:1px solid {badge_color}; padding:3px 8px; border-radius:4px; margin-right:15px; box-shadow: 0 0 8px rgba(0,0,0,0.5);">💎 {st.session_state.plan.upper()}</span>
                 <span style="color:#ff00aa; font-weight:bold; font-family:Montserrat; font-size:0.7rem; margin-right:15px;">{'[MASTER ADMIN]' if st.session_state.is_admin else ''}</span>
                 <span style="color:#fff; font-family:Montserrat; font-size:0.8rem;">USER: {st.session_state.user.upper()}</span>
             </div>
-        </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
+        
+    st.markdown("<hr style='border-color: rgba(0,242,255,0.2); margin-top: 10px; margin-bottom: 20px;'>", unsafe_allow_html=True)
 
 # ==========================================
 # ROUTE: ADMIN PANEL
@@ -425,8 +427,6 @@ if st.session_state.route == 'admin_panel':
     
     st.markdown("<h2 class='title-main' style='color:#ff00aa!important; text-shadow:0 0 15px #ff00aa;'>MASTER CONTROL PANEL</h2>", unsafe_allow_html=True)
     st.markdown("<div class='subtitle'>Manage Client Access & Subscriptions</div><br>", unsafe_allow_html=True)
-    
-    if st.button("⬅ ENTER MAIN STUDIO (APP)"): go_to('dashboard')
     
     users = load_json(DB_FILE, {})
     
@@ -507,13 +507,7 @@ elif st.session_state.route == 'dashboard':
 elif st.session_state.route == 'library':
     st.markdown("<h2 class='title-main' style='text-align:center;'>PROJECT LIBRARY</h2>", unsafe_allow_html=True)
     st.markdown("<div class='subtitle' style='text-align:center;'>Your Saved Cinematic Architectures</div><br>", unsafe_allow_html=True)
-    
-    c_btn, _ = st.columns([1, 4])
-    with c_btn:
-        if st.button("⬅ BACK TO DASHBOARD", use_container_width=True): go_to('dashboard')
         
-    st.markdown("<hr style='border-color: rgba(0,242,255,0.2);'>", unsafe_allow_html=True)
-    
     projects = load_json(PROJ_FILE, [])
     my_projs = [p for p in projects if p.get("user") == st.session_state.user]
     
@@ -543,7 +537,6 @@ elif st.session_state.route == 'settings':
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
     st.selectbox("Default AI Engine", ["Midjourney V6", "Gemini Pro Vision", "Stable Diffusion XL"])
     st.selectbox("Theme Mode", ["Dark Cinematic", "Light Mode (Not Recommended)"])
-    if st.button("⬅ BACK TO DASHBOARD"): go_to('dashboard')
     st.markdown('</div>', unsafe_allow_html=True)
 
 # ==========================================
@@ -581,7 +574,7 @@ elif st.session_state.route == 'builder':
             smart_select("Gender", ["Male", "Female", "Androgynous", "Non-binary"], 'gen')
         
         col1, col2, col3 = st.columns([1, 4, 1])
-        if col1.button("EXIT"): go_to('dashboard')
+        # دکمه بکست خروج حذف شد چون خود لوگو حالا کار خروج و رفتن به هوم را انجام می‌دهد
         if col3.button("NEXT ➔"): next_step()
 
     elif st.session_state.step == 2:
@@ -692,5 +685,4 @@ elif st.session_state.route == 'prompt_engine':
             save_json(PROJ_FILE, projects)
             st.success("Saved to Library!")
         if st.button("⬅ SIMULATION", use_container_width=True): go_to('simulation')
-        if st.button("🏠 DASHBOARD", use_container_width=True): go_to('dashboard')
         st.markdown('</div>', unsafe_allow_html=True)
