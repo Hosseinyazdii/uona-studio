@@ -8,7 +8,7 @@ import json
 # ==========================================
 st.set_page_config(
     page_title="UONA STUDIO | AI SAAS", 
-    page_icon="logo.PNG", # 🔴 تغییر تاج استریم‌لیت به لوگوی اختصاصی شما
+    page_icon="logo.PNG", 
     layout="wide", 
     initial_sidebar_state="collapsed"
 )
@@ -27,7 +27,6 @@ def save_json(file, data):
 # ==========================================
 # 2. دیتابیس هوشمند اکسل (توضیحات پرامپت انگلیسی)
 # ==========================================
-# دیکشنری‌های جامع برای نمایش در Tooltip های هر منو
 HAIR_COLORS = {
     "Jet Black": "Jet black / Natural black",
     "Espresso Brown": "Deep espresso brown / Dark chocolate",
@@ -139,7 +138,7 @@ def next_step(): st.session_state.step += 1; st.rerun()
 def prev_step(): st.session_state.step -= 1; st.rerun()
 def add_n(lst): return ["None"] + lst + ["Others"]
 
-# 🔴 تابع فرم‌ساز اختصاصی با Tooltip تعاملی و شیشه‌ای
+# تابع فرم‌ساز اختصاصی با Tooltip تعاملی و شیشه‌ای
 def smart_select(label, options, key, help_dict=None):
     opts = add_n(options)
     curr_val = st.session_state.draft.get(key, "")
@@ -148,12 +147,10 @@ def smart_select(label, options, key, help_dict=None):
     elif curr_val and curr_val != "None": idx = len(opts) - 1
     
     if help_dict:
-        # ساختار دو ستونه: باکس انتخاب + دکمه Tooltip
         c1, c2 = st.columns([11, 1])
         with c1:
             sel = st.selectbox(label, opts, index=idx, key=f"sel_{key}")
         with c2:
-            # ایجاد Tooltip با ظاهر هماهنگ
             with st.popover("❕"):
                 st.markdown(f"<div class='tooltip-title'>EXCEL DICTIONARY: {label.upper()}</div>", unsafe_allow_html=True)
                 help_html = "".join([f"<div class='tooltip-text'><b style='color:#00f2ff;'>{k}:</b> {v}</div>" for k, v in help_dict.items()])
@@ -235,7 +232,7 @@ st.markdown("""
     .stCodeBlock { background-color: #02060c !important; border-left: 4px solid #ff00aa !important; border-radius: 8px !important; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
     .stCodeBlock code { color: #00e5ff !important; font-family: 'Courier New', Courier, monospace !important; line-height: 1.6 !important; font-size: 0.95rem !important; }
     
-    /* 🔴 استایل‌های اختصاصی Tooltip تعاملی (Popover) */
+    /* 🔴 استایل‌های اختصاصی Tooltip تعاملی با بک‌گراند مشکی */
     div[data-testid="stPopover"] { padding-top: 26px; } 
     div[data-testid="stPopover"] > button {
         background: transparent !important; border: 1px solid #00f2ff !important;
@@ -244,11 +241,16 @@ st.markdown("""
         transition: 0.3s !important; display: flex; align-items: center; justify-content: center;
     }
     div[data-testid="stPopover"] > button:hover { background: rgba(0, 242, 255, 0.1) !important; color: #fff !important; box-shadow: 0 0 15px #00f2ff !important; }
+    
+    /* تغییر رنگ پس‌زمینه به مشکی خالص */
     div[data-testid="stPopoverBody"] { 
-        background: rgba(5, 15, 30, 0.95) !important; border: 1px solid #00f2ff !important; 
-        border-radius: 12px !important; box-shadow: 0 10px 30px rgba(0,242,255,0.4) !important; 
-        backdrop-filter: blur(15px); padding: 15px; width: 350px !important;
+        background: #000000 !important; 
+        border: 1px solid #00f2ff !important; 
+        border-radius: 12px !important; 
+        box-shadow: 0 10px 30px rgba(0,242,255,0.4) !important; 
+        padding: 15px; width: 350px !important;
     }
+    
     .tooltip-title { color: #00f2ff; font-weight: 900; font-family: 'Cinzel'; margin-bottom: 10px; font-size: 0.9rem; border-bottom: 1px solid rgba(0,242,255,0.3); padding-bottom: 5px;}
     .tooltip-text { color: #d0e0f0; font-family: 'Montserrat'; font-size: 0.8rem; line-height: 1.8; margin-bottom: 4px;}
     </style>
