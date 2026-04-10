@@ -1,5 +1,6 @@
 import streamlit as st
 from datetime import datetime
+import os
 
 # 1. تنظیمات پایه
 st.set_page_config(page_title="UONA STUDIO | AI PLATFORM", layout="wide", initial_sidebar_state="collapsed")
@@ -53,7 +54,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 3. مدیریت وضعیت (State) بدون فایل برای جلوگیری از کرش شدن سرور
+# 3. مدیریت وضعیت (State)
 if 'users_registry' not in st.session_state:
     st.session_state.users_registry = {"hossein": "1234"} # اکانت دائمی شما
 if 'auth_status' not in st.session_state: st.session_state.auth_status = False
@@ -65,8 +66,11 @@ if not st.session_state.auth_status:
     col_l, col_r = st.columns([1, 1.2])
     with col_l:
         st.markdown("<br><br>", unsafe_allow_html=True)
-        try: st.image("image.png", width=250) # استفاده از نام فایلی که آپلود کردی
-        except: st.markdown("<div style='width:200px;height:200px;background:#00f2ff;border-radius:50%;'></div>", unsafe_allow_html=True)
+        # 📌 اینجا نام فایل دقیقاً logo.PNG ست شد
+        if os.path.exists("logo.PNG"): 
+            st.image("logo.PNG", width=250) 
+        else: 
+            st.markdown("<div style='width:200px;height:200px;background:#00f2ff;border-radius:50%; display:flex; align-items:center; justify-content:center; color:black; font-weight:900;'>LOGO.PNG MISSING</div>", unsafe_allow_html=True)
     with col_r:
         st.markdown("<h1 style='color:#ffffff; font-family:Cinzel; margin-top:80px; text-shadow: 0 0 15px #00f2ff;'>UONA ACCESS</h1>", unsafe_allow_html=True)
         mode = st.radio("SELECT MODE", ["Login", "Register"], horizontal=True)
@@ -88,8 +92,11 @@ if not st.session_state.auth_status:
 # --- هدر اصلی نرم‌افزار ---
 h_col1, h_col2 = st.columns([1, 6])
 with h_col1:
-    try: st.image("image.png", width=85)
-    except: pass
+    # 📌 اینجا هم نام فایل دقیقاً logo.PNG ست شد
+    if os.path.exists("logo.PNG"): 
+        st.image("logo.PNG", width=85)
+    else: 
+        pass
 with h_col2:
     st.markdown('<h1 class="title-main">UONA STUDIO</h1>', unsafe_allow_html=True)
 
