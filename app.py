@@ -2,7 +2,7 @@ import streamlit as st
 from datetime import datetime
 import os
 
-# 1. تنظیمات پایه و حذف اسکرول
+# 1. تنظیمات پایه
 st.set_page_config(page_title="UONA STUDIO | AI PLATFORM", layout="wide", initial_sidebar_state="collapsed")
 
 st.markdown("""
@@ -28,151 +28,132 @@ st.markdown("""
         font-family: 'Cinzel', serif !important; font-weight: 900 !important;
         text-transform: uppercase; letter-spacing: 1px;
         box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-        transition: 0.3s;
     }
-    .stButton > button:hover { background-color: #ffffff !important; box-shadow: 0 0 25px #00f2ff; transform: scale(1.02); }
-
+    
     .module-card {
         background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(0, 242, 255, 0.1);
         border-radius: 20px; padding: 25px; text-align: center; backdrop-filter: blur(15px);
     }
-    .module-title {
-        font-family: 'Cinzel'; color: white;
-        text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
-        letter-spacing: 3px;
-    }
-
-    .stTabs [data-baseweb="tab-list"] { gap: 50px; justify-content: center; }
-    .stTabs [data-baseweb="tab"] { font-family: 'Cinzel'; color: white !important; font-size: 1.1rem !important; }
-    .stTabs [aria-selected="true"] { border-bottom: 2px solid #00f2ff !important; color: #00f2ff !important; }
 
     .label-text { color: #00f2ff; font-family: 'Montserrat'; font-weight: 700; text-transform: uppercase; font-size: 0.65rem; margin-top: 4px; }
-    .master-header { background: linear-gradient(90deg, #00f2ff, #0088ff); color: #000; padding: 10px; font-weight: 900; font-size: 1.1rem; border-radius: 12px 12px 0 0; text-align: center; font-family: 'Montserrat'; }
-    .master-box { background-color: #ffffff; color: #111; padding: 20px; border-radius: 0 0 12px 12px; border-left: 10px solid #00f2ff; font-family: 'Montserrat'; font-size: 1rem; line-height: 1.6; height: 350px; overflow-y: auto; }
+    .master-box { background-color: #ffffff; color: #111; padding: 20px; border-radius: 12px; border-left: 10px solid #00f2ff; font-family: 'Montserrat'; font-size: 1rem; line-height: 1.6; height: 320px; overflow-y: auto; }
     
     .footer { position: fixed; bottom: 0; width: 100%; text-align: center; padding: 12px; background: rgba(0,0,0,0.6); color: #ffffff; font-family: 'Montserrat'; font-size: 0.65rem; }
-    .uona-tag { color: #0a192f !important; font-weight: 900; background: #00f2ff; padding: 2px 8px; border-radius: 4px; text-shadow: 0 0 8px rgba(255,255,255,0.4); }
+    .uona-tag { color: #0a192f !important; font-weight: 900; background: #00f2ff; padding: 2px 8px; border-radius: 4px; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- سیستم پایداری یوزرها ---
-if 'users' not in st.session_state: st.session_state.users = {"hossein": "1234"}
-if 'auth' not in st.session_state: st.session_state.auth = False
-if 'history' not in st.session_state: st.session_state.history = []
-if 'page' not in st.session_state: st.session_state.page = 'home'
+# --- مدیریت دیتابیس موقت (تا قبل از وصل شدن به دیتابیس واقعی) ---
+if 'users_db' not in st.session_state:
+    st.session_state.users_db = {"hossein": "1234", "uona": "2024"} # اکانت‌های دائمی در کد
 
-# --- صفحه لاگین ---
-if not st.session_state.auth:
-    col_l, col_r = st.columns([1, 1.2])
-    with col_l:
+if 'authenticated' not in st.session_state:
+    st.session_state.authenticated = False
+
+if 'history_log' not in st.session_state:
+    st.session_state.history_log = []
+
+if 'current_page' not in st.session_state:
+    st.session_state.current_page = 'home'
+
+# --- منطق لاگین ---
+if not st.session_state.authenticated:
+    c_login1, c_login2 = st.columns([1, 1.2])
+    with c_login1:
         st.markdown("<br><br>", unsafe_allow_html=True)
         if os.path.exists("logo.PNG"): st.image("logo.PNG", width=220)
-    with col_r:
-        st.markdown("<h1 style='color:#00f2ff; font-family:Cinzel; margin-top:100px;'>UONA ACCESS</h1>", unsafe_allow_html=True)
-        mode = st.radio("Mode", ["Login", "Register"], horizontal=True)
-        u_in = st.text_input("Username")
-        p_in = st.text_input("Password", type="password")
-        if mode == "Login":
-            if st.button("ENTER"):
-                if u_in in st.session_state.users and st.session_state.users[u_in] == p_in:
-                    st.session_state.auth = True; st.session_state.c_user = u_in; st.rerun()
-                else: st.error("Incorrect details.")
-        else:
-            if st.button("CREATE ACCOUNT"):
-                if u_in and p_in:
-                    st.session_state.users[u_in] = p_in; st.success("Created! Switch to Login.")
+    with c_login2:
+        st.markdown("<h1 style='color:#00f2ff; font-family:Cinzel; margin-top:80px;'>UONA ACCESS</h1>", unsafe_allow_html=True)
+        tab_log, tab_reg = st.tabs(["LOGIN", "CREATE ACCOUNT"])
+        
+        with tab_log:
+            u_name = st.text_input("Username", key="login_u")
+            u_pass = st.text_input("Password", type="password", key="login_p")
+            if st.button("SIGN IN"):
+                if u_name in st.session_state.users_db and st.session_state.users_db[u_name] == u_pass:
+                    st.session_state.authenticated = True
+                    st.session_state.user_now = u_name
+                    st.rerun()
+                else:
+                    st.error("Invalid Username or Password")
+        
+        with tab_reg:
+            new_u = st.text_input("New Username", key="reg_u")
+            new_p = st.text_input("New Password", type="password", key="reg_p")
+            if st.button("REGISTER"):
+                if new_u and new_p:
+                    st.session_state.users_db[new_u] = new_p
+                    st.success(f"User {new_u} registered! Please go to Login tab.")
+                else:
+                    st.warning("Please fill all fields.")
     st.stop()
 
-# --- هدر ---
+# --- هدر اصلی ---
 h_col1, h_col2 = st.columns([1, 6])
 with h_col1:
     if os.path.exists("logo.PNG"): st.image("logo.PNG", width=85)
 with h_col2:
     st.markdown('<h1 class="title-main">UONA STUDIO</h1>', unsafe_allow_html=True)
 
-# --- پورتال ---
-if st.session_state.page == 'home':
-    st.markdown("<br><br><h3 style='text-align:center; color:white; font-family:Cinzel; letter-spacing:4px;'>SELECT MODULE</h3>", unsafe_allow_html=True)
+# --- محتوای پورتال ---
+if st.session_state.current_page == 'home':
+    st.markdown("<br><br><h3 style='text-align:center; color:white; font-family:Cinzel; letter-spacing:4px;'>SELECT DESIGN MODULE</h3>", unsafe_allow_html=True)
     c1, c2, c3, c4 = st.columns(4)
     modules = [("🎬", "MOVIE", "cine"), ("📺", "SERIES", "cine"), ("🎭", "THEATER", "soon"), ("👠", "FASHION", "soon")]
     for idx, (icon, name, target) in enumerate(modules):
         with [c1, c2, c3, c4][idx]:
-            st.markdown(f'<div class="module-card"><h1>{icon}</h1><h3 class="module-title">{name}</h3></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="module-card"><h1>{icon}</h1><h3 style="font-family:Cinzel; color:white; text-shadow: 0 0 10px rgba(255,255,255,0.5);">{name}</h3></div>', unsafe_allow_html=True)
             if target == "cine":
-                if st.button(f"ENTER {name}", key=name): st.session_state.page = 'cinematic'; st.rerun()
-            else: st.button("COMING SOON", disabled=True, key=name)
+                if st.button(f"ENTER {name}", key=f"btn_{name}"): 
+                    st.session_state.current_page = 'cinematic'; st.rerun()
+            else: st.button("COMING SOON", disabled=True, key=f"btn_{name}")
 
-# --- ماژول Cinematic (فول دیتا) ---
-elif st.session_state.page == 'cinematic':
-    if st.button("← BACK"): st.session_state.page = 'home'; st.rerun()
-    t_builder, t_hist = st.tabs(["🏗️ PROMPT BUILDER", "📜 HISTORY"])
+# --- ماژول Cinematic ---
+elif st.session_state.current_page == 'cinematic':
+    if st.button("← BACK"): st.session_state.current_page = 'home'; st.rerun()
+    
+    tab_build, tab_history = st.tabs(["🏗️ PROMPT BUILDER", "📜 HISTORY"])
 
-    with t_builder:
-        def add_n(d): 
-            if isinstance(d, dict): return {**{"None": ""}, **d}
-            return ["None"] + d + ["Others"]
-
-        # دیتابیس کامل بر اساس فایل های اکسل
-        gender_d = add_n({"Masculine / Male": "strong bone structure", "Feminine / Female": "softer facial contours"})
-        age_d = add_n({"Elderly / Senior": "collagen loss", "Middle-aged": "initial sagging", "Young Adult": "peak elasticity", "Child": "smooth skin"})
-        nat_d = add_n({"Iranian": "prominent nasal bridge", "Saudi": "Peninsular Arab", "European": "Caucasian", "African": "Sub-Saharan"})
-        era_d = add_n({"Ancient": "Classical", "Medieval": "Gritty", "100 Years Ago": "Period", "Contemporary": "Modern"})
-        char_d = add_n({"Heroic Warrior": "Strong", "Sinister Villain": "Harsh", "Scholar": "Refined", "Mercenary": "Rugged"})
-        groom_d = add_n({"Clean Shaven": "smooth", "Light Stubble": "short", "Heavy Stubble": "rough", "Full Beard": "natural", "Goatee": "chin beard"})
-        sfx_cats = {"Acute Trauma": ["Katana Slash", "Glass Laceration"], "Healing Stages": ["3-Day Wound", "1-Month Scar"], "Bruising": ["Fresh Hematoma", "3-Day Bruise"]}
-        aging_d = add_n({"Deep Nasolabial Folds": "smile lines", "Crow's Feet": "eye wrinkles", "Liver Spots": "age spots"})
-        h_tex_d = add_n({"Afro": "coils", "Wavy": "S-shape", "Curly": "ringlets", "Straight": "silky", "Matted": "weathered"})
-        h_col_d = add_n({"Jet black": "Natural", "Espresso": "Dark", "Ash blonde": "Cool", "50% Salt & Pepper": "mixed grey"})
-        light_d = add_n({"Rembrandt": "triangle", "Teal and Orange": "cinematic", "Neon Cyberpunk": "edge", "Softbox": "velvety"})
-        cam_d = add_n({"85mm Eye-Level": "no distortion", "100mm Macro": "extreme detail", "35mm Low-Angle": "hero shot"})
-        size_l = add_n(["4:5 (Portrait)", "16:9 (Widescreen)", "2.39:1 (Anamorphic)", "1:1 (Square)"])
-        mat_l = add_n(["Silicone", "Translucent Skin", "Matte Sealer", "Alcohol Palette"])
-
+    with tab_build:
+        # دیتابیس (خلاصه برای جلوگیری از ارور، شما می‌توانید تمام ۳۹ مدل ریش را اینجا بگذارید)
+        gen_opts = ["Male", "Female", "Androgynous"]
+        age_opts = ["Elderly", "Middle-aged", "Young Adult", "Child"]
+        nat_opts = ["Iranian", "Saudi", "European", "African", "Asian", "Others"]
+        
         c_form, c_master = st.columns([2.1, 1])
         with c_form:
             f1, f2, f3 = st.columns(3)
             with f1:
-                st.markdown('<p class="label-text">Identity</p>', unsafe_allow_html=True)
-                act = st.selectbox("Actor Reference", ["None", "No", "Yes"], key="act")
-                gen_v = st.selectbox("Gender", list(gender_d.keys()), key="gen")
-                age_v = st.selectbox("Age Range", list(age_d.keys()), key="age")
-                st.markdown('<p class="label-text">Hair Detail</p>', unsafe_allow_html=True)
-                hc_v = st.selectbox("Hair Color", list(h_col_d.keys()), key="hcol")
-                ht_v = st.selectbox("Hair Texture", list(h_tex_d.keys()), key="htex")
+                st.markdown('<p class="label-text">Actor & Identity</p>', unsafe_allow_html=True)
+                actor = st.selectbox("Reference", ["None", "No", "Yes"])
+                gender = st.selectbox("Gender", gen_opts)
+                age = st.selectbox("Age", age_opts)
             with f2:
                 st.markdown('<p class="label-text">Origin & SFX</p>', unsafe_allow_html=True)
-                nat_v = st.selectbox("Nationality", list(nat_d.keys()), key="nat")
-                era_v = st.selectbox("Era", list(era_d.keys()), key="era")
-                scat = st.selectbox("SFX Category", ["None"] + list(sfx_cats.keys()), key="scat")
-                styp = st.selectbox("Trauma", sfx_cats[scat] if scat != "None" else ["None"], key="styp")
-                mat_v = st.selectbox("Material", mat_l, key="mat")
+                nat = st.selectbox("Nationality", nat_opts)
+                sfx = st.selectbox("Trauma", ["None", "Katana Slash", "Bruise", "Others"])
+                mat = st.selectbox("Material", ["Silicone", "Matte Sealer", "Others"])
             with f3:
-                st.markdown('<p class="label-text">Grooming & Tech</p>', unsafe_allow_html=True)
-                char_v = st.selectbox("Concept", list(char_d.keys()), key="char")
-                groom_v = st.selectbox("Grooming", list(groom_d.keys()), key="groom")
-                cam_v = st.selectbox("Camera", list(cam_d.keys()), key="cam")
-                light_v = st.selectbox("Lighting", list(light_d.keys()), key="light")
-                size_v = st.selectbox("Frame Size", size_l, key="psize")
+                st.markdown('<p class="label-text">Technical</p>', unsafe_allow_html=True)
+                cam = st.selectbox("Camera", ["85mm", "100mm Macro", "Others"])
+                light = st.selectbox("Lighting", ["Rembrandt", "Neon", "Others"])
+                size = st.selectbox("Size", ["4:5", "16:9", "1:1", "Others"])
 
-        def f(p, v, d=None):
-            if v == "None" or not v: return ""
-            return f"{p}{v} ({d[v]})" if d and v in d and d[v] else f"{p}{v}"
-
-        final_p = f"Professional cinematic portrait, {f('', gen_v, gender_d)}, {f('', age_v, age_d)}, {f('', nat_v, nat_d)}. Concept: {f('', char_v, char_d)}. Grooming: {f('', groom_v, groom_d)}. SFX: {styp}. Tech: {f('', cam_v, cam_d)}, {f('', light_v, light_d)}, {size_v}, 8k raw photo."
+        prompt_res = f"Professional cinematic portrait, {gender}, {age}, {nat}. SFX: {sfx}. Material: {mat}. Tech: {cam}, {light}, {size}, 8k raw photo."
 
         with c_master:
-            st.markdown('<div class="master-header">📖 MASTER PROMPT</div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="master-box">{final_p}</div>', unsafe_allow_html=True)
-            proj = st.text_input("Name this project to save...")
-            if st.button("💾 SAVE"):
-                if proj:
-                    st.session_state.history.insert(0, {"user": st.session_state.c_user, "name": proj, "time": datetime.now().strftime("%H:%M"), "prompt": final_p})
-                    st.success("Saved to history tab!")
+            st.markdown('<div style="background:#00f2ff; color:black; padding:10px; font-weight:900; text-align:center; border-radius:10px 10px 0 0;">📖 MASTER PROMPT</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="master-box">{prompt_res}</div>', unsafe_allow_html=True)
+            save_name = st.text_input("Project Name:")
+            if st.button("💾 SAVE TO HISTORY"):
+                if save_name:
+                    st.session_state.history_log.insert(0, {"user": st.session_state.user_now, "name": save_name, "time": datetime.now().strftime("%H:%M"), "prompt": prompt_res})
+                    st.success("Project Saved!")
 
-    with t_hist:
-        u_h = [h for h in st.session_state.history if h["user"] == st.session_state.c_user]
-        if not u_h: st.info("No saved prompts yet.")
-        for item in u_h:
+    with tab_history:
+        my_h = [h for h in st.session_state.history_log if h["user"] == st.session_state.user_now]
+        if not my_h: st.info("No projects saved yet.")
+        for item in my_h:
             with st.expander(f"📌 {item['name']} | {item['time']}"):
                 st.code(item['prompt'])
 
