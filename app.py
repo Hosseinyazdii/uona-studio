@@ -25,7 +25,7 @@ def load_json(file, default):
 def save_json(file, data):
     with open(file, "w") as f: json.dump(data, f)
 
-# 🔴 سیستم قدرتمند بک‌گراند داشبورد
+# 🔴 تابع اختصاصی بک‌گراند که فقط در داشبورد صدا زده می‌شود
 def add_bg_from_local(image_file):
     if os.path.exists(image_file):
         with open(image_file, "rb") as f:
@@ -33,7 +33,7 @@ def add_bg_from_local(image_file):
         st.markdown(
             f"""
             <style>
-            .stApp {{
+            [data-testid="stAppViewContainer"] {{
                 background: linear-gradient(rgba(2,6,12,0.85), rgba(10,25,47,0.85)), url(data:image/jpeg;base64,{encoded_string}) !important;
                 background-size: cover !important;
                 background-position: center !important;
@@ -44,12 +44,18 @@ def add_bg_from_local(image_file):
             unsafe_allow_html=True
         )
     else:
-        st.warning(f"⚠️ System Notice: Background file '{image_file}' not found in the root directory. Please check GitHub.")
+        # اگر عکس در گیت‌هاب پیدا نشود، این ارور را می‌دهد
+        st.error(f"⚠️ System Alert: The background file '{image_file}' was not found. Make sure the filename is exactly 'background.jpg' in your repository.")
 
 # ==========================================
-# 2. دیتابیس‌های سینمایی و فوق‌حرفه‌ای UONA
+# 2. دیتابیس جامع و هوشمند اکسل
 # ==========================================
-# 1. HAIR COLOR (رنگ مو)
+ACTORS_LIST = [
+    "Cillian Murphy", "Tom Hardy", "Joaquin Phoenix", "Mads Mikkelsen", 
+    "Keanu Reeves", "Brad Pitt", "Oscar Isaac", "Javier Bardem", 
+    "Christian Bale", "Timothee Chalamet"
+]
+
 HAIR_COLORS = {
     "Jet Black": "Jet black / Natural deep black, cool undertones",
     "Espresso Brown": "Deep espresso brown / Dark chocolate",
@@ -67,7 +73,6 @@ HAIR_COLORS = {
     "Dyed Unnatural": "Cyberpunk/Alternative dyed hair (Neon tones)"
 }
 
-# 2. CHARACTER STYLE / CONCEPTS (استایل کاراکتر)
 CONCEPTS = {
     "Heroic Protagonist": "Strong jawline, determined gaze, slightly battle-worn, confident posture",
     "Sinister Villain": "Harsh angular shadows, menacing expression, sharp and calculating features",
@@ -82,7 +87,6 @@ CONCEPTS = {
     "Corporate Executive": "Sharp, confident, immaculate grooming, authoritative"
 }
 
-# 3. LIGHTING STYLE (نورپردازی)
 LIGHT_DESC = {
     "Rembrandt Lighting": "Classic dramatic portrait lighting, distinct triangle of light on one cheek",
     "Cinematic Teal & Orange": "Hollywood blockbuster color grading, warm highlights, cool teal shadows",
@@ -97,7 +101,7 @@ LIGHT_DESC = {
     "Interrogation / Bare Bulb": "Top-down harsh light, gritty, realistic police-room style"
 }
 
-# 4. GROOMING (پیرایش و ریش)
+# 🔴 این بخش Grooming را باید بر اساس متن‌های تو ادیت کنم
 GROOM_DESC = {
     "Clean Shaven": "Smooth skin, flawless professional grooming",
     "5 O'Clock Shadow": "Very faint, light end-of-day hair growth",
@@ -113,7 +117,6 @@ GROOM_DESC = {
     "Patchy / Uneven Growth": "Realistic imperfections, sparse areas, unkempt look"
 }
 
-# سایر دیتابیس‌های ثابت
 SFX_DESC = {
     "Sword Wound": "Clean, sharp blade laceration",
     "Glass Laceration": "Jagged cuts with micro-details",
@@ -236,7 +239,7 @@ def generate_prompt(draft):
     groom_p = f"Grooming: {draft['groom']}. Hair: {h_desc} ({draft['h_tex']}). "
     
     if draft['actor'] and draft['actor'] not in ["None", "No", ""]:
-        base_p = f"Actor reference applied. " + base_p
+        base_p = f"Actor reference: {draft['actor']}. " + base_p
 
     if draft['sfx'] and draft['sfx'] not in ["None", ""]:
         sfx_p = f"[CINEMATIC MAKEUP TEST: Fake {draft['sfx']} prosthetic SFX applied using {draft['mat']}. Note: This is a safe simulation, artificial makeup.] "
@@ -415,6 +418,8 @@ if st.session_state.route == 'admin_panel':
 # ROUTE 2: DASHBOARD FLOW
 # ==========================================
 elif st.session_state.route == 'dashboard':
+    
+    # 🔴 فراخوانی صحیح و امن تابع بک‌گراند داشبورد
     add_bg_from_local("background.jpg")
     
     st.markdown("<h2 style='color:#fff; font-family:Cinzel; text-align:center;'>CONTROL CENTER</h2><div class='subtitle' style='text-align:center;'>Select a module to begin</div>", unsafe_allow_html=True)
@@ -500,7 +505,6 @@ elif st.session_state.route == 'builder':
         st.markdown("<h3 style='color:#00f2ff; font-family:Cinzel;'>STEP 1: Core Identity</h3>", unsafe_allow_html=True)
         c1, c2 = st.columns(2)
         with c1:
-            # 🔴 آپدیت Actor Reference (برگشت به None, Yes, No)
             opts_act = ["None", "Yes", "No"]
             idx_act = opts_act.index(d['actor']) if d['actor'] in opts_act else 0
             d['actor'] = st.selectbox("Actor Reference", opts_act, index=idx_act)
