@@ -3,34 +3,22 @@ from datetime import datetime
 import os
 import json
 
-# 1. تنظیمات پایه
-st.set_page_config(page_title="UONA STUDIO | AI PLATFORM", layout="wide", initial_sidebar_state="collapsed")
+# 1. تنظیمات پایه و معماری پلتفرم
+st.set_page_config(page_title="UONA STUDIO | AI SAAS", layout="wide", initial_sidebar_state="collapsed")
 
-# --- سیستم لاگین قطعی و بدون کرش (استفاده از فایل‌های مخفی) ---
+# --- سیستم دیتابیس مخفی (یوزرها و تاریخچه) ---
 DB_FILE = ".users_db.json"
 HIST_FILE = ".history_db.json"
 
-def load_users():
-    if not os.path.exists(DB_FILE):
-        with open(DB_FILE, "w") as f: json.dump({"hossein": "1234"}, f)
-    with open(DB_FILE, "r") as f: return json.load(f)
+def load_data(file, default):
+    if not os.path.exists(file):
+        with open(file, "w") as f: json.dump(default, f)
+    with open(file, "r") as f: return json.load(f)
 
-def save_user(u, p):
-    users = load_users()
-    users[u] = p
-    with open(DB_FILE, "w") as f: json.dump(users, f)
+def save_data(file, data):
+    with open(file, "w") as f: json.dump(data, f)
 
-def load_history():
-    if not os.path.exists(HIST_FILE):
-        with open(HIST_FILE, "w") as f: json.dump([], f)
-    with open(HIST_FILE, "r") as f: return json.load(f)
-
-def save_history_entry(entry):
-    data = load_history()
-    data.insert(0, entry)
-    with open(HIST_FILE, "w") as f: json.dump(data, f)
-
-# 2. استایل
+# 2. استایل بصری (اصلاح رنگ‌ها و سایه‌ها طبق اسکرین‌شات‌ها)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@800&family=Montserrat:wght@300;400;700;900&display=swap');
@@ -43,78 +31,61 @@ st.markdown("""
     .stDeployButton {display:none;}
 
     .title-main {
-        font-family: 'Cinzel'; color: #ffffff !important; font-size: 3.2rem; font-weight: 800; 
+        font-family: 'Cinzel'; color: #ffffff !important; font-size: 3rem; font-weight: 800; 
         letter-spacing: 12px; margin: 0; text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
     }
 
+    /* فیروزه‌ای متوسط برای لیبل‌ها */
     label, .stMarkdown p, .label-text { 
-        color: #00e5ff !important; 
+        color: #00bcd4 !important; 
         font-family: 'Montserrat' !important; font-weight: 700 !important; 
         text-transform: uppercase !important; font-size: 0.75rem !important; 
     }
 
-    /* باکس‌های یوزرنیم و پسورد و اینپوت Others */
+    /* اصلاح باکس‌های ورودی لاگین */
     div[data-baseweb="input"] > div {
-        background-color: rgba(0, 20, 40, 0.8) !important;
-        border: 1px solid rgba(0, 242, 255, 0.5) !important;
+        background-color: rgba(0, 20, 40, 0.9) !important;
+        border: 1px solid rgba(0, 242, 255, 0.4) !important;
         border-radius: 10px !important;
     }
-    div[data-baseweb="input"] input {
-        color: #ffffff !important;
-        font-weight: bold !important;
-    }
+    div[data-baseweb="input"] input { color: #ffffff !important; font-weight: bold !important; }
 
-    /* دایره‌ها و متن‌های رادیو باتن (Login/Register) */
+    /* دکمه‌های رادیویی */
     div[role="radiogroup"] { 
         background: rgba(0, 242, 255, 0.05); padding: 10px 20px; 
         border-radius: 10px; border: 1px solid rgba(0, 242, 255, 0.2); 
     }
     div[role="radiogroup"] label p { color: #ffffff !important; }
 
-    /* رنگ تب‌های PROMPT BUILDER و HISTORY */
+    /* اصلاح رنگ کلمات ۴گانه (فیروزه‌ای تیره + سایه طلایی) */
+    .module-title { 
+        font-family: 'Cinzel'; 
+        color: #008b8b !important; 
+        text-shadow: 0 0 12px rgba(255, 215, 0, 0.8) !important; 
+        letter-spacing: 3px; font-weight: 900;
+    }
+
+    /* اصلاح رنگ تب‌ها */
     .stTabs [data-baseweb="tab-list"] button {
-        color: #7b8ea8 !important;
-        font-family: 'Cinzel', serif !important;
-        font-size: 1.1rem !important;
-        background-color: transparent !important;
+        color: #7b8ea8 !important; font-family: 'Cinzel', serif !important;
     }
     .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
-        color: #00f2ff !important;
-        border-bottom: 2px solid #00f2ff !important;
+        color: #00f2ff !important; border-bottom: 2px solid #00f2ff !important;
     }
 
-    /* رنگ متن تاریخچه‌های ذخیره شده */
-    div[data-testid="stExpander"] {
-        background-color: rgba(255, 255, 255, 0.03) !important;
-        border: 1px solid rgba(0, 242, 255, 0.2) !important;
-        border-radius: 10px !important;
-    }
-    div[data-testid="stExpander"] summary p {
-        color: #00f2ff !important;
-        font-family: 'Montserrat', sans-serif !important;
-        font-weight: bold !important;
-    }
+    /* دکمه‌های اختصاصی لاگین و رجیستر */
+    .btn-login > div > button { background-color: #00f2ff !important; color: #000 !important; }
+    .btn-reg > div > button { background-color: #ff00aa !important; color: #fff !important; }
 
-    /* استایل پایه دکمه‌ها */
     .stButton > button {
         border: none !important; border-radius: 12px !important;
         font-family: 'Cinzel', serif !important; font-weight: 900 !important;
-        text-transform: uppercase; letter-spacing: 1px;
-        transition: 0.3s;
+        text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
     }
-    .stButton > button:hover { background-color: #ffffff !important; color: #000 !important; transform: scale(1.02); }
 
     .module-card {
         background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(0, 242, 255, 0.1);
         border-radius: 20px; padding: 25px; text-align: center; backdrop-filter: blur(15px);
-    }
-    
-    /* تغییر اختصاصی برای ۴ کلمه (فیروزه‌ای تیره با سایه طلایی) */
-    .module-title { 
-        font-family: 'Cinzel'; 
-        color: #008b8b !important; /* فیروزه‌ای تیره */
-        text-shadow: 0 0 12px rgba(255, 215, 0, 0.8) !important; /* سایه طلایی */
-        letter-spacing: 3px; 
     }
 
     .master-header { background: linear-gradient(90deg, #00f2ff, #0088ff); color: #000; padding: 10px; font-weight: 900; border-radius: 12px 12px 0 0; text-align: center; font-family: 'Montserrat'; }
@@ -125,54 +96,47 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-if 'auth_status' not in st.session_state: st.session_state.auth_status = False
+# 3. مدیریت نشست و امنیت
+if 'auth' not in st.session_state: st.session_state.auth = False
 if 'page' not in st.session_state: st.session_state.page = 'home'
 
-# --- صفحه لاگین ---
-if not st.session_state.auth_status:
+# --- ورود به پلتفرم ---
+if not st.session_state.auth:
     col_l, col_r = st.columns([1, 1.2])
     with col_l:
         st.markdown("<br><br>", unsafe_allow_html=True)
-        if os.path.exists("logo.PNG"): 
-            st.image("logo.PNG", width=250) 
-        else: 
-            st.markdown("<div style='width:200px;height:200px;background:#00f2ff;border-radius:50%; display:flex; align-items:center; justify-content:center; color:black; font-weight:900;'>LOGO</div>", unsafe_allow_html=True)
+        if os.path.exists("logo.PNG"): st.image("logo.PNG", width=250)
     with col_r:
         st.markdown("<h1 style='color:#ffffff; font-family:Cinzel; margin-top:80px; text-shadow: 0 0 15px #00f2ff;'>UONA ACCESS</h1>", unsafe_allow_html=True)
-        
         mode = st.radio("SELECT MODE", ["Login", "Register"], horizontal=True)
-        u_name = st.text_input("USERNAME", placeholder="Enter your username...")
-        u_pass = st.text_input("PASSWORD", type="password", placeholder="Enter your password...")
+        u_name = st.text_input("USERNAME")
+        u_pass = st.text_input("PASSWORD", type="password")
         
-        users_db = load_users()
-        
+        users = load_data(DB_FILE, {"hossein": "1234"})
         if mode == "Login":
-            st.markdown("""<style>div.stButton > button { background-color: #00f2ff !important; color: #000000 !important; box-shadow: 0 0 15px rgba(0, 242, 255, 0.4); }</style>""", unsafe_allow_html=True)
+            st.markdown('<div class="btn-login">', unsafe_allow_html=True)
             if st.button("SIGN IN"):
-                if u_name in users_db and users_db[u_name] == u_pass:
-                    st.session_state.auth_status = True; st.session_state.user = u_name; st.rerun()
-                else: st.error("Access Denied: Invalid Credentials")
+                if u_name in users and users[u_name] == u_pass:
+                    st.session_state.auth = True; st.session_state.user = u_name; st.rerun()
+                else: st.error("Access Denied")
+            st.markdown('</div>', unsafe_allow_html=True)
         else:
-            st.markdown("""<style>div.stButton > button { background-color: #ff00aa !important; color: #ffffff !important; box-shadow: 0 0 15px rgba(255, 0, 170, 0.4); }</style>""", unsafe_allow_html=True)
+            st.markdown('<div class="btn-reg">', unsafe_allow_html=True)
             if st.button("CREATE ACCOUNT"):
                 if u_name and u_pass:
-                    save_user(u_name, u_pass)
-                    st.success(f"User '{u_name}' Registered! Switch to Login to enter.")
-                else:
-                    st.warning("Please fill both fields.")
+                    users[u_name] = u_pass; save_data(DB_FILE, users)
+                    st.success("Registered! Switch to Login.")
+            st.markdown('</div>', unsafe_allow_html=True)
     st.stop()
 
-# برگرداندن دکمه‌های فرم‌ها به فیروزه‌ای
-st.markdown("""<style>div.stButton > button { background-color: #00f2ff !important; color: #000000 !important; box-shadow: 0 0 15px rgba(0, 242, 255, 0.3); }</style>""", unsafe_allow_html=True)
-
-# --- هدر اصلی نرم‌افزار ---
+# --- هدر و ناوبری ---
 h_col1, h_col2 = st.columns([1, 6])
 with h_col1:
     if os.path.exists("logo.PNG"): st.image("logo.PNG", width=85)
 with h_col2:
     st.markdown('<h1 class="title-main">UONA STUDIO</h1>', unsafe_allow_html=True)
 
-# --- پورتال اصلی ---
+# --- پورتال اصلی (DASHBOARD) ---
 if st.session_state.page == 'home':
     st.markdown("<br><br><h3 style='text-align:center; color:white; font-family:Cinzel; letter-spacing:4px;'>SELECT MODULE</h3>", unsafe_allow_html=True)
     c1, c2, c3, c4 = st.columns(4)
@@ -184,73 +148,21 @@ if st.session_state.page == 'home':
                 if st.button(f"ENTER {name}", key=name): st.session_state.page = 'cinematic'; st.rerun()
             else: st.button("COMING SOON", disabled=True, key=name)
 
-# --- ماژول Cinematic ---
+# --- ماژول کاراکتر ساز (CHARACTER BUILDER) ---
 elif st.session_state.page == 'cinematic':
     if st.button("← BACK"): st.session_state.page = 'home'; st.rerun()
     t_builder, t_hist = st.tabs(["🏗️ PROMPT BUILDER", "📜 HISTORY"])
 
     with t_builder:
         def add_n(d): return ["None"] + d + ["Others"]
-        
         c_form, c_master = st.columns([2.2, 1])
+        
         with c_form:
             f1, f2, f3 = st.columns(3)
             with f1:
-                actor = st.selectbox("Actor Ref *", ["None", "No", "Yes"])
-                gen = st.selectbox("Gender *", ["Male", "Female", "Androgynous"])
-                age = st.selectbox("Age Range *", ["Elderly", "Middle-aged", "Young Adult", "Child"])
+                st.markdown('<p class="label-text">Actor & Identity</p>', unsafe_allow_html=True)
+                act = st.selectbox("Actor Ref", ["None", "No", "Yes"])
+                gen = st.selectbox("Gender", ["Male", "Female", "Androgynous"])
+                age = st.selectbox("Age Range", ["Elderly", "Middle-aged", "Young Adult", "Child"])
                 
-                h_col_val = st.selectbox("Hair Color", add_n(["Jet Black", "Espresso", "Ash Blonde", "Salt & Pepper"]))
-                h_col = st.text_input("Type Custom Hair Color", key="hc_c") if h_col_val == "Others" else h_col_val
-
-            with f2:
-                nat_val = st.selectbox("Nationality *", add_n(["Iranian", "Saudi", "European", "African"]))
-                nat = st.text_input("Type Custom Nationality", key="nat_c") if nat_val == "Others" else nat_val
-                
-                era_val = st.selectbox("Era / Period", add_n(["Ancient", "Medieval", "100 Years Ago", "Contemporary"]))
-                era = st.text_input("Type Custom Era", key="era_c") if era_val == "Others" else era_val
-                
-                sfx_val = st.selectbox("Trauma / SFX", add_n(["Katana Slash", "Bruise", "Glass Wound", "Burn"]))
-                sfx = st.text_input("Type Custom SFX", key="sfx_c") if sfx_val == "Others" else sfx_val
-                
-                mat_val = st.selectbox("Material Finish", add_n(["Silicone", "Matte Sealer", "Alcohol Palette"]))
-                mat = st.text_input("Type Custom Material", key="mat_c") if mat_val == "Others" else mat_val
-
-            with f3:
-                char_val = st.selectbox("Character Concept", add_n(["Warrior", "Villain", "Scholar", "Royal"]))
-                char = st.text_input("Type Custom Concept", key="char_c") if char_val == "Others" else char_val
-                
-                groom_val = st.selectbox("Grooming Style", add_n(["Clean Shaven", "Full Beard", "Stubble", "Goatee"]))
-                groom = st.text_input("Type Custom Grooming", key="groom_c") if groom_val == "Others" else groom_val
-                
-                cam_val = st.selectbox("Camera & Lens *", add_n(["85mm", "100mm Macro", "35mm Low-Angle"]))
-                cam = st.text_input("Type Custom Camera", key="cam_c") if cam_val == "Others" else cam_val
-                
-                light_val = st.selectbox("Lighting Style", add_n(["Rembrandt", "Teal & Orange", "Neon"]))
-                light = st.text_input("Type Custom Lighting", key="light_c") if light_val == "Others" else light_val
-                
-                size_val = st.selectbox("Frame Size", add_n(["4:5", "16:9", "2.39:1", "1:1"]))
-                size = st.text_input("Type Custom Size", key="size_c") if size_val == "Others" else size_val
-
-        final_p = f"Professional cinematic portrait, {size}, {gen}, {age}, {nat}. Concept: {char}, {groom}. Hair: {h_col}. SFX: {sfx}. Material: {mat}. Tech: {cam}, {light}, 8k raw photo."
-
-        with c_master:
-            st.markdown('<div class="master-header">📖 MASTER PROMPT</div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="master-box">{final_p}</div>', unsafe_allow_html=True)
-            p_name = st.text_input("Project Name:")
-            if st.button("💾 SAVE TO HISTORY"):
-                if p_name:
-                    entry = {"user": st.session_state.user, "name": p_name, "time": datetime.now().strftime("%Y-%m-%d %H:%M"), "prompt": final_p}
-                    save_history_entry(entry)
-                    st.success("Design Saved to Database!")
-
-    with t_hist:
-        all_history = load_history()
-        u_h = [h for h in all_history if h["user"] == st.session_state.user]
-        if not u_h: st.info("No saved designs found.")
-        for item in u_h:
-            with st.expander(f"📌 {item['name']} | {item['time']}"):
-                st.code(item['prompt'])
-
-# 4. فوتر
-st.markdown(f"<div class='footer'>© {datetime.now().year} <span class='uona-tag'>UONA GROUP</span>. ALL RIGHTS RESERVED</div>", unsafe_allow_html=True)
+                h_
