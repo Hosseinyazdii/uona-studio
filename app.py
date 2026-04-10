@@ -56,7 +56,7 @@ ADMIN_USER = "admin"
 ADMIN_PASS = "1234"
 
 # ==========================================
-# 3. موتور استایل (CSS Engine)
+# 3. موتور استایل (CSS Engine) - بدون هیچ تغییری
 # ==========================================
 st.markdown("""
     <style>
@@ -154,10 +154,10 @@ if st.session_state.route != 'login':
     """, unsafe_allow_html=True)
 
 # ==========================================
-# ROUTE: ADMIN PANEL (HIDDEN BACKDOOR)
+# ROUTE: ADMIN PANEL
 # ==========================================
 if st.session_state.route == 'admin_panel':
-    if not st.session_state.is_admin: go_to('dashboard') # امنيت اضافه
+    if not st.session_state.is_admin: go_to('dashboard')
     
     st.markdown("<h2 class='title-main' style='color:#ff00aa!important; text-shadow:0 0 15px #ff00aa;'>MASTER CONTROL PANEL</h2>", unsafe_allow_html=True)
     st.markdown("<div class='subtitle'>Manage Client Access & Subscriptions</div><br>", unsafe_allow_html=True)
@@ -207,7 +207,6 @@ if st.session_state.route == 'admin_panel':
 elif st.session_state.route == 'dashboard':
     st.markdown("<h2 style='color:#fff; font-family:Cinzel; text-align:center;'>CONTROL CENTER</h2><div class='subtitle' style='text-align:center;'>Select a module to begin</div>", unsafe_allow_html=True)
     
-    # دکمه برگشت به پنل ادمین (فقط برای مدیر)
     if st.session_state.is_admin:
         if st.button("⚙️ RETURN TO ADMIN PANEL"): go_to('admin_panel')
         st.markdown("<br>", unsafe_allow_html=True)
@@ -258,7 +257,7 @@ elif st.session_state.route == 'settings':
     st.markdown('</div>', unsafe_allow_html=True)
 
 # ==========================================
-# ROUTE 3: CHARACTER BUILDER (MULTI-STEP)
+# ROUTE 3: CHARACTER BUILDER (MULTI-STEP) با دیتابیس کامل
 # ==========================================
 elif st.session_state.route == 'builder':
     st.markdown(f"""
@@ -281,9 +280,14 @@ elif st.session_state.route == 'builder':
             opts_act = ["None", "Yes", "No"]
             idx_act = opts_act.index(d['actor']) if d['actor'] in opts_act else 0
             d['actor'] = st.selectbox("Actor Reference", opts_act, index=idx_act)
-            smart_select("Age Range", ["Elderly", "Middle-aged", "Young Adult", "Child"], 'age')
+            
+            smart_select("Age Range", [
+                "Elderly", "Middle-aged", "Young Adult", "Teenager", "Child", "Toddler"
+            ], 'age')
         with c2:
-            smart_select("Gender", ["Male", "Female", "Androgynous"], 'gen')
+            smart_select("Gender", [
+                "Male", "Female", "Androgynous", "Non-binary"
+            ], 'gen')
         
         col1, col2, col3 = st.columns([1, 4, 1])
         if col1.button("EXIT"): go_to('dashboard')
@@ -293,11 +297,25 @@ elif st.session_state.route == 'builder':
         st.markdown("<h3 style='color:#00f2ff; font-family:Cinzel;'>STEP 2: Physical Attributes</h3>", unsafe_allow_html=True)
         c1, c2 = st.columns(2)
         with c1:
-            smart_select("Nationality", ["Iranian", "Saudi", "European", "African", "Asian"], 'nat')
-            smart_select("Hair Color", ["Jet Black", "Espresso", "Ash Blonde", "Salt & Pepper"], 'h_col')
+            smart_select("Nationality", [
+                "Iranian", "Saudi (Peninsular Arab)", "Levantine", "North African", 
+                "European (Caucasian)", "African (Sub-Saharan)", "East Asian", 
+                "South Asian", "Latin American"
+            ], 'nat')
+            smart_select("Hair Color", [
+                "Jet Black", "Espresso Brown", "Chestnut", "Ash Blonde", "Platinum Blonde", 
+                "Strawberry Blonde", "Ginger / Red", "Salt & Pepper", "Silver / Grey", "White"
+            ], 'h_col')
         with c2:
-            smart_select("Era / Period", ["Ancient", "Medieval", "100 Years Ago", "Contemporary"], 'era')
-            smart_select("Hair Texture", ["Afro", "Wavy", "Curly", "Straight", "Matted"], 'h_tex')
+            smart_select("Era / Period", [
+                "Stone Age", "Before Christ (BC)", "Pre-Islamic", "Medieval", 
+                "200 Years Ago", "150 Years Ago", "100 Years Ago", "50 Years Ago", 
+                "Contemporary", "Cyberpunk / Future"
+            ], 'era')
+            smart_select("Hair Texture", [
+                "Straight (Silky)", "Wavy (S-shape)", "Curly (Ringlets)", "Afro (Coils)", 
+                "Matted (Weathered/Dirty)", "Bald / Shaved Head", "Thinning / Balding"
+            ], 'h_tex')
         
         col1, col2, col3 = st.columns([1, 4, 1])
         if col1.button("⬅ BACK"): prev_step()
@@ -307,10 +325,23 @@ elif st.session_state.route == 'builder':
         st.markdown("<h3 style='color:#00f2ff; font-family:Cinzel;'>STEP 3: Grooming & SFX Trauma</h3>", unsafe_allow_html=True)
         c1, c2 = st.columns(2)
         with c1:
-            smart_select("Grooming Style", ["Clean Shaven", "Full Beard", "Stubble", "Goatee"], 'groom')
-            smart_select("Material Finish", ["Silicone", "Matte Sealer", "Alcohol Palette"], 'mat')
+            smart_select("Grooming Style", [
+                "Clean Shaven", "Light Stubble", "Heavy Stubble", "Full Beard", 
+                "Long Beard (Dirty Look)", "Goatee", "Van Dyke", "Garibaldi", 
+                "Moustache Only", "Patchy Beard"
+            ], 'groom')
+            smart_select("Material Finish", [
+                "Silicone Prosthetic", "Matte Sealer", "Alcohol Palette", 
+                "Translucent Skin", "Gelatin Prosthetic", "Foam Latex", "Sweat/Grease FX"
+            ], 'mat')
         with c2:
-            smart_select("Trauma / SFX", ["Katana Slash", "Bruise", "Glass Wound", "Burn"], 'sfx')
+            smart_select("Trauma / SFX", [
+                "Sword Slash", "Glass Laceration", "Crush/Blunt Force Wound", 
+                "3-Day Old Wound", "1-Week Old Scar", "1-Month Old Scar", "1-Year Keloid Scar", 
+                "5-Year Old Scar", "Fresh Bruise (Immediate)", "1-Day Bruise", "3-Day Bruise", 
+                "15-Day Fading Bruise", "Acid Burn", "1st Degree Burn", "2nd Degree Burn", 
+                "Katana Slash"
+            ], 'sfx')
         
         col1, col2, col3 = st.columns([1, 4, 1])
         if col1.button("⬅ BACK"): prev_step()
@@ -320,11 +351,22 @@ elif st.session_state.route == 'builder':
         st.markdown("<h3 style='color:#00f2ff; font-family:Cinzel;'>STEP 4: Technical Specs</h3>", unsafe_allow_html=True)
         c1, c2 = st.columns(2)
         with c1:
-            smart_select("Character Concept", ["Warrior", "Villain", "Scholar", "Royal"], 'char')
-            smart_select("Lighting Style", ["Rembrandt", "Teal & Orange", "Neon"], 'light')
+            smart_select("Character Concept", [
+                "Heroic Warrior", "Sinister Villain", "Wise Scholar", "Royal / Noble", 
+                "Mercenary / Rugged", "Peasant / Commoner", "Cybernetic Enhanced", "Undead / Zombie"
+            ], 'char')
+            smart_select("Lighting Style", [
+                "Rembrandt", "Teal & Orange", "Neon / Cyberpunk", "Softbox / Studio", 
+                "Chiaroscuro (High Contrast)", "Cinematic Backlight", "Harsh Midday Sun", "Overcast / Diffused"
+            ], 'light')
         with c2:
-            smart_select("Camera & Lens", ["85mm", "100mm Macro", "35mm Low-Angle"], 'cam')
-            smart_select("Frame Size", ["4:5", "16:9", "2.39:1", "1:1"], 'size')
+            smart_select("Camera & Lens", [
+                "85mm Eye-Level (Portrait)", "100mm Macro (Extreme Detail)", 
+                "35mm Low-Angle (Hero Shot)", "50mm Standard", "24mm Wide-Angle (Environmental)"
+            ], 'cam')
+            smart_select("Frame Size", [
+                "4:5 (Portrait)", "16:9 (Widescreen)", "2.39:1 (Anamorphic)", "1:1 (Square)"
+            ], 'size')
         
         col1, col2, col3 = st.columns([1, 4, 1])
         if col1.button("⬅ BACK"): prev_step()
