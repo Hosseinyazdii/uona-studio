@@ -3,11 +3,10 @@ import streamlit as st
 # --- CONFIGURATION & STYLING ---
 st.set_page_config(page_title="UONA Studio", layout="wide")
 
+# اصلاح پارامتر unsafe_allow_html برای رفع خطا
 st.markdown("""
     <style>
     /* تنظیم فونت و استایل کلی */
-    @import url('https://fonts.googleapis.com/css2?family=Bender&display=swap');
-    
     .main { background-color: #0e1117; }
     
     /* هدر اختصاصی UONA */
@@ -23,40 +22,43 @@ st.markdown("""
     
     .header-title {
         color: #ffffff;
-        font-family: 'Bender', serif;
+        font-family: 'Serif', sans-serif;
         font-size: 32px;
         text-shadow: 2px 2px 4px #000000;
         margin-left: 20px;
     }
 
-    /* استایل فوتر و آیکون‌ها */
+    /* استایل فوتر و آیکون‌ها با سایه سنگین برای خوانایی */
     .footer-container {
         display: flex;
         justify-content: space-around;
-        background: rgba(0,0,0,0.4);
+        background: rgba(0,0,0,0.6);
         padding: 25px;
-        border-top: 1px solid #333;
+        border-top: 1px solid #444;
         margin-top: 50px;
+        border-radius: 10px;
     }
     
     .footer-icon {
-        font-family: 'Bender', serif;
+        font-family: 'Serif', sans-serif;
         font-size: 20px;
         color: white;
-        text-shadow: 2px 2px 8px #000000;
+        text-shadow: 3px 3px 10px #000000, -1px -1px 0 #000;
         text-align: center;
+        font-weight: bold;
     }
     </style>
-""", unsafe_allow_safe=True)
+""", unsafe_allow_html=True)
 
 # --- HEADER SECTION ---
+# استفاده از آدرس مستقیم لوگوی تو در گیت‌هاب
 logo_url = "https://raw.githubusercontent.com/Hosseinyazdii/uona-studio/main/logo.png"
 st.markdown(f"""
     <div class="header-container">
         <img src="{logo_url}" width="70">
         <div class="header-title">UONA Group | <span style="font-weight: 200; font-size: 24px;">Cinematic Character Designer</span></div>
     </div>
-""", unsafe_allow_safe=True)
+""", unsafe_allow_html=True)
 
 # --- HELPER FUNCTION FOR 'OTHERS' OPTION ---
 def select_with_others(label, options, key):
@@ -90,7 +92,7 @@ with col4:
     finish = select_with_others("Material Finish (J17):", ["Matte Sealer", "Glossy", "Satin"], "finish")
     skin = st.text_input("Skin/Aging Details (G19):", value="Frontal Rhytids")
 
-# --- PROMPT GENERATION LOGIC (V14) ---
+# --- PROMPT GENERATION LOGIC ---
 consistency_msg = "[STRICT CONSISTENCY MODE: Maintain identity...]: " if actor_ref == "Yes" else ""
 sfx_header = "[PROFESSIONAL SFX ARTISTRY: Detailed prosthetic showing]: " if sfx else ""
 
@@ -104,9 +106,6 @@ prompt = (
 st.subheader("Master Prompt Output")
 st.text_area("Copy this to Gemini:", value=prompt, height=150)
 
-if st.button("📋 Copy Prompt"):
-    st.write("Prompt ready to copy! (Use Cmd+C on your Mac)")
-
 # --- FOOTER SECTION ---
 st.markdown("""
     <div class="footer-container">
@@ -115,4 +114,4 @@ st.markdown("""
         <div class="footer-icon">🏛️<br>Theater</div>
         <div class="footer-icon">🎥<br>Production</div>
     </div>
-""", unsafe_allow_safe=True)
+""", unsafe_allow_html=True)
