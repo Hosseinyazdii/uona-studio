@@ -16,7 +16,6 @@ st.markdown("""
     #MainMenu, footer, header {visibility: hidden;}
     .stDeployButton {display:none;}
 
-    /* هدر سفید درخشان و خوانا */
     .nav-bar {
         display: flex; align-items: center; padding: 10px 50px;
         background: rgba(2, 6, 12, 0.8); border-bottom: 1px solid rgba(0, 242, 255, 0.2);
@@ -28,10 +27,9 @@ st.markdown("""
     }
     .slogan-main { font-family: 'Montserrat'; color: #00f2ff; font-size: 0.75rem; letter-spacing: 5px; text-transform: uppercase; }
 
-    /* استایل دکمه‌های پورتال برای خوانایی متن */
     .stButton > button {
-        background-color: #00f2ff !important; /* رنگ فیروزه‌ای درخشان */
-        color: #000000 !important; /* متن مشکی عمیق برای خوانایی */
+        background-color: #00f2ff !important;
+        color: #000000 !important;
         border: none !important;
         border-radius: 50px !important;
         font-family: 'Montserrat' !important;
@@ -52,7 +50,6 @@ st.markdown("""
         border-radius: 15px; padding: 20px; text-align: center; backdrop-filter: blur(10px);
     }
     
-    /* فرم و لیبل‌ها */
     .label-text { color: #00d4ff; font-family: 'Montserrat'; font-weight: 700; text-transform: uppercase; font-size: 0.7rem; margin-top: 8px; }
     .star { color: #ff4b4b; }
     
@@ -63,7 +60,6 @@ st.markdown("""
         line-height: 1.6; height: 380px; overflow-y: auto;
     }
     
-    /* فوتر نرمال و مینی‌مال */
     .footer { 
         position: fixed; bottom: 0; width: 100%; text-align: center; padding: 15px; 
         border-top: 1px solid rgba(0, 242, 255, 0.1); background: rgba(0,0,0,0.5);
@@ -75,7 +71,7 @@ st.markdown("""
 
 if 'page' not in st.session_state: st.session_state.page = 'home'
 
-# --- هدر ثابت ---
+# --- هدر ---
 h_col1, h_col2 = st.columns([1, 6])
 with h_col1:
     try: st.image("image.png", width=90)
@@ -83,7 +79,7 @@ with h_col1:
 with h_col2:
     st.markdown('<h1 class="title-main">UONA STUDIO</h1><div class="slogan-main">The Art of Cinematic Transformation</div>', unsafe_allow_html=True)
 
-# --- پورتال اصلی ---
+# --- پورتال ---
 if st.session_state.page == 'home':
     st.markdown("<br><br><h3 style='text-align:center; color:white; font-family:Cinzel; letter-spacing:4px;'>SELECT DESIGN MODULE</h3>", unsafe_allow_html=True)
     c1, c2, c3, c4 = st.columns(4)
@@ -108,7 +104,6 @@ elif st.session_state.page == 'cinematic':
         if isinstance(d, dict): return {**{"None": ""}, **d}
         return ["None"] + d
 
-    # دیتاها
     gender_d = add_n({"Masculine / Male": "strong bone structure", "Feminine / Female": "softer facial contours", "Androgynous": "blend of features"})
     age_d = add_n({"Child / Pre-adolescent": "textureless skin", "Adolescent / Teenager": "oily skin", "Young Adult (Early 20s)": "peak elasticity", "Middle-aged (Late 40s)": "initial fat loss", "Elderly / Senior": "collagen loss", "Ancient / Centenarian": "paper-thin skin"})
     nat_d = add_n({"Iranian": "prominent nasal bridge", "Egyptian": "North African features", "Emirati": "Gulf Arab features", "Saudi": "Peninsular Arab features", "Kuwaiti": "Northern Gulf", "Syrian": "Levantine features", "American": "Diverse structures", "Indian": "South Asian", "Chinese": "East Asian", "African": "Deep melanated", "European": "Caucasian", "Turkish": "Eurasian"})
@@ -141,6 +136,8 @@ elif st.session_state.page == 'cinematic':
             st.markdown('<p class="label-text">SFX Category & Trauma</p>', unsafe_allow_html=True)
             s_cat = st.selectbox("", ["None"] + list(sfx_cats.keys()), key="scat", label_visibility="collapsed")
             s_type = st.selectbox("", sfx_cats[s_cat] if s_cat != "None" else ["None"], key="stype", label_visibility="collapsed")
+            st.markdown('<p class="label-text">Lighting Style</p>', unsafe_allow_html=True)
+            light = st.selectbox("", list(light_d.keys()), key="light", label_visibility="collapsed")
         with f2:
             st.markdown('<p class="label-text">Nationality & Era <span class="star">*</span></p>', unsafe_allow_html=True)
             nat = st.selectbox("", list(nat_d.keys()), key="nat", label_visibility="collapsed")
@@ -150,6 +147,8 @@ elif st.session_state.page == 'cinematic':
             groom = st.selectbox("", list(groom_d.keys()), key="groom", label_visibility="collapsed")
             st.markdown('<p class="label-text">Camera & Lens Detail <span class="star">*</span></p>', unsafe_allow_html=True)
             cam = st.selectbox("", list(cam_d.keys()), key="cam", label_visibility="collapsed")
+            st.markdown('<p class="label-text">Picture Size / Aspect Ratio</p>', unsafe_allow_html=True)
+            size_sel = st.selectbox("", size_l, key="psize", label_visibility="collapsed")
 
     def f(p, v, d=None):
         if v == "None" or not v: return ""
@@ -158,14 +157,15 @@ elif st.session_state.page == 'cinematic':
 
     p_actor = "[VISUAL GUIDE: Emulate facial structure] " if actor == "Yes" else ""
     p_sfx = f" [SFX STUDY: Apply {s_type} SFX as a makeup layer]." if s_type != "None" else ""
+    p_size = f" Aspect Ratio {size_sel}" if size_sel != "None" else ""
     
-    final_prompt = f"{p_actor}A professional cinematic portrait of a {f('', gen, gender_d)} {f('', age, age_d)} {f('', nat, nat_d)}{f(' from the ', era, era_d)}. {f('Concept: ', char, char_d)}. {f('Grooming: ', groom, groom_d)}. {f('Skin: ', aging_d[list(aging_d.keys())[0]], aging_d)}.{p_sfx} Technical: {f('', light_d[list(light_d.keys())[0]], light_d)}, {f('', cam, cam_d)}, 8k, raw photography."
+    final_prompt = f"{p_actor}A professional cinematic{p_size} portrait of a {f('', gen, gender_d)} {f('', age, age_d)} {f('', nat, nat_d)}{f(' from the ', era, era_d)}. {f('Concept: ', char, char_d)}. {f('Grooming: ', groom, groom_d)}.{p_sfx} Technical: {f('', light, light_d)}, {f('', cam, cam_d)}, 8k, raw photography."
 
     with c_master:
         st.markdown('<div class="master-header">📖 MASTER PROMPT</div>', unsafe_allow_html=True)
         st.markdown(f'<div class="master-box">{final_prompt}</div>', unsafe_allow_html=True)
 
-# 6. فوتر نرمال
+# 6. فوتر
 st.markdown(f"""
     <div class="footer">
         © {datetime.now().year} <span class="uona-tag">UONA GROUP</span>. ALL RIGHTS RESERVED. | 
