@@ -4,7 +4,7 @@ import os
 import json
 
 # ==========================================
-# 1. تنظیمات پلتفرم و دیتابیس (تغییر آیکون تب مرورگر)
+# 1. تنظیمات پلتفرم و دیتابیس
 # ==========================================
 st.set_page_config(
     page_title="UONA STUDIO | AI SAAS", 
@@ -25,7 +25,7 @@ def save_json(file, data):
     with open(file, "w") as f: json.dump(data, f)
 
 # ==========================================
-# 2. دیتابیس هوشمند اکسل (توضیحات پرامپت انگلیسی)
+# 2. دیتابیس هوشمند اکسل
 # ==========================================
 HAIR_COLORS = {
     "Jet Black": "Jet black / Natural black",
@@ -120,7 +120,7 @@ LIGHT_DESC = {
 }
 
 # ==========================================
-# 3. مدیریت وضعیت (State Machine) و توابع
+# 3. مدیریت وضعیت (State Machine)
 # ==========================================
 if 'auth' not in st.session_state: st.session_state.auth = False
 if 'is_admin' not in st.session_state: st.session_state.is_admin = False
@@ -138,7 +138,7 @@ def next_step(): st.session_state.step += 1; st.rerun()
 def prev_step(): st.session_state.step -= 1; st.rerun()
 def add_n(lst): return ["None"] + lst + ["Others"]
 
-# تابع فرم‌ساز اختصاصی با Tooltip تعاملی و شیشه‌ای
+# 🔴 تابع هوشمند با تزریق بک‌گراند مشکی مطلق به داخل محتوا
 def smart_select(label, options, key, help_dict=None):
     opts = add_n(options)
     curr_val = st.session_state.draft.get(key, "")
@@ -152,8 +152,15 @@ def smart_select(label, options, key, help_dict=None):
             sel = st.selectbox(label, opts, index=idx, key=f"sel_{key}")
         with c2:
             with st.popover("❕"):
-                st.markdown(f"<div class='tooltip-title'>EXCEL DICTIONARY: {label.upper()}</div>", unsafe_allow_html=True)
-                help_html = "".join([f"<div class='tooltip-text'><b style='color:#00f2ff;'>{k}:</b> {v}</div>" for k, v in help_dict.items()])
+                # استایل‌های Inline برای تضمین ۱۰۰ درصدی مشکی بودن
+                help_html = f"""
+                <div style="background-color: #000000 !important; margin: -1rem; padding: 1rem; min-height: 100px;">
+                    <div style="color: #00f2ff; font-weight: 900; font-family: 'Cinzel', serif; margin-bottom: 10px; font-size: 0.9rem; border-bottom: 1px solid rgba(0,242,255,0.3); padding-bottom: 5px; text-transform: uppercase;">
+                        EXCEL DICTIONARY: {label}
+                    </div>
+                    {"".join([f"<div style='color: #d0e0f0; font-family: Montserrat; font-size: 0.8rem; line-height: 1.8; margin-bottom: 4px;'><b style='color: #00f2ff;'>{k}:</b> {v}</div>" for k, v in help_dict.items()])}
+                </div>
+                """
                 st.markdown(help_html, unsafe_allow_html=True)
     else:
         sel = st.selectbox(label, opts, index=idx, key=f"sel_{key}")
@@ -164,7 +171,6 @@ def smart_select(label, options, key, help_dict=None):
     else:
         st.session_state.draft[key] = sel
 
-# --- تابع تولید پرامپت استاتیک و هوشمند (جایگذاری فرمول‌های اکسل) ---
 def generate_prompt(draft):
     base_p = f"Professional cinematic portrait, {draft['size']}, {draft['cam']}, {draft['light']}. "
     
@@ -183,7 +189,6 @@ def generate_prompt(draft):
         
     return base_p + char_p + groom_p + sfx_p + "8k resolution, raw photo, highly detailed."
 
-# 📌 اطلاعات ورود پنل ادمین
 ADMIN_USER = "admin"
 ADMIN_PASS = "1234"
 
@@ -232,7 +237,7 @@ st.markdown("""
     .stCodeBlock { background-color: #02060c !important; border-left: 4px solid #ff00aa !important; border-radius: 8px !important; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
     .stCodeBlock code { color: #00e5ff !important; font-family: 'Courier New', Courier, monospace !important; line-height: 1.6 !important; font-size: 0.95rem !important; }
     
-    /* 🔴 استایل‌های اختصاصی Tooltip تعاملی با بک‌گراند مشکی */
+    /* 🔴 استایل‌های تهاجمی برای مشکی کردن پاپ‌آپ‌ها از ریشه */
     div[data-testid="stPopover"] { padding-top: 26px; } 
     div[data-testid="stPopover"] > button {
         background: transparent !important; border: 1px solid #00f2ff !important;
@@ -242,17 +247,15 @@ st.markdown("""
     }
     div[data-testid="stPopover"] > button:hover { background: rgba(0, 242, 255, 0.1) !important; color: #fff !important; box-shadow: 0 0 15px #00f2ff !important; }
     
-    /* تغییر رنگ پس‌زمینه به مشکی خالص */
-    div[data-testid="stPopoverBody"] { 
-        background: #000000 !important; 
-        border: 1px solid #00f2ff !important; 
-        border-radius: 12px !important; 
-        box-shadow: 0 10px 30px rgba(0,242,255,0.4) !important; 
-        padding: 15px; width: 350px !important;
+    /* هدف‌گیری تمام لایه‌های پورتال استریم‌لیت */
+    div[data-testid="stPopoverBody"],
+    div[data-baseweb="popover"],
+    div[data-baseweb="popover"] > div,
+    [data-testid="stPopoverBody"] > div { 
+        background-color: #000000 !important; 
+        background: #000000 !important;
+        border-color: #00f2ff !important;
     }
-    
-    .tooltip-title { color: #00f2ff; font-weight: 900; font-family: 'Cinzel'; margin-bottom: 10px; font-size: 0.9rem; border-bottom: 1px solid rgba(0,242,255,0.3); padding-bottom: 5px;}
-    .tooltip-text { color: #d0e0f0; font-family: 'Montserrat'; font-size: 0.8rem; line-height: 1.8; margin-bottom: 4px;}
     </style>
     """, unsafe_allow_html=True)
 
