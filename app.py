@@ -375,7 +375,6 @@ if st.session_state.route == 'admin_panel':
 # ROUTE 2: DASHBOARD FLOW
 # ==========================================
 elif st.session_state.route == 'dashboard':
-    # 🔴 فراخوانی بک‌گراند اختصاصی فقط برای داشبورد
     add_bg_from_local("background.jpg")
     
     st.markdown("<h2 style='color:#fff; font-family:Cinzel; text-align:center;'>CONTROL CENTER</h2><div class='subtitle' style='text-align:center;'>Select a module to begin</div>", unsafe_allow_html=True)
@@ -408,20 +407,7 @@ elif st.session_state.route == 'library':
         
     st.markdown("<hr style='border-color: rgba(0,242,255,0.2);'>", unsafe_allow_html=True)
     
-    # 🔴 اضافه کردن گالری تصاویر بخش Library
-    st.markdown("<h4 style='color:#00f2ff; font-family:Cinzel; margin-bottom:15px;'>REFERENCE GALLERY</h4>", unsafe_allow_html=True)
-    l_c1, l_c2, l_c3, l_c4 = st.columns(4)
-    with l_c1:
-        if os.path.exists("desert_warn.jpg"): st.image("desert_warn.jpg", caption="Desert Warn")
-    with l_c2:
-        if os.path.exists("royal_clean.jpg"): st.image("royal_clean.jpg", caption="Royal Clean")
-    with l_c3:
-        if os.path.exists("dirty_combat.jpg"): st.image("dirty_combat.jpg", caption="Dirty Combat")
-    with l_c4:
-        if os.path.exists("urban_rebel.jpg"): st.image("urban_rebel.jpg", caption="Urban Rebel")
-        
-    st.markdown("<hr style='border-color: rgba(0,242,255,0.2);'>", unsafe_allow_html=True)
-    
+    # 🔴 لیست پروژه‌ها (که دکمه‌های آکاردئونی هستند) منتقل شد به بالا
     projects = load_json(PROJ_FILE, [])
     my_projs = [p for p in projects if p.get("user") == st.session_state.user]
     
@@ -432,6 +418,20 @@ elif st.session_state.route == 'library':
             with st.expander(f"📁 PROJECT LOG | {p['date']}"):
                 st.markdown("<p style='color:#7b8ea8; font-size:0.75rem; letter-spacing:2px;'>GENERATED MASTER PROMPT:</p>", unsafe_allow_html=True)
                 st.code(p['prompt'], language="markdown")
+
+    st.markdown("<hr style='border-color: rgba(0,242,255,0.2);'>", unsafe_allow_html=True)
+    
+    # 🔴 گالری تصاویر منتقل شد به پایین‌تر
+    st.markdown("<h4 style='color:#00f2ff; font-family:Cinzel; margin-bottom:15px;'>REFERENCE GALLERY</h4>", unsafe_allow_html=True)
+    l_c1, l_c2, l_c3, l_c4 = st.columns(4)
+    with l_c1:
+        if os.path.exists("desert_warn.jpg"): st.image("desert_warn.jpg", caption="Desert Warn")
+    with l_c2:
+        if os.path.exists("royal_clean.jpg"): st.image("royal_clean.jpg", caption="Royal Clean")
+    with l_c3:
+        if os.path.exists("dirty_combat.jpg"): st.image("dirty_combat.jpg", caption="Dirty Combat")
+    with l_c4:
+        if os.path.exists("urban_rebel.jpg"): st.image("urban_rebel.jpg", caption="Urban Rebel")
 
 elif st.session_state.route == 'settings':
     st.markdown("<h2 class='title-main'>SYSTEM SETTINGS</h2>", unsafe_allow_html=True)
@@ -521,18 +521,19 @@ elif st.session_state.route == 'builder':
         preview_p = generate_prompt(d)
         st.info(preview_p)
         
-        # 🔴 اضافه شدن تصاویر بخش Review
+        # 🔴 دکمه‌ها منتقل شدند بالای عکس‌ها
         st.markdown("<br>", unsafe_allow_html=True)
-        rev_c1, rev_c2 = st.columns(2)
-        with rev_c1:
-            if os.path.exists("portrait_clean.PNG"): st.image("portrait_clean.PNG", caption="Visual Reference 1")
-        with rev_c2:
-            if os.path.exists("portrait_clean_2.jpg"): st.image("portrait_clean_2.jpg", caption="Visual Reference 2")
-        st.markdown("<br>", unsafe_allow_html=True)
-        
         col1, col2, col3 = st.columns([1.5, 3, 2])
         if col1.button("⬅ EDIT (BACK)"): prev_step()
         if col3.button("🚀 PROCEED TO SIMULATION"): go_to('simulation')
+
+        # 🔴 عکس‌ها کوچکتر شدند (با قرار گرفتن در ستون‌های میانی)
+        st.markdown("<br>", unsafe_allow_html=True)
+        _, rev_c1, rev_c2, _ = st.columns([1, 2, 2, 1])
+        with rev_c1:
+            if os.path.exists("portrait_clean.PNG"): st.image("portrait_clean.PNG", caption="Visual Reference 1", use_container_width=True)
+        with rev_c2:
+            if os.path.exists("portrait_clean_2.jpg"): st.image("portrait_clean_2.jpg", caption="Visual Reference 2", use_container_width=True)
 
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -545,7 +546,6 @@ elif st.session_state.route == 'simulation':
     with c1:
         st.markdown('<div style="background:#0a192f; height:200px; border-radius:15px; border:1px dashed #00f2ff; display:flex; align-items:center; justify-content:center; flex-direction:column; margin-bottom:20px;"><h1 style="color:#00f2ff; opacity:0.5;">👁️</h1><p style="color:#00f2ff; opacity:0.7; font-family:Montserrat;">LIVE PREVIEW FEED</p></div>', unsafe_allow_html=True)
         
-        # 🔴 اضافه شدن تصاویر محیطی بخش Simulation
         sim_c1, sim_c2 = st.columns(2)
         with sim_c1:
             if os.path.exists("desert.jpg"): st.image("desert.jpg", caption="Desert Environment Test")
