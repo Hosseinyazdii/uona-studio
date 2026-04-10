@@ -16,22 +16,22 @@ st.markdown("""
     #MainMenu, footer, header {visibility: hidden;}
     .stDeployButton {display:none;}
 
-    /* هدر سفید درخشان و خوانا */
+    /* تایتل سفید درخشان و خوانا */
     .nav-bar {
         display: flex; align-items: center; padding: 10px 50px;
         background: rgba(2, 6, 12, 0.8); border-bottom: 1px solid rgba(0, 242, 255, 0.2);
         justify-content: space-between;
     }
     .title-main {
-        font-family: 'Cinzel'; color: #ffffff; font-size: 3.2rem; font-weight: 800; 
-        letter-spacing: 12px; margin: 0; text-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+        font-family: 'Cinzel'; color: #ffffff !important; font-size: 3rem; font-weight: 800; 
+        letter-spacing: 12px; margin: 0; text-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
     }
-    .slogan-main { font-family: 'Montserrat'; color: #00f2ff; font-size: 0.75rem; letter-spacing: 5px; text-transform: uppercase; }
+    .slogan-main { font-family: 'Montserrat'; color: #00f2ff; font-size: 0.7rem; letter-spacing: 5px; text-transform: uppercase; }
 
-    /* استایل دکمه‌های پورتال برای خوانایی متن */
+    /* دکمه‌های پورتال: متن مشکی روی فیروزه‌ای */
     .stButton > button {
-        background-color: #00f2ff !important; /* رنگ فیروزه‌ای درخشان */
-        color: #000000 !important; /* متن مشکی عمیق برای خوانایی */
+        background-color: #00f2ff !important;
+        color: #000000 !important;
         border: none !important;
         border-radius: 50px !important;
         font-family: 'Montserrat' !important;
@@ -39,68 +39,56 @@ st.markdown("""
         text-transform: uppercase;
         letter-spacing: 2px;
         font-size: 0.8rem !important;
-        padding: 10px 20px !important;
         transition: 0.3s;
     }
-    .stButton > button:hover {
-        background-color: #ffffff !important;
-        box-shadow: 0 0 15px #00f2ff;
-    }
+    .stButton > button:hover { background-color: #ffffff !important; box-shadow: 0 0 15px #00f2ff; }
 
     .module-card {
         background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(0, 242, 255, 0.1);
         border-radius: 15px; padding: 20px; text-align: center; backdrop-filter: blur(10px);
     }
     
-    /* فرم و لیبل‌ها */
     .label-text { color: #00d4ff; font-family: 'Montserrat'; font-weight: 700; text-transform: uppercase; font-size: 0.7rem; margin-top: 8px; }
     .star { color: #ff4b4b; }
     
     .master-header { background: linear-gradient(90deg, #00f2ff, #0088ff); color: #000; padding: 8px; font-weight: 900; font-size: 1.1rem; border-radius: 8px 8px 0 0; text-align: center; font-family: 'Montserrat'; }
     .master-box { 
         background-color: #ffffff; color: #111; padding: 20px; border-radius: 0 0 8px 8px; 
-        border-left: 10px solid #00f2ff; font-family: 'Montserrat'; font-size: 1rem; 
-        line-height: 1.6; height: 380px; overflow-y: auto;
+        border-left: 10px solid #00f2ff; font-family: 'Montserrat'; font-size: 0.95rem; 
+        line-height: 1.5; height: 350px; overflow-y: auto;
     }
     
-    /* فوتر نرمال و مینی‌مال */
     .footer { 
-        position: fixed; bottom: 0; width: 100%; text-align: center; padding: 15px; 
+        position: fixed; bottom: 0; width: 100%; text-align: center; padding: 12px; 
         border-top: 1px solid rgba(0, 242, 255, 0.1); background: rgba(0,0,0,0.5);
-        color: #ffffff; opacity: 0.6; font-family: 'Montserrat'; font-size: 0.7rem; font-weight: 300;
+        color: #ffffff; opacity: 0.6; font-family: 'Montserrat'; font-size: 0.65rem; font-weight: 300;
     }
-    .uona-tag { color: #00f2ff; font-weight: 700; }
     </style>
     """, unsafe_allow_html=True)
 
 if 'page' not in st.session_state: st.session_state.page = 'home'
 
-# --- هدر ثابت ---
+# --- هدر ---
 h_col1, h_col2 = st.columns([1, 6])
 with h_col1:
-    try: st.image("image.png", width=90)
-    except: st.markdown("<div style='width:80px; height:80px; background:#00f2ff; border-radius:12px;'></div>", unsafe_allow_html=True)
+    try: st.image("image.png", width=85)
+    except: st.markdown("<div style='width:70px; height:70px; background:#00f2ff; border-radius:10px;'></div>", unsafe_allow_html=True)
 with h_col2:
     st.markdown('<h1 class="title-main">UONA STUDIO</h1><div class="slogan-main">The Art of Cinematic Transformation</div>', unsafe_allow_html=True)
 
-# --- پورتال اصلی ---
+# --- پورتال ---
 if st.session_state.page == 'home':
     st.markdown("<br><br><h3 style='text-align:center; color:white; font-family:Cinzel; letter-spacing:4px;'>SELECT DESIGN MODULE</h3>", unsafe_allow_html=True)
     c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        st.markdown('<div class="module-card"><h1>🎬</h1><h3>CINEMATIC</h3></div>', unsafe_allow_html=True)
-        if st.button("OPEN MODULE", key="cine"): st.session_state.page = 'cinematic'; st.rerun()
-    with c2:
-        st.markdown('<div class="module-card"><h1>📺</h1><h3>SERIES</h3></div>', unsafe_allow_html=True)
-        if st.button("OPEN MODULE", key="series"): st.session_state.page = 'cinematic'; st.rerun()
-    with c3:
-        st.markdown('<div class="module-card" style="opacity:0.4;"><h1>🎭</h1><h3>THEATER</h3></div>', unsafe_allow_html=True)
-        st.button("COMING SOON", disabled=True, key="th")
-    with c4:
-        st.markdown('<div class="module-card" style="opacity:0.4;"><h1>👠</h1><h3>FASHION</h3></div>', unsafe_allow_html=True)
-        st.button("COMING SOON", disabled=True, key="fs")
+    modules = [("🎬", "CINEMATIC", "cine"), ("📺", "SERIES", "cine"), ("🎭", "THEATER", "soon"), ("👠", "FASHION", "soon")]
+    for idx, (icon, name, target) in enumerate(modules):
+        with [c1, c2, c3, c4][idx]:
+            st.markdown(f'<div class="module-card"><h1>{icon}</h1><h3>{name}</h3></div>', unsafe_allow_html=True)
+            if target == "cine":
+                if st.button(f"OPEN {name}", key=name): st.session_state.page = 'cinematic'; st.rerun()
+            else: st.button("COMING SOON", disabled=True, key=name)
 
-# --- ماژول Cinematic ---
+# --- ماژول Cinematic (تکمیل شده) ---
 elif st.session_state.page == 'cinematic':
     if st.button("← BACK"): st.session_state.page = 'home'; st.rerun()
     
@@ -108,48 +96,52 @@ elif st.session_state.page == 'cinematic':
         if isinstance(d, dict): return {**{"None": ""}, **d}
         return ["None"] + d
 
-    # دیتاها
-    gender_d = add_n({"Masculine / Male": "strong bone structure", "Feminine / Female": "softer facial contours", "Androgynous": "blend of features"})
-    age_d = add_n({"Child / Pre-adolescent": "textureless skin", "Adolescent / Teenager": "oily skin", "Young Adult (Early 20s)": "peak elasticity", "Middle-aged (Late 40s)": "initial fat loss", "Elderly / Senior": "collagen loss", "Ancient / Centenarian": "paper-thin skin"})
-    nat_d = add_n({"Iranian": "prominent nasal bridge", "Egyptian": "North African features", "Emirati": "Gulf Arab features", "Saudi": "Peninsular Arab features", "Kuwaiti": "Northern Gulf", "Syrian": "Levantine features", "American": "Diverse structures", "Indian": "South Asian", "Chinese": "East Asian", "African": "Deep melanated", "European": "Caucasian", "Turkish": "Eurasian"})
-    era_d = add_n({"Stone Age": "Primitive", "BCE": "Ancient", "Pre-Islamic": "Traditional", "Ancient Era": "Classical", "Medieval": "Gritty", "200 Years Ago": "Regency", "150 Years Ago": "Victorian", "100 Years Ago": "Roaring 20s", "50 Years Ago": "Analog film", "Contemporary": "Current lighting", "Futuristic": "High-tech glow", "Post-Apocalyptic": "Weathered"})
-    char_d = add_n({"Heroic Warrior": "Strong jawline", "Sinister Villain": "Harsh shadows", "Scholar": "Refined", "Royal": "Elegant", "Mercenary": "Rugged", "Mystic": "Otherworldly", "CEO": "Clean-cut", "Athlete": "Defined", "Artist": "Creative", "Citizen": "Naturalistic", "Technician": "Grime", "Student": "Youthful", "Model": "Angular", "Grandparent": "Dignified", "Urban": "Modern edge", "Outdoorsman": "Sun-damaged", "Gala Guest": "Glamorous", "Sickly": "Pale skin"})
-    groom_d = add_n({"Saudi Anchor": "sharp angled", "Pyramidal Moustache": "wide base", "Clean Shaven": "smooth", "Light Stubble": "short", "Heavy Stubble": "rough", "Designer Stubble": "precisely trimmed", "Shadow Fade": "smooth gradient", "Goatee": "chin beard", "Classic Goatee": "connected", "Van Dyke": "pointed", "Anchor Beard": "thin", "Short Boxed": "square edges", "Medium Boxed": "structured", "Long Full": "natural growth", "Unkempt": "messy", "Scruffy": "patchy", "Wild": "chaotic", "Bedouin": "weathered", "Viking": "braided", "Medieval": "period growth", "Philosopher": "soft", "Warrior": "rugged", "Graying": "mixed-tone", "Split Texture": "dual-textured", "Short Sideburns": "above ear", "Mid-Ear": "tragus level", "Long Sideburns": "ear lobe", "Extra-Long": "pass lobe", "High Sideburns": "temple level", "Tapered": "faded", "Square": "clean edges", "Pointed": "triangle", "Rounded": "circular", "Pencil": "thin line", "Flared": "wide", "Angled": "slanted", "Mutton Chops": "wide full", "Friendly Mutton": "connected", "Soul Patch": "below lip"})
-    sfx_cats = {
-        "Acute Trauma": ["Fresh Katana/Sword Slash", "Glass Laceration", "Blunt Force Contusion", "Chemical Acid Burn"],
-        "Healing Stages": ["3-Day Old Wound", "1-Week Old Wound", "1-Month Old Scar", "1-Year Old Keloid", "5-Year Old Atrophic Scar"],
-        "Bruising": ["Fresh Periorbital Hematoma", "24-Hour Old Bruise", "3-Day Old Bruise", "15-Day Old Fading Bruise"],
-        "Skin Conditions": ["1st Degree Sunburn", "2nd Degree Burn", "Bilateral Vitiligo", "Diffuse Hyperpigmentation"]
-    }
-    aging_d = add_n({"Deep Nasolabial Folds": "smile lines", "Pronounced Crow's Feet": "eye wrinkles", "Hooded Eyelids": "sagging lids", "Dermal Crepiness": "paper skin", "Visible Liver Spots": "age spots", "Sagging Jowls": "loose skin", "Frontal Rhytids": "forehead ridges", "Periorbital Hollows": "sunken eyes", "Vertical Lip Lines": "mouth wrinkles", "Age-related Telangiectasia": "capillaries"})
-    h_tex_d = add_n({"Afro": "coils", "Wavy": "S-shape", "Curly": "ringlets", "Straight": "silky", "Coarse": "rough", "Fine": "wispy", "Matted": "weathered", "Braided": "patterns"})
-    h_col_d = add_n({"Jet black": "Natural black", "Espresso": "Dark chocolate", "Chestnut": "Sandy", "Ash blonde": "Cool blonde", "Golden blonde": "Warm blonde", "10% Grey": "sparse", "30% Grey": "mixed", "50% Grey": "even", "70% Grey": "mostly grey"})
-    light_d = add_n({"Rembrandt": "triangle light", "Cold Rim": "blue backlight", "Chiaroscuro": "contrast", "Teal and Orange": "cinematic", "God Rays": "linear", "Golden Hour": "sunset", "High-Key": "bright", "Low-Key": "moody", "Neon Cyberpunk": "edge light", "Hard Top": "harsh shadow", "Candlelight": "unsteady", "Softbox": "velvety"})
-    cam_d = add_n({"85mm Eye-Level": "no distortion", "100mm Macro": "extreme detail", "50mm Dutch": "tilted tension", "35mm Low-Angle": "hero shot", "24mm High-Angle": "thinning", "200mm Profile": "compressed", "50mm Top-Down": "design focus", "85mm Three-Quarter": "standard"})
-    size_l = add_n(["4:5 (Portrait)", "16:9 (Widescreen)", "2.39:1 (Anamorphic)", "1:1 (Square)", "9:16 (Vertical)"])
-    mat_l = add_n(["Encapsulated Silicone", "Feathered Edges", "Translucent Skin", "Prosthetic Adhesive", "Matte Sealer", "Alcohol Palette", "Granulation Tissue"])
+    # دیتاها (بر اساس شیت‌های اصلی)
+    gender_d = add_n({"Masculine / Male": "strong bone structure", "Feminine / Female": "softer facial contours"})
+    age_d = add_n({"Elderly": "collagen loss", "Middle-aged": "fat loss", "Young Adult": "peak elasticity", "Child": "smooth"})
+    nat_d = add_n({"Iranian": "prominent nasal bridge", "Saudi": "Peninsular Arab", "European": "Caucasian", "African": "Melanated"})
+    era_d = add_n({"Ancient": "Classical", "Medieval": "Gritty", "100 Years Ago": "Period", "Contemporary": "Modern"})
+    char_d = add_n({"Heroic Warrior": "Strong", "Sinister Villain": "Harsh", "Scholar": "Refined", "Mercenary": "Rugged"})
+    groom_d = add_n({"Clean Shaven": "smooth", "Light Stubble": "short", "Heavy Stubble": "rough", "Full Beard": "natural"})
+    sfx_cats = {"Acute Trauma": ["Katana Slash", "Glass Laceration"], "Healing Stages": ["3-Day Wound", "1-Month Scar"], "Bruising": ["Fresh Hematoma", "3-Day Bruise"]}
+    
+    aging_d = add_n({"Deep Nasolabial Folds": "smile lines", "Crow's Feet": "eye wrinkles", "Liver Spots": "age spots"})
+    h_tex_d = add_n({"Afro": "coils", "Wavy": "S-shape", "Curly": "ringlets", "Straight": "silky", "Matted": "weathered"})
+    h_col_d = add_n({"Jet black": "Natural", "Espresso": "Dark", "Ash blonde": "Cool", "50% Grey": "even"})
+    light_d = add_n({"Rembrandt": "triangle", "Teal and Orange": "cinematic", "Neon Cyberpunk": "edge", "Softbox": "velvety"})
+    cam_d = add_n({"85mm Eye-Level": "no distortion", "100mm Macro": "extreme detail", "50mm Dutch": "tilted"})
+    size_l = add_n(["4:5 (Portrait)", "16:9 (Widescreen)", "2.39:1 (Anamorphic)", "1:1 (Square)"])
+    mat_l = add_n(["Encapsulated Silicone", "Feathered Edges", "Translucent Skin", "Matte Sealer"])
 
-    c_form, c_master = st.columns([1.8, 1])
+    c_form, c_master = st.columns([2.1, 1])
     with c_form:
-        f1, f2 = st.columns(2)
+        f1, f2, f3 = st.columns(3)
         with f1:
-            st.markdown('<p class="label-text">Actor Reference <span class="star">*</span></p>', unsafe_allow_html=True)
+            st.markdown('<p class="label-text">Actor & Identity <span class="star">*</span></p>', unsafe_allow_html=True)
             actor = st.selectbox("", ["None", "No", "Yes"], key="act", label_visibility="collapsed")
-            st.markdown('<p class="label-text">Gender & Age <span class="star">*</span></p>', unsafe_allow_html=True)
             gen = st.selectbox("", list(gender_d.keys()), key="gen", label_visibility="collapsed")
             age = st.selectbox("", list(age_d.keys()), key="age", label_visibility="collapsed")
-            st.markdown('<p class="label-text">SFX Category & Trauma</p>', unsafe_allow_html=True)
-            s_cat = st.selectbox("", ["None"] + list(sfx_cats.keys()), key="scat", label_visibility="collapsed")
-            s_type = st.selectbox("", sfx_cats[s_cat] if s_cat != "None" else ["None"], key="stype", label_visibility="collapsed")
+            st.markdown('<p class="label-text">Hair & Beard Color</p>', unsafe_allow_html=True)
+            h_col = st.selectbox("", list(h_col_d.keys()), key="hcol", label_visibility="collapsed")
+            st.markdown('<p class="label-text">Hair Texture</p>', unsafe_allow_html=True)
+            h_tex = st.selectbox("", list(h_tex_d.keys()), key="htex", label_visibility="collapsed")
         with f2:
-            st.markdown('<p class="label-text">Nationality & Era <span class="star">*</span></p>', unsafe_allow_html=True)
+            st.markdown('<p class="label-text">Origin & Era <span class="star">*</span></p>', unsafe_allow_html=True)
             nat = st.selectbox("", list(nat_d.keys()), key="nat", label_visibility="collapsed")
             era = st.selectbox("", list(era_d.keys()), key="era", label_visibility="collapsed")
-            st.markdown('<p class="label-text">Character & Grooming</p>', unsafe_allow_html=True)
+            st.markdown('<p class="label-text">SFX & Trauma</p>', unsafe_allow_html=True)
+            s_cat = st.selectbox("", ["None"] + list(sfx_cats.keys()), key="scat", label_visibility="collapsed")
+            s_type = st.selectbox("", sfx_cats[s_cat] if s_cat != "None" else ["None"], key="stype", label_visibility="collapsed")
+            st.markdown('<p class="label-text">Material Finish</p>', unsafe_allow_html=True)
+            mat = st.selectbox("", mat_l, key="mat", label_visibility="collapsed")
+        with f3:
+            st.markdown('<p class="label-text">Concept & Grooming</p>', unsafe_allow_html=True)
             char = st.selectbox("", list(char_d.keys()), key="char", label_visibility="collapsed")
             groom = st.selectbox("", list(groom_d.keys()), key="groom", label_visibility="collapsed")
-            st.markdown('<p class="label-text">Camera & Lens Detail <span class="star">*</span></p>', unsafe_allow_html=True)
+            st.markdown('<p class="label-text">Technical & Size <span class="star">*</span></p>', unsafe_allow_html=True)
             cam = st.selectbox("", list(cam_d.keys()), key="cam", label_visibility="collapsed")
+            light = st.selectbox("", list(light_d.keys()), key="light", label_visibility="collapsed")
+            size_sel = st.selectbox("", size_l, key="psize", label_visibility="collapsed")
 
     def f(p, v, d=None):
         if v == "None" or not v: return ""
@@ -158,17 +150,12 @@ elif st.session_state.page == 'cinematic':
 
     p_actor = "[VISUAL GUIDE: Emulate facial structure] " if actor == "Yes" else ""
     p_sfx = f" [SFX STUDY: Apply {s_type} SFX as a makeup layer]." if s_type != "None" else ""
+    p_size = f" Aspect Ratio {size_sel}" if size_sel != "None" else ""
     
-    final_prompt = f"{p_actor}A professional cinematic portrait of a {f('', gen, gender_d)} {f('', age, age_d)} {f('', nat, nat_d)}{f(' from the ', era, era_d)}. {f('Concept: ', char, char_d)}. {f('Grooming: ', groom, groom_d)}. {f('Skin: ', aging_d[list(aging_d.keys())[0]], aging_d)}.{p_sfx} Technical: {f('', light_d[list(light_d.keys())[0]], light_d)}, {f('', cam, cam_d)}, 8k, raw photography."
+    final_prompt = f"{p_actor}A professional cinematic{p_size} portrait of a {f('', gen, gender_d)} {f('', age, age_d)} {f('', nat, nat_d)}{f(' from ', era, era_d)}. {f('Concept: ', char, char_d)}. {f('Grooming: ', groom, groom_d)}. {f('Hair: ', h_col, h_col_d)} {f(', Texture: ', h_tex, h_tex_d)}. {f('Makeup Material: ', mat)}. {p_sfx} Technical: {f('', light, light_d)}, {f('', cam, cam_d)}, 8k, raw photography."
 
     with c_master:
         st.markdown('<div class="master-header">📖 MASTER PROMPT</div>', unsafe_allow_html=True)
         st.markdown(f'<div class="master-box">{final_prompt}</div>', unsafe_allow_html=True)
 
-# 6. فوتر نرمال
-st.markdown(f"""
-    <div class="footer">
-        © {datetime.now().year} <span class="uona-tag">UONA GROUP</span>. ALL RIGHTS RESERVED. | 
-        CINEMATIC CHARACTER AI PLATFORM
-    </div>
-    """, unsafe_allow_html=True)
+st.markdown(f"<div class='footer'>© {datetime.now().year} UONA GROUP | ALL RIGHTS RESERVED</div>", unsafe_allow_html=True)
