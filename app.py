@@ -104,6 +104,7 @@ elif st.session_state.page == 'cinematic':
         if isinstance(d, dict): return {**{"None": ""}, **d}
         return ["None"] + d
 
+    # دیتاها
     gender_d = add_n({"Masculine / Male": "strong bone structure", "Feminine / Female": "softer facial contours", "Androgynous": "blend of features"})
     age_d = add_n({"Child / Pre-adolescent": "textureless skin", "Adolescent / Teenager": "oily skin", "Young Adult (Early 20s)": "peak elasticity", "Middle-aged (Late 40s)": "initial fat loss", "Elderly / Senior": "collagen loss", "Ancient / Centenarian": "paper-thin skin"})
     nat_d = add_n({"Iranian": "prominent nasal bridge", "Egyptian": "North African features", "Emirati": "Gulf Arab features", "Saudi": "Peninsular Arab features", "Kuwaiti": "Northern Gulf", "Syrian": "Levantine features", "American": "Diverse structures", "Indian": "South Asian", "Chinese": "East Asian", "African": "Deep melanated", "European": "Caucasian", "Turkish": "Eurasian"})
@@ -133,21 +134,22 @@ elif st.session_state.page == 'cinematic':
             st.markdown('<p class="label-text">Gender & Age <span class="star">*</span></p>', unsafe_allow_html=True)
             gen = st.selectbox("", list(gender_d.keys()), key="gen", label_visibility="collapsed")
             age = st.selectbox("", list(age_d.keys()), key="age", label_visibility="collapsed")
-            st.markdown('<p class="label-text">SFX Category & Trauma</p>', unsafe_allow_html=True)
+            st.markdown('<p class="label-text">SFX Category <span class="star">*</span></p>', unsafe_allow_html=True)
             s_cat = st.selectbox("", ["None"] + list(sfx_cats.keys()), key="scat", label_visibility="collapsed")
+            st.markdown('<p class="label-text">Specific Trauma / Wound</p>', unsafe_allow_html=True)
             s_type = st.selectbox("", sfx_cats[s_cat] if s_cat != "None" else ["None"], key="stype", label_visibility="collapsed")
-            st.markdown('<p class="label-text">Lighting Style</p>', unsafe_allow_html=True)
+            st.markdown('<p class="label-text">Lighting Environment</p>', unsafe_allow_html=True)
             light = st.selectbox("", list(light_d.keys()), key="light", label_visibility="collapsed")
         with f2:
             st.markdown('<p class="label-text">Nationality & Era <span class="star">*</span></p>', unsafe_allow_html=True)
             nat = st.selectbox("", list(nat_d.keys()), key="nat", label_visibility="collapsed")
             era = st.selectbox("", list(era_d.keys()), key="era", label_visibility="collapsed")
-            st.markdown('<p class="label-text">Character & Grooming</p>', unsafe_allow_html=True)
+            st.markdown('<p class="label-text">Character Concept & Grooming</p>', unsafe_allow_html=True)
             char = st.selectbox("", list(char_d.keys()), key="char", label_visibility="collapsed")
             groom = st.selectbox("", list(groom_d.keys()), key="groom", label_visibility="collapsed")
-            st.markdown('<p class="label-text">Camera & Lens Detail <span class="star">*</span></p>', unsafe_allow_html=True)
+            st.markdown('<p class="label-text">Camera & Lens Perspective <span class="star">*</span></p>', unsafe_allow_html=True)
             cam = st.selectbox("", list(cam_d.keys()), key="cam", label_visibility="collapsed")
-            st.markdown('<p class="label-text">Picture Size / Aspect Ratio</p>', unsafe_allow_html=True)
+            st.markdown('<p class="label-text">Frame Size / Aspect Ratio</p>', unsafe_allow_html=True)
             size_sel = st.selectbox("", size_l, key="psize", label_visibility="collapsed")
 
     def f(p, v, d=None):
