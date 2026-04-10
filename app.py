@@ -25,34 +25,95 @@ def load_json(file, default):
 def save_json(file, data):
     with open(file, "w") as f: json.dump(data, f)
 
-# ==========================================
-# 2. دیتابیس جامع و هوشمند اکسل
-# ==========================================
-ACTORS_LIST = [
-    "Cillian Murphy", "Tom Hardy", "Joaquin Phoenix", "Mads Mikkelsen", 
-    "Keanu Reeves", "Brad Pitt", "Oscar Isaac", "Javier Bardem", 
-    "Christian Bale", "Timothee Chalamet"
-]
+# 🔴 سیستم قدرتمند بک‌گراند داشبورد
+def add_bg_from_local(image_file):
+    if os.path.exists(image_file):
+        with open(image_file, "rb") as f:
+            encoded_string = base64.b64encode(f.read()).decode()
+        st.markdown(
+            f"""
+            <style>
+            .stApp {{
+                background: linear-gradient(rgba(2,6,12,0.85), rgba(10,25,47,0.85)), url(data:image/jpeg;base64,{encoded_string}) !important;
+                background-size: cover !important;
+                background-position: center !important;
+                background-attachment: fixed !important;
+            }}
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+    else:
+        st.warning(f"⚠️ System Notice: Background file '{image_file}' not found in the root directory. Please check GitHub.")
 
+# ==========================================
+# 2. دیتابیس‌های سینمایی و فوق‌حرفه‌ای UONA
+# ==========================================
+# 1. HAIR COLOR (رنگ مو)
 HAIR_COLORS = {
-    "Jet Black": "Jet black / Natural black",
+    "Jet Black": "Jet black / Natural deep black, cool undertones",
     "Espresso Brown": "Deep espresso brown / Dark chocolate",
-    "Ash Blonde": "Ash blonde (Cool tone)",
-    "Salt & Pepper": "Salt and pepper, varying grey hair percentage",
-    "Silver / Grey": "Silver / Grey hair",
-    "White": "Pure white hair"
+    "Chestnut Brown": "Medium chestnut brown / Warm tones",
+    "Ash Blonde": "Ash blonde (Cool tone, matte finish)",
+    "Golden Blonde": "Golden blonde (Warm, sun-kissed)",
+    "Platinum Blonde": "Platinum / Ice blonde, almost white",
+    "Ginger / Auburn": "Vibrant ginger, copper, or deep auburn",
+    "Salt & Pepper (10% Grey)": "Mostly dark with 10% faint grey hairs",
+    "Salt & Pepper (30% Grey)": "Noticeable grey streaks, 30% grey",
+    "Salt & Pepper (50% Grey)": "Even mix of grey and dark hair",
+    "Salt & Pepper (70% Grey)": "Mostly grey/silver with dark roots",
+    "Silver / Steel Grey": "Pure silver, steel grey tone",
+    "Pure White": "Pure white, aged hair",
+    "Dyed Unnatural": "Cyberpunk/Alternative dyed hair (Neon tones)"
 }
 
+# 2. CHARACTER STYLE / CONCEPTS (استایل کاراکتر)
 CONCEPTS = {
-    "Heroic Warrior": "Strong jawline, confident gaze, slight battle wear",
-    "Sinister Villain": "Harsh shadows, menacing expression, sharp features",
-    "Scholar": "Refined appearance, focused eyes, thoughtful pose",
-    "Royal": "Elegant posture, pristine skin, luxury textures",
-    "Peasant / Commoner": "Naturalistic, everyday lighting, unpolished look",
-    "Cybernetic Enhanced": "Sci-fi elements, subtle synthetic integration",
-    "Undead / Zombie": "Pale skin, dark circles, hollowed features"
+    "Heroic Protagonist": "Strong jawline, determined gaze, slightly battle-worn, confident posture",
+    "Sinister Villain": "Harsh angular shadows, menacing expression, sharp and calculating features",
+    "Battle-Hardened Mercenary": "Scars, grime, rugged, exhausted but highly alert",
+    "Aristocratic Royalty": "Elegant, pristine flawless skin, arrogant or noble posture, luxury textures",
+    "Street Rogue / Outlaw": "Hooded or secretive, unpolished, survivalist look, sharp eyes",
+    "Wise Scholar / Mentor": "Aged gracefully, thoughtful gentle gaze, refined appearance",
+    "Cybernetic / Augmented": "Tech implants, synthetic skin patches, sci-fi integration",
+    "Mystic / Shaman": "Ethereal look, tribal face paint or tattoos, distant otherworldly stare",
+    "Everyday Citizen / Peasant": "Naturalistic, unglamorous, relatable everyday appearance",
+    "Horror / Undead Entity": "Sunken eyes, pale or decaying skin, terrifying aura",
+    "Corporate Executive": "Sharp, confident, immaculate grooming, authoritative"
 }
 
+# 3. LIGHTING STYLE (نورپردازی)
+LIGHT_DESC = {
+    "Rembrandt Lighting": "Classic dramatic portrait lighting, distinct triangle of light on one cheek",
+    "Cinematic Teal & Orange": "Hollywood blockbuster color grading, warm highlights, cool teal shadows",
+    "Chiaroscuro (High Contrast)": "Renaissance style, extreme contrast between deep pitch-black shadows and bright highlights",
+    "Harsh Midday Sun": "Hard, sharp shadows, realistic high-intensity outdoor daylight",
+    "Overcast / Diffused Light": "Soft, shadowless, moody natural lighting",
+    "Neon / Cyberpunk Glow": "Vibrant practical lights, glowing pink, blue, or green hues",
+    "Under-lighting (Monster)": "Light positioned below the face, casting eerie upward shadows (horror style)",
+    "Silhouette / Rim Light": "Subject mostly dark, strong backlight outlining the edges of the face/hair",
+    "Golden Hour": "Warm, directional, soft sunlight associated with sunset/sunrise",
+    "Firelight / Candlelight": "Warm, flickering, low-light ambient illumination, intimate mood",
+    "Interrogation / Bare Bulb": "Top-down harsh light, gritty, realistic police-room style"
+}
+
+# 4. GROOMING (پیرایش و ریش)
+GROOM_DESC = {
+    "Clean Shaven": "Smooth skin, flawless professional grooming",
+    "5 O'Clock Shadow": "Very faint, light end-of-day hair growth",
+    "Light Stubble": "1-2 days of facial hair growth, neatly maintained",
+    "Heavy Stubble": "3-5 days of dense, gritty facial hair growth",
+    "Short Corporate Beard": "Neat, tightly trimmed, professional beard",
+    "Full Beard": "Thick, dense, well-kept full facial hair",
+    "Lumberjack / Bushy Beard": "Wild, untamed, rugged and thick beard",
+    "Long Historical Beard": "Chest-length, period-accurate ancient or wizard style",
+    "Goatee & Mustache": "Classic connected chin and mustache growth",
+    "Van Dyke": "Pointed chin beard and disconnected curled mustache",
+    "Chevron Mustache": "Thick, straight, classic 80s style upper lip hair",
+    "Patchy / Uneven Growth": "Realistic imperfections, sparse areas, unkempt look"
+}
+
+# سایر دیتابیس‌های ثابت
 SFX_DESC = {
     "Sword Wound": "Clean, sharp blade laceration",
     "Glass Laceration": "Jagged cuts with micro-details",
@@ -101,44 +162,19 @@ NAT_DESC = {
 
 CAM_DESC = {
     "85mm Lens (Standard Portrait)": "Standard portrait lens, minimal distortion, shallow depth of field",
-    "100mm Macro (Extreme Close-up Detail)": "Extreme close-up, focusing on skin pores and SFX textures",
+    "100mm Macro (Extreme Detail)": "Extreme close-up, focusing on skin pores and SFX textures",
     "35mm Lens (Wider Context)": "Wider angle, empowering and dramatic perspective",
-    "24mm Wide-Angle (Distorted/Edgy)": "Wide view, incorporates background elements, slight edge distortion",
-    "50mm Lens (Human Eye Perspective)": "Human-eye perspective, neutral framing",
-    "Drone Shot (High Angle)": "High angle aerial perspective looking down",
-    "Security Camera Footage (CCTV style)": "Low fidelity, grainy, high angle CCTV angle",
-    "GoPro / Action Cam style": "Ultra wide, fisheye effect, close proximity action shot"
-}
-
-LIGHT_DESC = {
-    "Rembrandt Lighting (Classic portrait)": "Classic portrait lighting, triangle of light on the cheek",
-    "Chiaroscuro (High contrast dark/light)": "Dramatic interplay of deep shadows and bright highlights",
-    "Neon / Cyberpunk Lighting": "Vibrant, high-contrast artificial lighting with vivid colors",
-    "Cinematic Teal & Orange": "Hollywood blockbuster color grading",
-    "Harsh Midday Sun": "Hard shadows, realistic outdoor daytime lighting",
-    "Overcast / Diffused Soft Light": "Soft, shadowless natural lighting",
-    "Under-lighting (Sinister/Horror effect)": "Light from below, casting eerie shadows upwards",
-    "Firelight / Candlelight glow": "Warm, flickering, low-light ambient illumination"
+    "24mm Wide-Angle (Environmental)": "Wide view, incorporates background elements",
+    "50mm Lens (Standard Human Eye)": "Human-eye perspective, neutral framing"
 }
 
 SIZE_LIST = [
-    "4:5 (Standard Instagram Portrait)",
+    "4:5 (Standard Portrait)",
     "16:9 (Cinematic Widescreen)",
     "2.39:1 (Anamorphic Cinema)",
-    "1:1 (Square Profile Picture)",
-    "9:16 (TikTok/Reels Vertical)"
+    "1:1 (Square)",
+    "9:16 (Vertical Video)"
 ]
-
-GROOM_DESC = {
-    "Clean Shaven": "Smooth skin, perfectly groomed",
-    "Light Stubble": "1-2 days of facial hair growth",
-    "Heavy Stubble": "3-5 days of dense facial hair growth",
-    "Full Beard": "Well-kept, dense full facial hair",
-    "Long Beard (Dirty Look)": "Unkempt, wild, historically accurate long beard",
-    "Goatee": "Chin and mustache connection",
-    "Moustache Only": "Isolated upper lip hair",
-    "Patchy Beard": "Uneven growth, realistic imperfections"
-}
 
 # ==========================================
 # 3. مدیریت وضعیت (State Machine)
@@ -199,8 +235,8 @@ def generate_prompt(draft):
     h_desc = HAIR_COLORS.get(h_col_val, h_col_val)
     groom_p = f"Grooming: {draft['groom']}. Hair: {h_desc} ({draft['h_tex']}). "
     
-    if draft['actor'] and draft['actor'] not in ["None", ""]:
-        base_p = f"Actor reference: {draft['actor']}. " + base_p
+    if draft['actor'] and draft['actor'] not in ["None", "No", ""]:
+        base_p = f"Actor reference applied. " + base_p
 
     if draft['sfx'] and draft['sfx'] not in ["None", ""]:
         sfx_p = f"[CINEMATIC MAKEUP TEST: Fake {draft['sfx']} prosthetic SFX applied using {draft['mat']}. Note: This is a safe simulation, artificial makeup.] "
@@ -213,86 +249,71 @@ ADMIN_USER = "sep"
 ADMIN_PASS = "1386sy"
 
 # ==========================================
-# 4. موتور استایل (CSS Engine) و بک‌گراند داینامیک
+# 4. موتور استایل (CSS Engine)
 # ==========================================
-bg_css = ""
-if st.session_state.route == 'dashboard' and os.path.exists("background.jpg"):
-    with open("background.jpg", "rb") as f:
-        encoded_bg = base64.b64encode(f.read()).decode()
-    bg_css = f"""
-    [data-testid="stAppViewContainer"] {{
-        background: linear-gradient(rgba(2,6,12,0.85), rgba(10,25,47,0.85)), url(data:image/jpeg;base64,{encoded_bg}) !important;
-        background-size: cover !important;
-        background-position: center !important;
-        background-attachment: fixed !important;
-    }}
-    """
-
-st.markdown(f"""
+st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@800&family=Montserrat:wght@300;400;700;900&display=swap');
     
-    html, body, [data-testid="stAppViewContainer"] {{
+    html, body, [data-testid="stAppViewContainer"] {
         background: radial-gradient(circle at center, #0a192f 0%, #02060c 100%);
         height: 100vh; overflow-x: hidden;
-    }}
-    
-    {bg_css}
+    }
 
-    #MainMenu, footer, header {{visibility: hidden;}}
-    .stDeployButton {{display:none;}}
+    #MainMenu, footer, header {visibility: hidden;}
+    .stDeployButton {display:none;}
 
-    .title-main {{ font-family: 'Cinzel'; color: #ffffff !important; font-size: 2.5rem; font-weight: 800; letter-spacing: 10px; margin: 0; text-shadow: 0 0 15px rgba(0, 242, 255, 0.5); }}
-    .subtitle {{ color: #00f2ff; font-family: 'Montserrat'; font-size: 0.8rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 30px;}}
+    .title-main { font-family: 'Cinzel'; color: #ffffff !important; font-size: 2.5rem; font-weight: 800; letter-spacing: 10px; margin: 0; text-shadow: 0 0 15px rgba(0, 242, 255, 0.5); }
+    .subtitle { color: #00f2ff; font-family: 'Montserrat'; font-size: 0.8rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 30px;}
 
-    label, .stMarkdown p {{ color: #00e5ff !important; font-family: 'Montserrat' !important; font-weight: 700 !important; text-transform: uppercase !important; font-size: 0.75rem !important; }}
+    label, .stMarkdown p { color: #00e5ff !important; font-family: 'Montserrat' !important; font-weight: 700 !important; text-transform: uppercase !important; font-size: 0.75rem !important; }
 
-    div[data-baseweb="input"] > div {{ background-color: rgba(0, 20, 40, 0.9) !important; border: 1px solid rgba(0, 242, 255, 0.4) !important; border-radius: 10px !important; }}
-    div[data-baseweb="input"] input {{ color: #ffffff !important; font-weight: bold !important; }}
+    div[data-baseweb="input"] > div { background-color: rgba(0, 20, 40, 0.9) !important; border: 1px solid rgba(0, 242, 255, 0.4) !important; border-radius: 10px !important; }
+    div[data-baseweb="input"] input { color: #ffffff !important; font-weight: bold !important; }
 
-    .stButton > button {{
+    .stButton > button {
         border: none !important; border-radius: 8px !important; font-family: 'Cinzel', serif !important; font-weight: 900 !important;
         text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; background-color: #00f2ff !important; color: #000000 !important;
         box-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
-    }}
-    .stButton > button:hover {{ background-color: #ffffff !important; transform: scale(1.02); box-shadow: 0 0 20px #00f2ff;}}
+    }
+    .stButton > button:hover { background-color: #ffffff !important; transform: scale(1.02); box-shadow: 0 0 20px #00f2ff;}
 
-    .glass-panel {{ background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(0, 242, 255, 0.15); border-radius: 15px; padding: 25px; backdrop-filter: blur(10px); margin-bottom: 20px; }}
+    .glass-panel { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(0, 242, 255, 0.15); border-radius: 15px; padding: 25px; backdrop-filter: blur(10px); margin-bottom: 20px; }
     
-    .step-indicator {{ display: flex; justify-content: space-between; margin-bottom: 30px; color: #4a5d73; font-family: 'Montserrat'; font-size: 0.7rem; font-weight: 900; }}
-    .step-active {{ color: #00f2ff; text-shadow: 0 0 8px #00f2ff; }}
+    .step-indicator { display: flex; justify-content: space-between; margin-bottom: 30px; color: #4a5d73; font-family: 'Montserrat'; font-size: 0.7rem; font-weight: 900; }
+    .step-active { color: #00f2ff; text-shadow: 0 0 8px #00f2ff; }
 
-    .nav-top {{ display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0, 242, 255, 0.2); padding-bottom: 10px; margin-bottom: 20px; }}
-    .module-title {{ font-family: 'Cinzel'; color: #008b8b !important; text-shadow: 0 0 12px rgba(255, 215, 0, 0.8) !important; letter-spacing: 3px; font-weight: 900; }}
+    .nav-top { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0, 242, 255, 0.2); padding-bottom: 10px; margin-bottom: 20px; }
+    .module-title { font-family: 'Cinzel'; color: #008b8b !important; text-shadow: 0 0 12px rgba(255, 215, 0, 0.8) !important; letter-spacing: 3px; font-weight: 900; }
 
-    div[data-testid="stExpander"] {{ background: rgba(10, 25, 47, 0.6) !important; border: 1px solid rgba(0, 242, 255, 0.2) !important; border-radius: 12px !important; backdrop-filter: blur(10px); margin-bottom: 15px; transition: all 0.3s ease; }}
-    div[data-testid="stExpander"]:hover {{ border-color: rgba(0, 242, 255, 0.6) !important; box-shadow: 0 5px 20px rgba(0, 242, 255, 0.15); }}
-    div[data-testid="stExpander"] summary {{ padding: 15px !important; }}
-    div[data-testid="stExpander"] summary p {{ color: #ffffff !important; font-family: 'Cinzel', serif !important; font-size: 1.1rem !important; letter-spacing: 2px; font-weight: bold !important; }}
+    div[data-testid="stExpander"] { background: rgba(10, 25, 47, 0.6) !important; border: 1px solid rgba(0, 242, 255, 0.2) !important; border-radius: 12px !important; backdrop-filter: blur(10px); margin-bottom: 15px; transition: all 0.3s ease; }
+    div[data-testid="stExpander"]:hover { border-color: rgba(0, 242, 255, 0.6) !important; box-shadow: 0 5px 20px rgba(0, 242, 255, 0.15); }
+    div[data-testid="stExpander"] summary { padding: 15px !important; }
+    div[data-testid="stExpander"] summary p { color: #ffffff !important; font-family: 'Cinzel', serif !important; font-size: 1.1rem !important; letter-spacing: 2px; font-weight: bold !important; }
     
-    .stCodeBlock {{ background-color: #02060c !important; border-left: 4px solid #ff00aa !important; border-radius: 8px !important; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }}
-    .stCodeBlock code {{ color: #00e5ff !important; font-family: 'Courier New', Courier, monospace !important; line-height: 1.6 !important; font-size: 0.95rem !important; }}
+    .stCodeBlock { background-color: #02060c !important; border-left: 4px solid #ff00aa !important; border-radius: 8px !important; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
+    .stCodeBlock code { color: #00e5ff !important; font-family: 'Courier New', Courier, monospace !important; line-height: 1.6 !important; font-size: 0.95rem !important; }
     
-    div[data-testid="stPopover"] {{ padding-top: 26px; }} 
-    div[data-testid="stPopover"] > button {{
+    div[data-testid="stPopover"] { padding-top: 26px; } 
+    div[data-testid="stPopover"] > button {
         background: transparent !important; border: 1px solid #00f2ff !important; border-radius: 50% !important; width: 34px !important; height: 34px !important;
         color: #00f2ff !important; font-size: 1.1rem !important; font-weight: 900 !important; transition: 0.3s !important; display: flex; align-items: center; justify-content: center;
-    }}
-    div[data-testid="stPopover"] > button:hover {{ background: rgba(0, 242, 255, 0.1) !important; color: #fff !important; box-shadow: 0 0 15px #00f2ff !important; }}
-    div[data-testid="stPopoverBody"], div[data-baseweb="popover"], div[data-baseweb="popover"] > div, [data-testid="stPopoverBody"] > div {{ 
+    }
+    div[data-testid="stPopover"] > button:hover { background: rgba(0, 242, 255, 0.1) !important; color: #fff !important; box-shadow: 0 0 15px #00f2ff !important; }
+    div[data-testid="stPopoverBody"], div[data-baseweb="popover"], div[data-baseweb="popover"] > div, [data-testid="stPopoverBody"] > div { 
         background-color: #000000 !important; background: #000000 !important; border-color: #00f2ff !important;
-    }}
+    }
 
-    [data-testid="stImage"] img {{
+    [data-testid="stImage"] img {
         border-radius: 12px !important;
         border: 2px solid #00f2ff !important;
         box-shadow: 0 0 15px rgba(0, 242, 255, 0.7), 0 0 35px rgba(0, 85, 255, 0.6) !important;
         transition: all 0.3s ease-in-out !important;
-    }}
-    [data-testid="stImage"] img:hover {{
+    }
+    [data-testid="stImage"] img:hover {
         box-shadow: 0 0 25px rgba(0, 242, 255, 1), 0 0 50px rgba(0, 85, 255, 0.9) !important;
         transform: scale(1.02) !important;
-    }}
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -394,6 +415,8 @@ if st.session_state.route == 'admin_panel':
 # ROUTE 2: DASHBOARD FLOW
 # ==========================================
 elif st.session_state.route == 'dashboard':
+    add_bg_from_local("background.jpg")
+    
     st.markdown("<h2 style='color:#fff; font-family:Cinzel; text-align:center;'>CONTROL CENTER</h2><div class='subtitle' style='text-align:center;'>Select a module to begin</div>", unsafe_allow_html=True)
     
     if st.session_state.is_admin:
@@ -477,7 +500,11 @@ elif st.session_state.route == 'builder':
         st.markdown("<h3 style='color:#00f2ff; font-family:Cinzel;'>STEP 1: Core Identity</h3>", unsafe_allow_html=True)
         c1, c2 = st.columns(2)
         with c1:
-            smart_select("Actor Reference", ACTORS_LIST, 'actor')
+            # 🔴 آپدیت Actor Reference (برگشت به None, Yes, No)
+            opts_act = ["None", "Yes", "No"]
+            idx_act = opts_act.index(d['actor']) if d['actor'] in opts_act else 0
+            d['actor'] = st.selectbox("Actor Reference", opts_act, index=idx_act)
+            
             smart_select("Age Range", ["Elderly", "Middle-aged", "Young Adult", "Teenager", "Child", "Toddler"], 'age')
         with c2:
             smart_select("Gender", ["Male", "Female", "Androgynous", "Non-binary"], 'gen')
