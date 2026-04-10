@@ -25,30 +25,37 @@ def load_json(file, default):
 def save_json(file, data):
     with open(file, "w") as f: json.dump(data, f)
 
-# 🔴 تابع اختصاصی بک‌گراند که فقط در داشبورد صدا زده می‌شود
+# 🔴 رادار هوشمند برای پیدا کردن فایل بک‌گراند با هر فرمتی
+def find_bg_file():
+    possible_names = ["background.jpg", "background.jpeg", "background.png", "Background.jpg", "BACKGROUND.JPG"]
+    for name in possible_names:
+        if os.path.exists(name):
+            return name
+    return None
+
 def add_bg_from_local(image_file):
-    if os.path.exists(image_file):
-        with open(image_file, "rb") as f:
-            encoded_string = base64.b64encode(f.read()).decode()
-        st.markdown(
-            f"""
-            <style>
-            [data-testid="stAppViewContainer"] {{
-                background: linear-gradient(rgba(2,6,12,0.85), rgba(10,25,47,0.85)), url(data:image/jpeg;base64,{encoded_string}) !important;
-                background-size: cover !important;
-                background-position: center !important;
-                background-attachment: fixed !important;
-            }}
-            </style>
-            """,
-            unsafe_allow_html=True
-        )
-    else:
-        # اگر عکس در گیت‌هاب پیدا نشود، این ارور را می‌دهد
-        st.error(f"⚠️ System Alert: The background file '{image_file}' was not found. Make sure the filename is exactly 'background.jpg' in your repository.")
+    with open(image_file, "rb") as f:
+        encoded_string = base64.b64encode(f.read()).decode()
+    
+    # تشخیص فرمت برای CSS
+    mime_type = "image/png" if image_file.lower().endswith('.png') else "image/jpeg"
+    
+    st.markdown(
+        f"""
+        <style>
+        [data-testid="stAppViewContainer"], .stApp {{
+            background: linear-gradient(rgba(2,6,12,0.85), rgba(10,25,47,0.85)), url(data:{mime_type};base64,{encoded_string}) !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-attachment: fixed !important;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
 # ==========================================
-# 2. دیتابیس جامع و هوشمند اکسل
+# 2. دیتابیس جامع و هوشمند سینمایی
 # ==========================================
 ACTORS_LIST = [
     "Cillian Murphy", "Tom Hardy", "Joaquin Phoenix", "Mads Mikkelsen", 
@@ -101,20 +108,20 @@ LIGHT_DESC = {
     "Interrogation / Bare Bulb": "Top-down harsh light, gritty, realistic police-room style"
 }
 
-# 🔴 این بخش Grooming را باید بر اساس متن‌های تو ادیت کنم
+# 🔴 دیتابیس کامل شده پیرایش (Grooming)
 GROOM_DESC = {
-    "Clean Shaven": "Smooth skin, flawless professional grooming",
-    "5 O'Clock Shadow": "Very faint, light end-of-day hair growth",
-    "Light Stubble": "1-2 days of facial hair growth, neatly maintained",
-    "Heavy Stubble": "3-5 days of dense, gritty facial hair growth",
-    "Short Corporate Beard": "Neat, tightly trimmed, professional beard",
+    "Clean Shaven": "Smooth skin, perfectly groomed, no facial hair",
+    "Light Stubble": "1-2 days of facial hair growth, faint shadow",
+    "Medium Stubble": "3-4 days of growth, visible texture and grit",
+    "Heavy Stubble": "5-7 days of dense facial hair growth, rugged look",
+    "Short Beard": "Neatly trimmed, close to the face, professional",
     "Full Beard": "Thick, dense, well-kept full facial hair",
-    "Lumberjack / Bushy Beard": "Wild, untamed, rugged and thick beard",
-    "Long Historical Beard": "Chest-length, period-accurate ancient or wizard style",
-    "Goatee & Mustache": "Classic connected chin and mustache growth",
-    "Van Dyke": "Pointed chin beard and disconnected curled mustache",
-    "Chevron Mustache": "Thick, straight, classic 80s style upper lip hair",
-    "Patchy / Uneven Growth": "Realistic imperfections, sparse areas, unkempt look"
+    "Long Beard": "Extended length, historic or aged look",
+    "Unkempt / Dirty Beard": "Wild, untamed, survivor or historical styling",
+    "Goatee": "Chin and mustache connection only",
+    "Chevron Mustache": "Thick upper lip hair, retro/80s style",
+    "Pencil Mustache": "Thin, refined and highly styled upper lip hair",
+    "Patchy Beard": "Uneven growth, realistic imperfections and bald spots"
 }
 
 SFX_DESC = {
@@ -419,8 +426,12 @@ if st.session_state.route == 'admin_panel':
 # ==========================================
 elif st.session_state.route == 'dashboard':
     
-    # 🔴 فراخوانی صحیح و امن تابع بک‌گراند داشبورد
-    add_bg_from_local("background.jpg")
+    # 🔴 فراخوانی بک‌گراند با سیستم رادار
+    found_bg = find_bg_file()
+    if found_bg:
+        add_bg_from_local(found_bg)
+    else:
+        st.error("⚠️ هشدار سیستم: فایل بک‌گراند در گیت‌هاب پیدا نشد! لطفاً بررسی کنید عکسی با نام 'background.jpg' آپلود شده باشد.")
     
     st.markdown("<h2 style='color:#fff; font-family:Cinzel; text-align:center;'>CONTROL CENTER</h2><div class='subtitle' style='text-align:center;'>Select a module to begin</div>", unsafe_allow_html=True)
     
