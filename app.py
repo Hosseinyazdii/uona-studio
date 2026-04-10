@@ -6,8 +6,9 @@ import json
 # 1. تنظیمات پایه
 st.set_page_config(page_title="UONA STUDIO | AI PLATFORM", layout="wide", initial_sidebar_state="collapsed")
 
-# --- سیستم لاگین قطعی و بدون کرش (استفاده از فایل مخفی) ---
+# --- سیستم لاگین و تاریخچه قطعی و بدون کرش (استفاده از فایل‌های مخفی) ---
 DB_FILE = ".users_db.json"
+HIST_FILE = ".history_db.json"
 
 def load_users():
     if not os.path.exists(DB_FILE):
@@ -18,6 +19,16 @@ def save_user(u, p):
     users = load_users()
     users[u] = p
     with open(DB_FILE, "w") as f: json.dump(users, f)
+
+def load_history():
+    if not os.path.exists(HIST_FILE):
+        with open(HIST_FILE, "w") as f: json.dump([], f)
+    with open(HIST_FILE, "r") as f: return json.load(f)
+
+def save_history_entry(entry):
+    data = load_history()
+    data.insert(0, entry)
+    with open(HIST_FILE, "w") as f: json.dump(data, f)
 
 # 2. استایل
 st.markdown("""
@@ -98,7 +109,7 @@ st.markdown("""
         border-radius: 20px; padding: 25px; text-align: center; backdrop-filter: blur(15px);
     }
     
-    /* 🔴 تغییر اختصاصی برای ۴ کلمه (فیروزه‌ای تیره با سایه طلایی) */
+    /* تغییر اختصاصی برای ۴ کلمه (فیروزه‌ای تیره با سایه طلایی) */
     .module-title { 
         font-family: 'Cinzel'; 
         color: #008b8b !important; /* فیروزه‌ای تیره */
@@ -115,7 +126,6 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 if 'auth_status' not in st.session_state: st.session_state.auth_status = False
-if 'history' not in st.session_state: st.session_state.history = []
 if 'page' not in st.session_state: st.session_state.page = 'home'
 
 # --- صفحه لاگین ---
@@ -210,12 +220,16 @@ elif st.session_state.page == 'cinematic':
             p_name = st.text_input("Project Name:")
             if st.button("💾 SAVE TO HISTORY"):
                 if p_name:
-                    st.session_state.history.insert(0, {"user": st.session_state.user, "name": p_name, "time": datetime.now().strftime("%Y-%m-%d %H:%M"), "prompt": final_p})
-                    st.success("Design Saved!")
+                    # ذخیره در فایل تاریخچه
+                    entry = {"user": st.session_state.user, "name": p_name, "time": datetime.now().strftime("%Y-%m-%d %H:%M"), "prompt": final_p}
+                    save_history_entry(entry)
+                    st.success("Design Saved to Database!")
 
     with t_hist:
-        u_h = [h for h in st.session_state.history if h["user"] == st.session_state.user]
-        if not u_h: st.info("No saved designs in this session.")
+        # لود کردن مستقیم از فایل تاریخچه
+        all_history = load_history()
+        u_h = [h for h in all_history if h["user"] == st.session_state.user]
+        if not u_h: st.info("No saved designs found.")
         for item in u_h:
             with st.expander(f"📌 {item['name']} | {item['time']}"):
                 st.code(item['prompt'])
