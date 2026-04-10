@@ -184,7 +184,7 @@ SIZE_LIST = [
     "9:16 (Vertical Video)"
 ]
 
-# 🔴 دیتابیس‌های موقت برای ویژگی‌های Apex (فردا با دیتای اصلی جایگزین می‌شود)
+# دیتابیس‌های موقت برای ویژگی‌های Apex
 AGE_PROG_DESC = {
     "Stage 1: Subtle Aging": "Wait for final prompt from Master...",
     "Stage 2: Advanced Aging": "Wait for final prompt from Master..."
@@ -247,11 +247,17 @@ def smart_select(label, options, key, help_dict=None):
     else:
         st.session_state.draft[key] = sel
 
+# 🔴 آپدیت موتور پرامپت: اضافه شدن سه رخ، فریم زیبا و تایپوگرافی سن
 def generate_prompt(draft):
-    base_p = f"Professional cinematic portrait, {draft['size']}, {draft['cam']}, {draft['light']}. "
+    # اضافه شدن نمای سه رخ و کادر زیبا
+    base_p = f"Professional cinematic portrait, beautifully framed composition, three-quarter profile angle, {draft['size']}, {draft['cam']}, {draft['light']}. "
+    
     char_val = draft['char']
     char_desc = CONCEPTS.get(char_val, char_val)
-    char_p = f"Subject: {draft['gen']}, {draft['age']}, {draft['nat']} from {draft['era']}. Concept: {char_desc}. "
+    age_val = draft.get('age', 'Unknown Age')
+    
+    char_p = f"Subject: {draft['gen']}, {age_val}, {draft['nat']} from {draft['era']}. Concept: {char_desc}. "
+    
     h_col_val = draft['h_col']
     h_desc = HAIR_COLORS.get(h_col_val, h_col_val)
     groom_p = f"Grooming: {draft['groom']}. Hair: {h_desc} ({draft['h_tex']}). "
@@ -271,8 +277,11 @@ def generate_prompt(draft):
         if sfx_prog_val and sfx_prog_val not in ["None", ""]:
             sfx_p += f"APEX PROGRESSION STAGE: {sfx_prog_val}. "
         sfx_p += "Note: This is a safe simulation, artificial makeup.] "
+
+    # 🔴 اضافه شدن دستور متنی نوشتن سن زیر عکس
+    typo_p = f"Typography overlay: clearly written text '{age_val}' at the bottom margin of the image. " if age_val and age_val != "None" else ""
         
-    return base_p + char_p + groom_p + sfx_p + "8k resolution, raw photo, highly detailed."
+    return base_p + char_p + groom_p + sfx_p + typo_p + "8k resolution, raw photo, highly detailed."
 
 ADMIN_USER = "sep"
 ADMIN_PASS = "1386sy"
@@ -372,7 +381,6 @@ if st.session_state.route == 'login':
                 go_to('admin_panel')
             elif u_name in users:
                 user_data = users[u_name]
-                # پشتیبانی از فرمت قدیم و جدید دیتابیس
                 if isinstance(user_data, str):
                     db_pass = user_data
                     db_plan = "UONA Core"
@@ -428,7 +436,6 @@ if st.session_state.route == 'admin_panel':
         st.markdown("<h4 style='color:#00f2ff;'>➕ Register New Client</h4>", unsafe_allow_html=True)
         new_u = st.text_input("New Client Username")
         new_p = st.text_input("New Client Password")
-        # 🔴 انتخاب پلن موقع ساخت یوزر جدید
         new_plan = st.selectbox("Assign Subscription Tier", ["UONA Core", "UONA Apex"])
         
         if st.button("CREATE CLIENT ACCOUNT", use_container_width=True):
@@ -566,7 +573,6 @@ elif st.session_state.route == 'builder':
             
             smart_select("Age Range", ["Elderly", "Middle-aged", "Young Adult", "Teenager", "Child", "Toddler"], 'age')
             
-            # 🔴 آپشن اختصاصی Apex: Age Progression
             if st.session_state.plan in ["UONA Apex", "MASTER APEX"]:
                 st.markdown("<hr style='border-color: rgba(255, 170, 0, 0.3); margin: 10px 0;'>", unsafe_allow_html=True)
                 smart_select("Age Progression Arc", list(AGE_PROG_DESC.keys()), 'age_prog', help_dict=AGE_PROG_DESC)
@@ -601,7 +607,6 @@ elif st.session_state.route == 'builder':
         with c2:
             smart_select("Trauma / SFX", list(SFX_DESC.keys()), 'sfx', help_dict=SFX_DESC)
             
-            # 🔴 آپشن اختصاصی Apex: SFX Progression
             if st.session_state.plan in ["UONA Apex", "MASTER APEX"]:
                 st.markdown("<hr style='border-color: rgba(255, 170, 0, 0.3); margin: 10px 0;'>", unsafe_allow_html=True)
                 smart_select("SFX Progression Arc", list(SFX_PROG_DESC.keys()), 'sfx_prog', help_dict=SFX_PROG_DESC)
