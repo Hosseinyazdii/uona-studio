@@ -20,7 +20,47 @@ def save_json(file, data):
     with open(file, "w") as f: json.dump(data, f)
 
 # ==========================================
-# 2. مدیریت وضعیت (State Machine) و توابع
+# 2. دیتابیس هوشمند اکسل (توضیحات پرامپت)
+# ==========================================
+HAIR_COLORS = {
+    "Jet Black": "Jet black / Natural black",
+    "Espresso Brown": "Deep espresso brown / Dark chocolate",
+    "Chestnut Brown": "Light chestnut brown / Sandy brown",
+    "Ash Blonde": "Ash blonde (Cool tone)",
+    "Golden Blonde": "Golden blonde (Warm tone)",
+    "Salt & Pepper (10% Grey)": "Salt and pepper, 10% grey hair",
+    "Salt & Pepper (30% Grey)": "Salt and pepper, 30% grey hair",
+    "Salt & Pepper (50% Grey)": "Salt and pepper, 50% grey hair",
+    "Salt & Pepper (70% Grey)": "Salt and pepper, 70% grey hair",
+    "Platinum Blonde": "Platinum Blonde",
+    "Ginger / Red": "Ginger / Red",
+    "Silver / Grey": "Silver / Grey",
+    "White": "White"
+}
+
+CONCEPTS = {
+    "Heroic Warrior": "Strong jawline, confident gaze, slight battle wear",
+    "Sinister Villain": "Harsh shadows, menacing expression, sharp features",
+    "Scholar / Intellectual": "Refined appearance, focused eyes, thoughtful pose",
+    "Royal / Aristocratic": "Elegant posture, pristine skin, luxury textures",
+    "Mercenary / Outlaw": "Rugged, weathered, scars, untamed grooming",
+    "Mystic / Shaman": "Otherworldly look, spiritual paint, ethereal lighting",
+    "Corporate Executive / CEO": "Clean-cut, authoritative, sharp professional lighting",
+    "Elite Athlete / Fitness Pro": "Defined muscularity, healthy skin glow, sweat detail",
+    "Bohemian Artist": "Creative styling, messy hair, expressive eyes",
+    "Average Citizen": "Naturalistic, candid, everyday lighting",
+    "Blue-collar / Technician": "Grime, work-worn skin, functional appearance",
+    "Academic Student": "Youthful, inquisitive, natural-soft lighting",
+    "High-fashion Model": "Angular features, studio lighting, flawless skin",
+    "Retiree / Grandparent": "Dignified aging, soft textures, wisdom-filled gaze",
+    "Urban / Street Style": "Modern edge, trendy accessories, natural city light",
+    "Rural / Outdoorsman": "Sun-damaged skin, practical gear, natural daylight",
+    "Red Carpet / Gala Guest": "Glamorous, high-contrast lighting, perfect grooming",
+    "Ailing / Sickly Character": "Pale skin, dark circles, visible veins, weak posture"
+}
+
+# ==========================================
+# 3. مدیریت وضعیت (State Machine) و توابع
 # ==========================================
 if 'auth' not in st.session_state: st.session_state.auth = False
 if 'is_admin' not in st.session_state: st.session_state.is_admin = False
@@ -38,25 +78,41 @@ def next_step(): st.session_state.step += 1; st.rerun()
 def prev_step(): st.session_state.step -= 1; st.rerun()
 def add_n(lst): return ["None"] + lst + ["Others"]
 
-def smart_select(label, options, key):
+# تابع آپدیت‌شده برای پشتیبانی از Tooltip/Help
+def smart_select(label, options, key, help_text=None):
     opts = add_n(options)
     curr_val = st.session_state.draft.get(key, "")
     idx = 0
     if curr_val in opts: idx = opts.index(curr_val)
     elif curr_val and curr_val != "None": idx = len(opts) - 1
-    sel = st.selectbox(label, opts, index=idx, key=f"sel_{key}")
+    
+    sel = st.selectbox(label, opts, index=idx, key=f"sel_{key}", help=help_text)
+    
     if sel == "Others":
         custom = st.text_input(f"Type Custom {label}", value=curr_val if curr_val not in opts else "", key=f"txt_{key}")
         st.session_state.draft[key] = custom
     else:
         st.session_state.draft[key] = sel
 
-# --- تابع تولید پرامپت استاتیک و هوشمند ---
+# --- تابع تولید پرامپت استاتیک و هوشمند (جایگذاری فرمول‌های اکسل) ---
 def generate_prompt(draft):
     base_p = f"Professional cinematic portrait, {draft['size']}, {draft['cam']}, {draft['light']}. "
-    char_p = f"Subject: {draft['gen']}, {draft['age']}, {draft['nat']} from {draft['era']}. Concept: {draft['char']}. "
-    groom_p = f"Grooming: {draft['groom']}. Hair: {draft['h_col']} ({draft['h_tex']}). "
     
+    # استخراج توضیحات اکسل برای کانسپت
+    char_val = draft['char']
+    if char_val in CONCEPTS:
+        char_p = f"Subject: {draft['gen']}, {draft['age']}, {draft['nat']} from {draft['era']}. Concept: {char_val}, {CONCEPTS[char_val]}. "
+    else:
+        char_p = f"Subject: {draft['gen']}, {draft['age']}, {draft['nat']} from {draft['era']}. Concept: {char_val}. "
+        
+    # استخراج توضیحات اکسل برای رنگ مو
+    h_col_val = draft['h_col']
+    if h_col_val in HAIR_COLORS:
+        groom_p = f"Grooming: {draft['groom']}. Hair: {HAIR_COLORS[h_col_val]} ({draft['h_tex']}). "
+    else:
+        groom_p = f"Grooming: {draft['groom']}. Hair: {h_col_val} ({draft['h_tex']}). "
+    
+    # فیلتر امنیتی SFX
     if draft['sfx'] and draft['sfx'] not in ["None", ""]:
         sfx_p = f"[CINEMATIC MAKEUP TEST: Fake {draft['sfx']} prosthetic SFX applied using {draft['mat']}. Note: This is a safe simulation, artificial makeup.] "
     else:
@@ -69,7 +125,7 @@ ADMIN_USER = "admin"
 ADMIN_PASS = "1234"
 
 # ==========================================
-# 3. موتور استایل (CSS Engine)
+# 4. موتور استایل (CSS Engine)
 # ==========================================
 st.markdown("""
     <style>
@@ -307,10 +363,11 @@ elif st.session_state.route == 'builder':
                 "European (Caucasian)", "African (Sub-Saharan)", "East Asian", 
                 "South Asian", "Latin American"
             ], 'nat')
-            smart_select("Hair Color", [
-                "Jet Black", "Espresso Brown", "Chestnut", "Ash Blonde", "Platinum Blonde", 
-                "Strawberry Blonde", "Ginger / Red", "Salt & Pepper", "Silver / Grey", "White"
-            ], 'h_col')
+            
+            # ایجاد متن راهنما برای رنگ مو
+            hc_help = "**Excel Profile Descriptions:**\n\n" + "\n".join([f"- **{k}:** {v}" for k, v in HAIR_COLORS.items()])
+            smart_select("Hair Color", list(HAIR_COLORS.keys()), 'h_col', help_text=hc_help)
+            
         with c2:
             smart_select("Era / Period", [
                 "Stone Age", "Before Christ (BC)", "Pre-Islamic Era", "200 Years Ago", 
@@ -355,10 +412,10 @@ elif st.session_state.route == 'builder':
         st.markdown("<h3 style='color:#00f2ff; font-family:Cinzel;'>STEP 4: Technical Specs</h3>", unsafe_allow_html=True)
         c1, c2 = st.columns(2)
         with c1:
-            smart_select("Character Concept", [
-                "Heroic Warrior", "Sinister Villain", "Wise Scholar", "Royal / Noble", 
-                "Mercenary / Rugged", "Peasant / Commoner", "Cybernetic Enhanced", "Undead / Zombie"
-            ], 'char')
+            # ایجاد متن راهنما برای کانسپت کاراکتر
+            cc_help = "**Excel Profile Descriptions:**\n\n" + "\n".join([f"- **{k}:** {v}" for k, v in CONCEPTS.items()])
+            smart_select("Character Concept", list(CONCEPTS.keys()), 'char', help_text=cc_help)
+            
             smart_select("Lighting Style", [
                 "Rembrandt", "Teal & Orange", "Neon / Cyberpunk", "Softbox / Studio", 
                 "Chiaroscuro (High Contrast)", "Cinematic Backlight", "Harsh Midday Sun", "Overcast / Diffused"
