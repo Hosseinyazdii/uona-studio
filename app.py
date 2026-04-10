@@ -205,8 +205,9 @@ def generate_prompt(draft):
         
     return base_p + char_p + groom_p + sfx_p + "8k resolution, raw photo, highly detailed."
 
-ADMIN_USER = "admin"
-ADMIN_PASS = "1234"
+# 📌 تغییر اطلاعات ورود پنل ادمین
+ADMIN_USER = "sep"
+ADMIN_PASS = "1386sy"
 
 # ==========================================
 # 4. موتور استایل (CSS Engine)
@@ -263,7 +264,7 @@ st.markdown("""
         background-color: #000000 !important; background: #000000 !important; border-color: #00f2ff !important;
     }
 
-    /* 🔥 افکت نئونی قدرتمند برای تمامی عکس‌های اپلیکیشن 🔥 */
+    /* افکت نئونی قدرتمند برای تمامی عکس‌های اپلیکیشن */
     [data-testid="stImage"] img {
         border-radius: 12px !important;
         border: 2px solid #00f2ff !important;
@@ -407,7 +408,6 @@ elif st.session_state.route == 'library':
         
     st.markdown("<hr style='border-color: rgba(0,242,255,0.2);'>", unsafe_allow_html=True)
     
-    # 🔴 لیست پروژه‌ها (که دکمه‌های آکاردئونی هستند) منتقل شد به بالا
     projects = load_json(PROJ_FILE, [])
     my_projs = [p for p in projects if p.get("user") == st.session_state.user]
     
@@ -421,7 +421,6 @@ elif st.session_state.route == 'library':
 
     st.markdown("<hr style='border-color: rgba(0,242,255,0.2);'>", unsafe_allow_html=True)
     
-    # 🔴 گالری تصاویر منتقل شد به پایین‌تر
     st.markdown("<h4 style='color:#00f2ff; font-family:Cinzel; margin-bottom:15px;'>REFERENCE GALLERY</h4>", unsafe_allow_html=True)
     l_c1, l_c2, l_c3, l_c4 = st.columns(4)
     with l_c1:
@@ -521,13 +520,11 @@ elif st.session_state.route == 'builder':
         preview_p = generate_prompt(d)
         st.info(preview_p)
         
-        # 🔴 دکمه‌ها منتقل شدند بالای عکس‌ها
         st.markdown("<br>", unsafe_allow_html=True)
         col1, col2, col3 = st.columns([1.5, 3, 2])
         if col1.button("⬅ EDIT (BACK)"): prev_step()
         if col3.button("🚀 PROCEED TO SIMULATION"): go_to('simulation')
 
-        # 🔴 عکس‌ها کوچکتر شدند (با قرار گرفتن در ستون‌های میانی)
         st.markdown("<br>", unsafe_allow_html=True)
         _, rev_c1, rev_c2, _ = st.columns([1, 2, 2, 1])
         with rev_c1:
