@@ -4,9 +4,14 @@ import os
 import json
 
 # ==========================================
-# 1. تنظیمات پلتفرم و دیتابیس
+# 1. تنظیمات پلتفرم و دیتابیس (تغییر آیکون تب مرورگر)
 # ==========================================
-st.set_page_config(page_title="UONA STUDIO | AI SAAS", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(
+    page_title="UONA STUDIO | AI SAAS", 
+    page_icon="logo.PNG", # 🔴 تغییر تاج استریم‌لیت به لوگوی اختصاصی شما
+    layout="wide", 
+    initial_sidebar_state="collapsed"
+)
 
 DB_FILE = ".users_db.json"
 PROJ_FILE = ".projects_db.json"
@@ -20,43 +25,99 @@ def save_json(file, data):
     with open(file, "w") as f: json.dump(data, f)
 
 # ==========================================
-# 2. دیتابیس هوشمند اکسل (توضیحات پرامپت)
+# 2. دیتابیس هوشمند اکسل (توضیحات پرامپت انگلیسی)
 # ==========================================
+# دیکشنری‌های جامع برای نمایش در Tooltip های هر منو
 HAIR_COLORS = {
     "Jet Black": "Jet black / Natural black",
     "Espresso Brown": "Deep espresso brown / Dark chocolate",
-    "Chestnut Brown": "Light chestnut brown / Sandy brown",
     "Ash Blonde": "Ash blonde (Cool tone)",
-    "Golden Blonde": "Golden blonde (Warm tone)",
-    "Salt & Pepper (10% Grey)": "Salt and pepper, 10% grey hair",
-    "Salt & Pepper (30% Grey)": "Salt and pepper, 30% grey hair",
-    "Salt & Pepper (50% Grey)": "Salt and pepper, 50% grey hair",
-    "Salt & Pepper (70% Grey)": "Salt and pepper, 70% grey hair",
-    "Platinum Blonde": "Platinum Blonde",
-    "Ginger / Red": "Ginger / Red",
-    "Silver / Grey": "Silver / Grey",
-    "White": "White"
+    "Salt & Pepper": "Salt and pepper, varying grey hair percentage",
+    "Silver / Grey": "Silver / Grey hair",
+    "White": "Pure white hair"
 }
 
 CONCEPTS = {
     "Heroic Warrior": "Strong jawline, confident gaze, slight battle wear",
     "Sinister Villain": "Harsh shadows, menacing expression, sharp features",
-    "Scholar / Intellectual": "Refined appearance, focused eyes, thoughtful pose",
-    "Royal / Aristocratic": "Elegant posture, pristine skin, luxury textures",
-    "Mercenary / Outlaw": "Rugged, weathered, scars, untamed grooming",
-    "Mystic / Shaman": "Otherworldly look, spiritual paint, ethereal lighting",
-    "Corporate Executive / CEO": "Clean-cut, authoritative, sharp professional lighting",
-    "Elite Athlete / Fitness Pro": "Defined muscularity, healthy skin glow, sweat detail",
-    "Bohemian Artist": "Creative styling, messy hair, expressive eyes",
-    "Average Citizen": "Naturalistic, candid, everyday lighting",
-    "Blue-collar / Technician": "Grime, work-worn skin, functional appearance",
-    "Academic Student": "Youthful, inquisitive, natural-soft lighting",
-    "High-fashion Model": "Angular features, studio lighting, flawless skin",
-    "Retiree / Grandparent": "Dignified aging, soft textures, wisdom-filled gaze",
-    "Urban / Street Style": "Modern edge, trendy accessories, natural city light",
-    "Rural / Outdoorsman": "Sun-damaged skin, practical gear, natural daylight",
-    "Red Carpet / Gala Guest": "Glamorous, high-contrast lighting, perfect grooming",
-    "Ailing / Sickly Character": "Pale skin, dark circles, visible veins, weak posture"
+    "Scholar": "Refined appearance, focused eyes, thoughtful pose",
+    "Royal": "Elegant posture, pristine skin, luxury textures",
+    "Peasant / Commoner": "Naturalistic, everyday lighting, unpolished look",
+    "Cybernetic Enhanced": "Sci-fi elements, subtle synthetic integration",
+    "Undead / Zombie": "Pale skin, dark circles, hollowed features"
+}
+
+SFX_DESC = {
+    "Sword Wound": "Clean, sharp blade laceration",
+    "Glass Laceration": "Jagged cuts with micro-details",
+    "Crush/Blunt Force Wound": "Swollen, uneven skin breakage",
+    "3-Day Old Wound": "Partially scabbed, dark red/brown edges",
+    "1-Week Old Scar": "Healing pinkish tissue, fresh scar",
+    "1-Month Old Scar": "Settled scar tissue, slightly raised",
+    "1-Year Old Keloid Scar": "Thick, raised, permanent keloid tissue",
+    "5-Year Old Scar": "Faded, flat, pale scar integration",
+    "Fresh Bruise (Immediate)": "Reddish/purple surface hematoma",
+    "1-Day Old Bruise": "Deep purple and blue subdermal pooling",
+    "3-Day Old Bruise": "Yellow and green edges, fading purple",
+    "15-Day Fading Bruise": "Faint yellow/brown residual mark",
+    "Acid Burn": "Melted, distorted skin texture",
+    "1st Degree Burn": "Redness, inflamed epidermal layer",
+    "2nd Degree Burn": "Blistering, severe dermal damage",
+    "Katana Slash": "Deep, angled, highly precise slash wound"
+}
+
+ERA_DESC = {
+    "Stone Age": "Primitive, unkempt, prehistoric styling, weathered skin",
+    "Before Christ (BC)": "Ancient antiquity, classical era styling",
+    "Pre-Islamic Era": "Ancient Arabian peninsula aesthetics, nomadic textures",
+    "200 Years Ago": "19th century historical accuracy, Victorian/Qajar era",
+    "150 Years Ago": "Late 19th century, industrial revolution grit",
+    "100 Years Ago": "1920s aesthetics, early modern styling",
+    "50 Years Ago": "1970s retro aesthetics, distinct color grading",
+    "Contemporary": "Modern day, current fashion and styling",
+    "Cyberpunk / Future": "Neon accents, synthetic materials, futuristic"
+}
+
+NAT_DESC = {
+    "Iranian": "Persian features, distinct bone structure",
+    "Saudi (Peninsular Arab)": "Peninsular Arab features, warm olive skin tones",
+    "Levantine": "Eastern Mediterranean features",
+    "North African": "Amazigh or Arab-African blend",
+    "European (Caucasian)": "Classic Caucasian features, varying pale to light skin",
+    "African (Sub-Saharan)": "Deep rich skin tones, prominent structural features",
+    "East Asian": "East Asian features, distinct facial structure",
+    "South Asian": "Desi features, rich brown skin tones",
+    "Latin American": "Mestizo or Latin features, warm undertones"
+}
+
+GROOM_DESC = {
+    "Clean Shaven": "Smooth skin, perfectly groomed",
+    "Light Stubble": "1-2 days of facial hair growth",
+    "Heavy Stubble": "3-5 days of dense facial hair growth",
+    "Full Beard": "Well-kept, dense full facial hair",
+    "Long Beard (Dirty Look)": "Unkempt, wild, historically accurate long beard",
+    "Goatee": "Chin and mustache connection",
+    "Moustache Only": "Isolated upper lip hair",
+    "Patchy Beard": "Uneven growth, realistic imperfections"
+}
+
+CAM_DESC = {
+    "85mm Eye-Level (Portrait)": "Standard portrait lens, minimal distortion, shallow depth of field",
+    "100mm Macro (Extreme Detail)": "Extreme close-up, focusing on skin pores and SFX textures",
+    "35mm Low-Angle (Hero Shot)": "Wider angle looking up, empowering and dramatic",
+    "50mm Standard": "Human-eye perspective, neutral framing",
+    "24mm Wide-Angle (Environmental)": "Wide view, incorporates background elements"
+}
+
+LIGHT_DESC = {
+    "Rembrandt": "Classic portrait lighting, triangle of light on the cheek",
+    "Teal & Orange": "Hollywood blockbuster color grading",
+    "Neon / Cyberpunk": "Vibrant, high-contrast artificial lighting",
+    "Softbox / Studio": "Even, flattering, commercial-grade lighting",
+    "Chiaroscuro (High Contrast)": "Dramatic interplay of deep shadows and bright highlights",
+    "Cinematic Backlight": "Subject separated from background via rim light",
+    "Harsh Midday Sun": "Hard shadows, realistic outdoor daytime",
+    "Overcast / Diffused": "Soft, shadowless natural lighting"
 }
 
 # ==========================================
@@ -78,16 +139,28 @@ def next_step(): st.session_state.step += 1; st.rerun()
 def prev_step(): st.session_state.step -= 1; st.rerun()
 def add_n(lst): return ["None"] + lst + ["Others"]
 
-# تابع آپدیت‌شده برای پشتیبانی از Tooltip/Help
-def smart_select(label, options, key, help_text=None):
+# 🔴 تابع فرم‌ساز اختصاصی با Tooltip تعاملی و شیشه‌ای
+def smart_select(label, options, key, help_dict=None):
     opts = add_n(options)
     curr_val = st.session_state.draft.get(key, "")
     idx = 0
     if curr_val in opts: idx = opts.index(curr_val)
     elif curr_val and curr_val != "None": idx = len(opts) - 1
     
-    sel = st.selectbox(label, opts, index=idx, key=f"sel_{key}", help=help_text)
-    
+    if help_dict:
+        # ساختار دو ستونه: باکس انتخاب + دکمه Tooltip
+        c1, c2 = st.columns([11, 1])
+        with c1:
+            sel = st.selectbox(label, opts, index=idx, key=f"sel_{key}")
+        with c2:
+            # ایجاد Tooltip با ظاهر هماهنگ
+            with st.popover("❕"):
+                st.markdown(f"<div class='tooltip-title'>EXCEL DICTIONARY: {label.upper()}</div>", unsafe_allow_html=True)
+                help_html = "".join([f"<div class='tooltip-text'><b style='color:#00f2ff;'>{k}:</b> {v}</div>" for k, v in help_dict.items()])
+                st.markdown(help_html, unsafe_allow_html=True)
+    else:
+        sel = st.selectbox(label, opts, index=idx, key=f"sel_{key}")
+        
     if sel == "Others":
         custom = st.text_input(f"Type Custom {label}", value=curr_val if curr_val not in opts else "", key=f"txt_{key}")
         st.session_state.draft[key] = custom
@@ -98,21 +171,14 @@ def smart_select(label, options, key, help_text=None):
 def generate_prompt(draft):
     base_p = f"Professional cinematic portrait, {draft['size']}, {draft['cam']}, {draft['light']}. "
     
-    # استخراج توضیحات اکسل برای کانسپت
     char_val = draft['char']
-    if char_val in CONCEPTS:
-        char_p = f"Subject: {draft['gen']}, {draft['age']}, {draft['nat']} from {draft['era']}. Concept: {char_val}, {CONCEPTS[char_val]}. "
-    else:
-        char_p = f"Subject: {draft['gen']}, {draft['age']}, {draft['nat']} from {draft['era']}. Concept: {char_val}. "
+    char_desc = CONCEPTS.get(char_val, char_val)
+    char_p = f"Subject: {draft['gen']}, {draft['age']}, {draft['nat']} from {draft['era']}. Concept: {char_desc}. "
         
-    # استخراج توضیحات اکسل برای رنگ مو
     h_col_val = draft['h_col']
-    if h_col_val in HAIR_COLORS:
-        groom_p = f"Grooming: {draft['groom']}. Hair: {HAIR_COLORS[h_col_val]} ({draft['h_tex']}). "
-    else:
-        groom_p = f"Grooming: {draft['groom']}. Hair: {h_col_val} ({draft['h_tex']}). "
+    h_desc = HAIR_COLORS.get(h_col_val, h_col_val)
+    groom_p = f"Grooming: {draft['groom']}. Hair: {h_desc} ({draft['h_tex']}). "
     
-    # فیلتر امنیتی SFX
     if draft['sfx'] and draft['sfx'] not in ["None", ""]:
         sfx_p = f"[CINEMATIC MAKEUP TEST: Fake {draft['sfx']} prosthetic SFX applied using {draft['mat']}. Note: This is a safe simulation, artificial makeup.] "
     else:
@@ -120,7 +186,7 @@ def generate_prompt(draft):
         
     return base_p + char_p + groom_p + sfx_p + "8k resolution, raw photo, highly detailed."
 
-# 📌 اطلاعات ورود پنل ادمین مخفی (Master Admin)
+# 📌 اطلاعات ورود پنل ادمین
 ADMIN_USER = "admin"
 ADMIN_PASS = "1234"
 
@@ -168,6 +234,23 @@ st.markdown("""
     
     .stCodeBlock { background-color: #02060c !important; border-left: 4px solid #ff00aa !important; border-radius: 8px !important; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
     .stCodeBlock code { color: #00e5ff !important; font-family: 'Courier New', Courier, monospace !important; line-height: 1.6 !important; font-size: 0.95rem !important; }
+    
+    /* 🔴 استایل‌های اختصاصی Tooltip تعاملی (Popover) */
+    div[data-testid="stPopover"] { padding-top: 26px; } 
+    div[data-testid="stPopover"] > button {
+        background: transparent !important; border: 1px solid #00f2ff !important;
+        border-radius: 50% !important; width: 34px !important; height: 34px !important;
+        color: #00f2ff !important; font-size: 1.1rem !important; font-weight: 900 !important;
+        transition: 0.3s !important; display: flex; align-items: center; justify-content: center;
+    }
+    div[data-testid="stPopover"] > button:hover { background: rgba(0, 242, 255, 0.1) !important; color: #fff !important; box-shadow: 0 0 15px #00f2ff !important; }
+    div[data-testid="stPopoverBody"] { 
+        background: rgba(5, 15, 30, 0.95) !important; border: 1px solid #00f2ff !important; 
+        border-radius: 12px !important; box-shadow: 0 10px 30px rgba(0,242,255,0.4) !important; 
+        backdrop-filter: blur(15px); padding: 15px; width: 350px !important;
+    }
+    .tooltip-title { color: #00f2ff; font-weight: 900; font-family: 'Cinzel'; margin-bottom: 10px; font-size: 0.9rem; border-bottom: 1px solid rgba(0,242,255,0.3); padding-bottom: 5px;}
+    .tooltip-text { color: #d0e0f0; font-family: 'Montserrat'; font-size: 0.8rem; line-height: 1.8; margin-bottom: 4px;}
     </style>
     """, unsafe_allow_html=True)
 
@@ -342,13 +425,9 @@ elif st.session_state.route == 'builder':
             idx_act = opts_act.index(d['actor']) if d['actor'] in opts_act else 0
             d['actor'] = st.selectbox("Actor Reference", opts_act, index=idx_act)
             
-            smart_select("Age Range", [
-                "Elderly", "Middle-aged", "Young Adult", "Teenager", "Child", "Toddler"
-            ], 'age')
+            smart_select("Age Range", ["Elderly", "Middle-aged", "Young Adult", "Teenager", "Child", "Toddler"], 'age')
         with c2:
-            smart_select("Gender", [
-                "Male", "Female", "Androgynous", "Non-binary"
-            ], 'gen')
+            smart_select("Gender", ["Male", "Female", "Androgynous", "Non-binary"], 'gen')
         
         col1, col2, col3 = st.columns([1, 4, 1])
         if col1.button("EXIT"): go_to('dashboard')
@@ -358,25 +437,11 @@ elif st.session_state.route == 'builder':
         st.markdown("<h3 style='color:#00f2ff; font-family:Cinzel;'>STEP 2: Physical Attributes</h3>", unsafe_allow_html=True)
         c1, c2 = st.columns(2)
         with c1:
-            smart_select("Nationality", [
-                "Iranian", "Saudi (Peninsular Arab)", "Levantine", "North African", 
-                "European (Caucasian)", "African (Sub-Saharan)", "East Asian", 
-                "South Asian", "Latin American"
-            ], 'nat')
-            
-            # ایجاد متن راهنما برای رنگ مو
-            hc_help = "**Excel Profile Descriptions:**\n\n" + "\n".join([f"- **{k}:** {v}" for k, v in HAIR_COLORS.items()])
-            smart_select("Hair Color", list(HAIR_COLORS.keys()), 'h_col', help_text=hc_help)
-            
+            smart_select("Nationality", list(NAT_DESC.keys()), 'nat', help_dict=NAT_DESC)
+            smart_select("Hair Color", list(HAIR_COLORS.keys()), 'h_col', help_dict=HAIR_COLORS)
         with c2:
-            smart_select("Era / Period", [
-                "Stone Age", "Before Christ (BC)", "Pre-Islamic Era", "200 Years Ago", 
-                "150 Years Ago", "100 Years Ago", "50 Years Ago", "Contemporary", "Cyberpunk / Future"
-            ], 'era')
-            smart_select("Hair Texture", [
-                "Straight (Silky)", "Wavy (S-shape)", "Curly (Ringlets)", "Afro (Coils)", 
-                "Matted (Weathered/Dirty)", "Bald / Shaved Head", "Thinning / Balding"
-            ], 'h_tex')
+            smart_select("Era / Period", list(ERA_DESC.keys()), 'era', help_dict=ERA_DESC)
+            smart_select("Hair Texture", ["Straight (Silky)", "Wavy (S-shape)", "Curly (Ringlets)", "Afro (Coils)", "Matted (Weathered/Dirty)", "Bald / Shaved Head", "Thinning / Balding"], 'h_tex')
         
         col1, col2, col3 = st.columns([1, 4, 1])
         if col1.button("⬅ BACK"): prev_step()
@@ -386,23 +451,10 @@ elif st.session_state.route == 'builder':
         st.markdown("<h3 style='color:#00f2ff; font-family:Cinzel;'>STEP 3: Grooming & SFX Trauma</h3>", unsafe_allow_html=True)
         c1, c2 = st.columns(2)
         with c1:
-            smart_select("Grooming Style", [
-                "Clean Shaven", "Light Stubble", "Heavy Stubble", "Full Beard", 
-                "Long Beard (Dirty Look)", "Goatee", "Van Dyke", "Garibaldi", 
-                "Moustache Only", "Patchy Beard"
-            ], 'groom')
-            smart_select("Material Finish", [
-                "Silicone Prosthetic", "Matte Sealer", "Alcohol Palette", 
-                "Translucent Skin", "Gelatin Prosthetic", "Foam Latex", "Sweat/Grease FX"
-            ], 'mat')
+            smart_select("Grooming Style", list(GROOM_DESC.keys()), 'groom', help_dict=GROOM_DESC)
+            smart_select("Material Finish", ["Silicone Prosthetic", "Matte Sealer", "Alcohol Palette", "Translucent Skin", "Gelatin Prosthetic", "Foam Latex", "Sweat/Grease FX"], 'mat')
         with c2:
-            smart_select("Trauma / SFX", [
-                "Sword Wound", "Glass Laceration", "Crush/Blunt Force Wound", 
-                "3-Day Old Wound", "1-Week Old Scar", "1-Month Old Scar", 
-                "1-Year Old Keloid Scar", "5-Year Old Scar", 
-                "Fresh Bruise (Immediate)", "1-Day Old Bruise", "3-Day Old Bruise", "15-Day Fading Bruise", 
-                "Acid Burn", "1st Degree Burn", "2nd Degree Burn", "Katana Slash"
-            ], 'sfx')
+            smart_select("Trauma / SFX", list(SFX_DESC.keys()), 'sfx', help_dict=SFX_DESC)
         
         col1, col2, col3 = st.columns([1, 4, 1])
         if col1.button("⬅ BACK"): prev_step()
@@ -412,22 +464,11 @@ elif st.session_state.route == 'builder':
         st.markdown("<h3 style='color:#00f2ff; font-family:Cinzel;'>STEP 4: Technical Specs</h3>", unsafe_allow_html=True)
         c1, c2 = st.columns(2)
         with c1:
-            # ایجاد متن راهنما برای کانسپت کاراکتر
-            cc_help = "**Excel Profile Descriptions:**\n\n" + "\n".join([f"- **{k}:** {v}" for k, v in CONCEPTS.items()])
-            smart_select("Character Concept", list(CONCEPTS.keys()), 'char', help_text=cc_help)
-            
-            smart_select("Lighting Style", [
-                "Rembrandt", "Teal & Orange", "Neon / Cyberpunk", "Softbox / Studio", 
-                "Chiaroscuro (High Contrast)", "Cinematic Backlight", "Harsh Midday Sun", "Overcast / Diffused"
-            ], 'light')
+            smart_select("Character Concept", list(CONCEPTS.keys()), 'char', help_dict=CONCEPTS)
+            smart_select("Lighting Style", list(LIGHT_DESC.keys()), 'light', help_dict=LIGHT_DESC)
         with c2:
-            smart_select("Camera & Lens", [
-                "85mm Eye-Level (Portrait)", "100mm Macro (Extreme Detail)", 
-                "35mm Low-Angle (Hero Shot)", "50mm Standard", "24mm Wide-Angle (Environmental)"
-            ], 'cam')
-            smart_select("Frame Size", [
-                "4:5 (Portrait)", "16:9 (Widescreen)", "2.39:1 (Anamorphic)", "1:1 (Square)"
-            ], 'size')
+            smart_select("Camera & Lens", list(CAM_DESC.keys()), 'cam', help_dict=CAM_DESC)
+            smart_select("Frame Size", ["4:5", "16:9", "2.39:1", "1:1"], 'size')
         
         col1, col2, col3 = st.columns([1, 4, 1])
         if col1.button("⬅ BACK"): prev_step()
