@@ -1,11 +1,10 @@
 import streamlit as st
 from datetime import datetime
-import os
 
-# 1. تنظیمات پایه و حذف اسکرول
+# 1. تنظیمات پایه
 st.set_page_config(page_title="UONA STUDIO | AI PLATFORM", layout="wide", initial_sidebar_state="collapsed")
 
-# 2. استایل اختصاصی نئونی
+# 2. استایل نئونی و خوانا
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@800&family=Montserrat:wght@300;400;700;900&display=swap');
@@ -17,23 +16,19 @@ st.markdown("""
     #MainMenu, footer, header {visibility: hidden;}
     .stDeployButton {display:none;}
 
-    /* استایل نئونی تایتل */
     .title-main {
         font-family: 'Cinzel'; color: #ffffff !important; font-size: 3.2rem; font-weight: 800; 
         letter-spacing: 12px; margin: 0; text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
     }
 
-    /* اصلاح رنگ متون ورودی و لیبل‌ها برای خوانایی ۱۰۰٪ */
+    /* رنگ فیروزه‌ای متعادل برای خوانایی ۱۰۰٪ */
     label, .stMarkdown p, .label-text { 
         color: #00e5ff !important; 
         font-family: 'Montserrat' !important; font-weight: 700 !important; 
         text-transform: uppercase !important; font-size: 0.75rem !important; 
     }
     
-    /* استایل رادیو باتن (Login/Register) */
-    .stRadio div[role="radiogroup"] {
-        background: rgba(0, 242, 255, 0.05); padding: 10px; border-radius: 10px; border: 1px solid rgba(0, 242, 255, 0.2);
-    }
+    .stRadio div[role="radiogroup"] { background: rgba(0, 242, 255, 0.05); padding: 10px; border-radius: 10px; border: 1px solid rgba(0, 242, 255, 0.2); }
 
     .stButton > button {
         background-color: #00f2ff !important; color: #000000 !important;
@@ -58,20 +53,20 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 3. مدیریت دیتابیس پایدار یوزرها در Session State
+# 3. مدیریت وضعیت (State) بدون فایل برای جلوگیری از کرش شدن سرور
 if 'users_registry' not in st.session_state:
-    st.session_state.users_registry = {"hossein": "1234"}
+    st.session_state.users_registry = {"hossein": "1234"} # اکانت دائمی شما
 if 'auth_status' not in st.session_state: st.session_state.auth_status = False
 if 'history' not in st.session_state: st.session_state.history = []
 if 'page' not in st.session_state: st.session_state.page = 'home'
 
-# --- پورتال لاگین با اصلاح رنگ و استایل ---
+# --- صفحه لاگین پایدار ---
 if not st.session_state.auth_status:
     col_l, col_r = st.columns([1, 1.2])
     with col_l:
         st.markdown("<br><br>", unsafe_allow_html=True)
-        # استفاده از لوگوی آپلود شده
-        if os.path.exists("image.png"): st.image("image.png", width=250)
+        try: st.image("image.png", width=250) # استفاده از نام فایلی که آپلود کردی
+        except: st.markdown("<div style='width:200px;height:200px;background:#00f2ff;border-radius:50%;'></div>", unsafe_allow_html=True)
     with col_r:
         st.markdown("<h1 style='color:#ffffff; font-family:Cinzel; margin-top:80px; text-shadow: 0 0 15px #00f2ff;'>UONA ACCESS</h1>", unsafe_allow_html=True)
         mode = st.radio("SELECT MODE", ["Login", "Register"], horizontal=True)
@@ -90,14 +85,15 @@ if not st.session_state.auth_status:
                     st.success(f"User '{u_name}' Registered! Switch to Login to enter.")
     st.stop()
 
-# --- هدر اصلی ---
+# --- هدر اصلی نرم‌افزار ---
 h_col1, h_col2 = st.columns([1, 6])
 with h_col1:
-    if os.path.exists("image.png"): st.image("image.png", width=85)
+    try: st.image("image.png", width=85)
+    except: pass
 with h_col2:
     st.markdown('<h1 class="title-main">UONA STUDIO</h1>', unsafe_allow_html=True)
 
-# --- صفحه پورتال ---
+# --- پورتال اصلی ---
 if st.session_state.page == 'home':
     st.markdown("<br><br><h3 style='text-align:center; color:white; font-family:Cinzel; letter-spacing:4px;'>SELECT MODULE</h3>", unsafe_allow_html=True)
     c1, c2, c3, c4 = st.columns(4)
@@ -109,7 +105,7 @@ if st.session_state.page == 'home':
                 if st.button(f"ENTER {name}", key=name): st.session_state.page = 'cinematic'; st.rerun()
             else: st.button("COMING SOON", disabled=True, key=name)
 
-# --- ماژول Cinematic (۱۲ سوال کامل) ---
+# --- ماژول Cinematic (۱۲ فیلد کامل و دقیق) ---
 elif st.session_state.page == 'cinematic':
     if st.button("← BACK"): st.session_state.page = 'home'; st.rerun()
     t_builder, t_hist = st.tabs(["🏗️ PROMPT BUILDER", "📜 HISTORY"])
@@ -137,6 +133,7 @@ elif st.session_state.page == 'cinematic':
                 light = st.selectbox("Lighting Style", add_n(["Rembrandt", "Teal & Orange", "Neon"]))
                 size = st.selectbox("Frame Size", add_n(["4:5", "16:9", "2.39:1", "1:1"]))
 
+        # فرمول پرامپت کامل
         final_p = f"Professional cinematic portrait, {size}, {gen}, {age}, {nat}. Concept: {char}, {groom}. Hair: {h_col}. SFX: {sfx}. Material: {mat}. Tech: {cam}, {light}, 8k raw photo."
 
         with c_master:
@@ -155,4 +152,5 @@ elif st.session_state.page == 'cinematic':
             with st.expander(f"📌 {item['name']} | {item['time']}"):
                 st.code(item['prompt'])
 
+# 4. فوتر
 st.markdown(f"<div class='footer'>© {datetime.now().year} <span class='uona-tag'>UONA GROUP</span>. ALL RIGHTS RESERVED</div>", unsafe_allow_html=True)
