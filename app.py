@@ -25,7 +25,6 @@ def load_json(file, default):
 def save_json(file, data):
     with open(file, "w") as f: json.dump(data, f)
 
-# رادار هوشمند برای پیدا کردن فایل بک‌گراند با هر فرمتی
 def find_bg_file():
     possible_names = ["background.jpg", "background.jpeg", "background.png", "Background.jpg", "BACKGROUND.JPG"]
     for name in possible_names:
@@ -184,7 +183,6 @@ SIZE_LIST = [
     "9:16 (Vertical Video)"
 ]
 
-# دیتابیس‌های موقت برای ویژگی‌های Apex
 AGE_PROG_DESC = {
     "Stage 1: Subtle Aging": "Wait for final prompt from Master...",
     "Stage 2: Advanced Aging": "Wait for final prompt from Master..."
@@ -263,7 +261,6 @@ def generate_prompt(draft):
     if draft['actor'] and draft['actor'] not in ["None", "No", ""]:
         base_p = f"Actor reference: {draft['actor']}. " + base_p
 
-    # پردازش متغیرهای Apex
     age_prog_val = draft.get('age_prog', '')
     if age_prog_val and age_prog_val not in ["None", ""]:
         char_p += f"[APEX AGE PROGRESSION: {age_prog_val}] "
@@ -297,6 +294,20 @@ st.markdown("""
 
     #MainMenu, footer, header {visibility: hidden;}
     .stDeployButton {display:none;}
+
+    /* 🔴 جادوی تبدیل دکمه لوگو به متن دقیقاً مثل قبل */
+    div[data-testid="stMarkdownContainer"]:has(.logo-marker) { display: none !important; }
+    div[data-testid="stMarkdownContainer"]:has(.logo-marker) + div[data-testid="stButton"] button {
+        background: transparent !important; border: none !important; box-shadow: none !important;
+        padding: 0 !important; justify-content: flex-start !important; margin-top: 5px !important;
+    }
+    div[data-testid="stMarkdownContainer"]:has(.logo-marker) + div[data-testid="stButton"] button p {
+        color: #00f2ff !important; font-family: 'Cinzel', serif !important;
+        font-size: 1.5rem !important; font-weight: 900 !important; text-transform: uppercase !important;
+    }
+    div[data-testid="stMarkdownContainer"]:has(.logo-marker) + div[data-testid="stButton"] button:hover p {
+        color: #ffffff !important; text-shadow: 0 0 15px #00f2ff !important; transform: scale(1.02) !important; transition: 0.3s;
+    }
 
     .title-main { font-family: 'Cinzel'; color: #ffffff !important; font-size: 2.5rem; font-weight: 800; letter-spacing: 10px; margin: 0; text-shadow: 0 0 15px rgba(0, 242, 255, 0.5); }
     .subtitle { color: #00f2ff; font-family: 'Montserrat'; font-size: 0.8rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 30px;}
@@ -395,7 +406,7 @@ if st.session_state.route == 'login':
     st.stop()
 
 # ==========================================
-# 🔴 SHARED HEADER (WITH CLICKABLE LOGO)
+# SHARED HEADER (WITH CLICKABLE TEXT LOGO)
 # ==========================================
 if st.session_state.route != 'login':
     badge_color = "#ffaa00" if "Apex" in st.session_state.plan or "MASTER" in st.session_state.plan else "#00f2ff"
@@ -403,8 +414,9 @@ if st.session_state.route != 'login':
     c_head1, c_head2 = st.columns([1, 3])
     
     with c_head1:
-        # دکمه لوگو که کاربر را به هوم (داشبورد) برمی‌گرداند
-        if st.button("UONA STUDIO", key="home_btn", use_container_width=True):
+        # مارکر پنهان برای اعمال CSS روی این دکمه خاص
+        st.markdown('<span class="logo-marker"></span>', unsafe_allow_html=True)
+        if st.button("UONA STUDIO", key="top_home_btn"):
             st.session_state.step = 1
             go_to('dashboard')
             
@@ -417,7 +429,7 @@ if st.session_state.route != 'login':
             </div>
         """, unsafe_allow_html=True)
         
-    st.markdown("<hr style='border-color: rgba(0,242,255,0.2); margin-top: 10px; margin-bottom: 20px;'>", unsafe_allow_html=True)
+    st.markdown("<hr style='border-color: rgba(0,242,255,0.2); margin-top: 5px; margin-bottom: 20px;'>", unsafe_allow_html=True)
 
 # ==========================================
 # ROUTE: ADMIN PANEL
@@ -482,7 +494,7 @@ elif st.session_state.route == 'dashboard':
     if found_bg:
         add_bg_from_local(found_bg)
     else:
-        st.error("⚠️ هشدار سیستم: فایل بک‌گراند در گیت‌هاب پیدا نشد! لطفاً بررسی کنید عکسی با نام 'background.jpg' آپلود شده باشد.")
+        st.error("⚠️ هشدار سیستم: فایل بک‌گراند پیدا نشد.")
     
     st.markdown("<h2 style='color:#fff; font-family:Cinzel; text-align:center;'>CONTROL CENTER</h2><div class='subtitle' style='text-align:center;'>Select a module to begin</div>", unsafe_allow_html=True)
     
@@ -574,7 +586,6 @@ elif st.session_state.route == 'builder':
             smart_select("Gender", ["Male", "Female", "Androgynous", "Non-binary"], 'gen')
         
         col1, col2, col3 = st.columns([1, 4, 1])
-        # دکمه بکست خروج حذف شد چون خود لوگو حالا کار خروج و رفتن به هوم را انجام می‌دهد
         if col3.button("NEXT ➔"): next_step()
 
     elif st.session_state.step == 2:
