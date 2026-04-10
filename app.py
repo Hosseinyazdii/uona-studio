@@ -25,7 +25,7 @@ def load_json(file, default):
 def save_json(file, data):
     with open(file, "w") as f: json.dump(data, f)
 
-# 🔴 رادار هوشمند برای پیدا کردن فایل بک‌گراند با هر فرمتی
+# رادار هوشمند برای پیدا کردن فایل بک‌گراند با هر فرمتی
 def find_bg_file():
     possible_names = ["background.jpg", "background.jpeg", "background.png", "Background.jpg", "BACKGROUND.JPG"]
     for name in possible_names:
@@ -37,7 +37,6 @@ def add_bg_from_local(image_file):
     with open(image_file, "rb") as f:
         encoded_string = base64.b64encode(f.read()).decode()
     
-    # تشخیص فرمت برای CSS
     mime_type = "image/png" if image_file.lower().endswith('.png') else "image/jpeg"
     
     st.markdown(
@@ -108,7 +107,6 @@ LIGHT_DESC = {
     "Interrogation / Bare Bulb": "Top-down harsh light, gritty, realistic police-room style"
 }
 
-# 🔴 دیتابیس کامل شده پیرایش (Grooming)
 GROOM_DESC = {
     "Clean Shaven": "Smooth skin, perfectly groomed, no facial hair",
     "Light Stubble": "1-2 days of facial hair growth, faint shadow",
@@ -186,18 +184,31 @@ SIZE_LIST = [
     "9:16 (Vertical Video)"
 ]
 
+# 🔴 دیتابیس‌های موقت برای ویژگی‌های Apex (فردا با دیتای اصلی جایگزین می‌شود)
+AGE_PROG_DESC = {
+    "Stage 1: Subtle Aging": "Wait for final prompt from Master...",
+    "Stage 2: Advanced Aging": "Wait for final prompt from Master..."
+}
+
+SFX_PROG_DESC = {
+    "Stage 1: Fresh & Bleeding": "Wait for final prompt from Master...",
+    "Stage 2: Healing & Bruised": "Wait for final prompt from Master..."
+}
+
 # ==========================================
 # 3. مدیریت وضعیت (State Machine)
 # ==========================================
 if 'auth' not in st.session_state: st.session_state.auth = False
 if 'is_admin' not in st.session_state: st.session_state.is_admin = False
+if 'plan' not in st.session_state: st.session_state.plan = "UONA Core"
 if 'route' not in st.session_state: st.session_state.route = 'login'
 if 'step' not in st.session_state: st.session_state.step = 1
 
 if 'draft' not in st.session_state: 
     st.session_state.draft = {
         "actor":"None", "gen":"", "age":"", "nat":"", "era":"", "h_col":"", 
-        "h_tex":"", "sfx":"", "mat":"", "char":"", "groom":"", "cam":"", "light":"", "size":""
+        "h_tex":"", "sfx":"", "mat":"", "char":"", "groom":"", "cam":"", "light":"", "size":"",
+        "age_prog":"", "sfx_prog":""
     }
 
 def go_to(route): st.session_state.route = route; st.rerun()
@@ -248,10 +259,18 @@ def generate_prompt(draft):
     if draft['actor'] and draft['actor'] not in ["None", "No", ""]:
         base_p = f"Actor reference: {draft['actor']}. " + base_p
 
+    # پردازش متغیرهای Apex
+    age_prog_val = draft.get('age_prog', '')
+    if age_prog_val and age_prog_val not in ["None", ""]:
+        char_p += f"[APEX AGE PROGRESSION: {age_prog_val}] "
+
+    sfx_p = ""
     if draft['sfx'] and draft['sfx'] not in ["None", ""]:
-        sfx_p = f"[CINEMATIC MAKEUP TEST: Fake {draft['sfx']} prosthetic SFX applied using {draft['mat']}. Note: This is a safe simulation, artificial makeup.] "
-    else:
-        sfx_p = ""
+        sfx_p = f"[CINEMATIC MAKEUP TEST: Fake {draft['sfx']} prosthetic SFX applied using {draft['mat']}. "
+        sfx_prog_val = draft.get('sfx_prog', '')
+        if sfx_prog_val and sfx_prog_val not in ["None", ""]:
+            sfx_p += f"APEX PROGRESSION STAGE: {sfx_prog_val}. "
+        sfx_p += "Note: This is a safe simulation, artificial makeup.] "
         
     return base_p + char_p + groom_p + sfx_p + "8k resolution, raw photo, highly detailed."
 
@@ -279,7 +298,7 @@ st.markdown("""
     label, .stMarkdown p { color: #00e5ff !important; font-family: 'Montserrat' !important; font-weight: 700 !important; text-transform: uppercase !important; font-size: 0.75rem !important; }
 
     div[data-baseweb="input"] > div { background-color: rgba(0, 20, 40, 0.9) !important; border: 1px solid rgba(0, 242, 255, 0.4) !important; border-radius: 10px !important; }
-    div[data-baseweb="input"] input { color: #ffffff !important; font-weight: bold !important; }
+    div[data-baseweb="input"] input, div[data-baseweb="select"] { color: #ffffff !important; font-weight: bold !important; }
 
     .stButton > button {
         border: none !important; border-radius: 8px !important; font-family: 'Cinzel', serif !important; font-weight: 900 !important;
@@ -349,24 +368,41 @@ if st.session_state.route == 'login':
                 st.session_state.auth = True
                 st.session_state.user = u_name
                 st.session_state.is_admin = True
+                st.session_state.plan = "MASTER APEX"
                 go_to('admin_panel')
-            elif u_name in users and users[u_name] == u_pass:
-                st.session_state.auth = True
-                st.session_state.user = u_name
-                st.session_state.is_admin = False
-                go_to('dashboard')
+            elif u_name in users:
+                user_data = users[u_name]
+                # پشتیبانی از فرمت قدیم و جدید دیتابیس
+                if isinstance(user_data, str):
+                    db_pass = user_data
+                    db_plan = "UONA Core"
+                else:
+                    db_pass = user_data.get("pass", "")
+                    db_plan = user_data.get("plan", "UONA Core")
+                
+                if db_pass == u_pass:
+                    st.session_state.auth = True
+                    st.session_state.user = u_name
+                    st.session_state.is_admin = False
+                    st.session_state.plan = db_plan
+                    go_to('dashboard')
+                else:
+                    st.error("ACCESS DENIED: Invalid Password.")
             else:
-                st.error("ACCESS DENIED: Invalid Credentials or Unregistered Account.")
+                st.error("ACCESS DENIED: Unregistered Account.")
     st.stop()
 
 # ==========================================
-# SHARED HEADER
+# SHARED HEADER (WITH TIER BADGE)
 # ==========================================
 if st.session_state.route != 'login':
+    badge_color = "#ffaa00" if "Apex" in st.session_state.plan or "MASTER" in st.session_state.plan else "#00f2ff"
+    
     st.markdown(f"""
         <div class="nav-top">
             <div><span style="color:#00f2ff; font-family:Cinzel; font-size:1.5rem; font-weight:900;">UONA STUDIO</span></div>
-            <div>
+            <div style="display: flex; align-items: center;">
+                <span style="color:{badge_color}; font-family:Cinzel; font-weight:bold; font-size:0.7rem; border:1px solid {badge_color}; padding:3px 8px; border-radius:4px; margin-right:15px; box-shadow: 0 0 8px rgba(0,0,0,0.5);">💎 {st.session_state.plan.upper()}</span>
                 <span style="color:#ff00aa; font-weight:bold; font-family:Montserrat; font-size:0.7rem; margin-right:15px;">{'[MASTER ADMIN]' if st.session_state.is_admin else ''}</span>
                 <span style="color:#fff; font-family:Montserrat; font-size:0.8rem;">USER: {st.session_state.user.upper()}</span>
             </div>
@@ -392,17 +428,20 @@ if st.session_state.route == 'admin_panel':
         st.markdown("<h4 style='color:#00f2ff;'>➕ Register New Client</h4>", unsafe_allow_html=True)
         new_u = st.text_input("New Client Username")
         new_p = st.text_input("New Client Password")
+        # 🔴 انتخاب پلن موقع ساخت یوزر جدید
+        new_plan = st.selectbox("Assign Subscription Tier", ["UONA Core", "UONA Apex"])
+        
         if st.button("CREATE CLIENT ACCOUNT", use_container_width=True):
             if new_u and new_p:
                 if new_u == ADMIN_USER:
                     st.error("Cannot use admin username.")
                 else:
-                    users[new_u] = new_p
+                    users[new_u] = {"pass": new_p, "plan": new_plan}
                     save_json(DB_FILE, users)
-                    st.success(f"Client '{new_u}' successfully registered.")
+                    st.success(f"Client '{new_u}' successfully registered on {new_plan}.")
                     st.rerun()
             else:
-                st.warning("Fill both fields.")
+                st.warning("Fill all fields.")
         st.markdown('</div>', unsafe_allow_html=True)
         
     with c2:
@@ -411,10 +450,16 @@ if st.session_state.route == 'admin_panel':
         if not users:
             st.info("No active clients yet.")
         else:
-            for usr in list(users.keys()):
-                col_name, col_pass, col_btn = st.columns([2, 2, 1])
+            for usr, data in users.items():
+                if isinstance(data, str): 
+                    plan_val, pwd_val = "UONA Core", data
+                else: 
+                    plan_val, pwd_val = data.get("plan", "UONA Core"), data.get("pass", "")
+                    
+                col_name, col_plan, col_pass, col_btn = st.columns([2, 2, 2, 1])
                 col_name.markdown(f"<span style='color:white; font-family:Montserrat; font-weight:bold;'>👤 {usr}</span>", unsafe_allow_html=True)
-                col_pass.markdown(f"<span style='color:#888; font-family:monospace;'>pwd: {users[usr]}</span>", unsafe_allow_html=True)
+                col_plan.markdown(f"<span style='color:#00f2ff; font-family:Cinzel; font-size:0.8rem;'>{plan_val}</span>", unsafe_allow_html=True)
+                col_pass.markdown(f"<span style='color:#888; font-family:monospace;'>pwd: {pwd_val}</span>", unsafe_allow_html=True)
                 if col_btn.button("REVOKE", key=f"del_{usr}"):
                     del users[usr]
                     save_json(DB_FILE, users)
@@ -426,7 +471,6 @@ if st.session_state.route == 'admin_panel':
 # ==========================================
 elif st.session_state.route == 'dashboard':
     
-    # 🔴 فراخوانی بک‌گراند با سیستم رادار
     found_bg = find_bg_file()
     if found_bg:
         add_bg_from_local(found_bg)
@@ -521,6 +565,12 @@ elif st.session_state.route == 'builder':
             d['actor'] = st.selectbox("Actor Reference", opts_act, index=idx_act)
             
             smart_select("Age Range", ["Elderly", "Middle-aged", "Young Adult", "Teenager", "Child", "Toddler"], 'age')
+            
+            # 🔴 آپشن اختصاصی Apex: Age Progression
+            if st.session_state.plan in ["UONA Apex", "MASTER APEX"]:
+                st.markdown("<hr style='border-color: rgba(255, 170, 0, 0.3); margin: 10px 0;'>", unsafe_allow_html=True)
+                smart_select("Age Progression Arc", list(AGE_PROG_DESC.keys()), 'age_prog', help_dict=AGE_PROG_DESC)
+
         with c2:
             smart_select("Gender", ["Male", "Female", "Androgynous", "Non-binary"], 'gen')
         
@@ -550,6 +600,11 @@ elif st.session_state.route == 'builder':
             smart_select("Material Finish", ["Silicone Prosthetic", "Matte Sealer", "Alcohol Palette", "Translucent Skin", "Gelatin Prosthetic", "Foam Latex", "Sweat/Grease FX"], 'mat')
         with c2:
             smart_select("Trauma / SFX", list(SFX_DESC.keys()), 'sfx', help_dict=SFX_DESC)
+            
+            # 🔴 آپشن اختصاصی Apex: SFX Progression
+            if st.session_state.plan in ["UONA Apex", "MASTER APEX"]:
+                st.markdown("<hr style='border-color: rgba(255, 170, 0, 0.3); margin: 10px 0;'>", unsafe_allow_html=True)
+                smart_select("SFX Progression Arc", list(SFX_PROG_DESC.keys()), 'sfx_prog', help_dict=SFX_PROG_DESC)
         
         col1, col2, col3 = st.columns([1, 4, 1])
         if col1.button("⬅ BACK"): prev_step()
