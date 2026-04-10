@@ -6,7 +6,7 @@ import json
 # 1. تنظیمات پایه
 st.set_page_config(page_title="UONA STUDIO | AI PLATFORM", layout="wide", initial_sidebar_state="collapsed")
 
-# --- سیستم لاگین و تاریخچه قطعی و بدون کرش (استفاده از فایل‌های مخفی) ---
+# --- سیستم لاگین قطعی و بدون کرش (استفاده از فایل‌های مخفی) ---
 DB_FILE = ".users_db.json"
 HIST_FILE = ".history_db.json"
 
@@ -53,7 +53,7 @@ st.markdown("""
         text-transform: uppercase !important; font-size: 0.75rem !important; 
     }
 
-    /* باکس‌های یوزرنیم و پسورد */
+    /* باکس‌های یوزرنیم و پسورد و اینپوت Others */
     div[data-baseweb="input"] > div {
         background-color: rgba(0, 20, 40, 0.8) !important;
         border: 1px solid rgba(0, 242, 255, 0.5) !important;
@@ -199,18 +199,38 @@ elif st.session_state.page == 'cinematic':
                 actor = st.selectbox("Actor Ref *", ["None", "No", "Yes"])
                 gen = st.selectbox("Gender *", ["Male", "Female", "Androgynous"])
                 age = st.selectbox("Age Range *", ["Elderly", "Middle-aged", "Young Adult", "Child"])
-                h_col = st.selectbox("Hair Color", add_n(["Jet Black", "Espresso", "Ash Blonde", "Salt & Pepper"]))
+                
+                h_col_val = st.selectbox("Hair Color", add_n(["Jet Black", "Espresso", "Ash Blonde", "Salt & Pepper"]))
+                h_col = st.text_input("Type Custom Hair Color", key="hc_c") if h_col_val == "Others" else h_col_val
+
             with f2:
-                nat = st.selectbox("Nationality *", add_n(["Iranian", "Saudi", "European", "African"]))
-                era = st.selectbox("Era / Period", add_n(["Ancient", "Medieval", "100 Years Ago", "Contemporary"]))
-                sfx = st.selectbox("Trauma / SFX", add_n(["Katana Slash", "Bruise", "Glass Wound", "Burn"]))
-                mat = st.selectbox("Material Finish", add_n(["Silicone", "Matte Sealer", "Alcohol Palette"]))
+                nat_val = st.selectbox("Nationality *", add_n(["Iranian", "Saudi", "European", "African"]))
+                nat = st.text_input("Type Custom Nationality", key="nat_c") if nat_val == "Others" else nat_val
+                
+                era_val = st.selectbox("Era / Period", add_n(["Ancient", "Medieval", "100 Years Ago", "Contemporary"]))
+                era = st.text_input("Type Custom Era", key="era_c") if era_val == "Others" else era_val
+                
+                sfx_val = st.selectbox("Trauma / SFX", add_n(["Katana Slash", "Bruise", "Glass Wound", "Burn"]))
+                sfx = st.text_input("Type Custom SFX", key="sfx_c") if sfx_val == "Others" else sfx_val
+                
+                mat_val = st.selectbox("Material Finish", add_n(["Silicone", "Matte Sealer", "Alcohol Palette"]))
+                mat = st.text_input("Type Custom Material", key="mat_c") if mat_val == "Others" else mat_val
+
             with f3:
-                char = st.selectbox("Character Concept", add_n(["Warrior", "Villain", "Scholar", "Royal"]))
-                groom = st.selectbox("Grooming Style", add_n(["Clean Shaven", "Full Beard", "Stubble", "Goatee"]))
-                cam = st.selectbox("Camera & Lens *", add_n(["85mm", "100mm Macro", "35mm Low-Angle"]))
-                light = st.selectbox("Lighting Style", add_n(["Rembrandt", "Teal & Orange", "Neon"]))
-                size = st.selectbox("Frame Size", add_n(["4:5", "16:9", "2.39:1", "1:1"]))
+                char_val = st.selectbox("Character Concept", add_n(["Warrior", "Villain", "Scholar", "Royal"]))
+                char = st.text_input("Type Custom Concept", key="char_c") if char_val == "Others" else char_val
+                
+                groom_val = st.selectbox("Grooming Style", add_n(["Clean Shaven", "Full Beard", "Stubble", "Goatee"]))
+                groom = st.text_input("Type Custom Grooming", key="groom_c") if groom_val == "Others" else groom_val
+                
+                cam_val = st.selectbox("Camera & Lens *", add_n(["85mm", "100mm Macro", "35mm Low-Angle"]))
+                cam = st.text_input("Type Custom Camera", key="cam_c") if cam_val == "Others" else cam_val
+                
+                light_val = st.selectbox("Lighting Style", add_n(["Rembrandt", "Teal & Orange", "Neon"]))
+                light = st.text_input("Type Custom Lighting", key="light_c") if light_val == "Others" else light_val
+                
+                size_val = st.selectbox("Frame Size", add_n(["4:5", "16:9", "2.39:1", "1:1"]))
+                size = st.text_input("Type Custom Size", key="size_c") if size_val == "Others" else size_val
 
         final_p = f"Professional cinematic portrait, {size}, {gen}, {age}, {nat}. Concept: {char}, {groom}. Hair: {h_col}. SFX: {sfx}. Material: {mat}. Tech: {cam}, {light}, 8k raw photo."
 
@@ -220,13 +240,11 @@ elif st.session_state.page == 'cinematic':
             p_name = st.text_input("Project Name:")
             if st.button("💾 SAVE TO HISTORY"):
                 if p_name:
-                    # ذخیره در فایل تاریخچه
                     entry = {"user": st.session_state.user, "name": p_name, "time": datetime.now().strftime("%Y-%m-%d %H:%M"), "prompt": final_p}
                     save_history_entry(entry)
                     st.success("Design Saved to Database!")
 
     with t_hist:
-        # لود کردن مستقیم از فایل تاریخچه
         all_history = load_history()
         u_h = [h for h in all_history if h["user"] == st.session_state.user]
         if not u_h: st.info("No saved designs found.")
