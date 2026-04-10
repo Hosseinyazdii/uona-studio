@@ -2,6 +2,7 @@ import streamlit as st
 from datetime import datetime
 import os
 import json
+import base64
 
 # ==========================================
 # 1. تنظیمات پلتفرم و دیتابیس
@@ -23,6 +24,25 @@ def load_json(file, default):
 
 def save_json(file, data):
     with open(file, "w") as f: json.dump(data, f)
+
+# تابع تبدیل تصویر به پس‌زمینه داشبورد
+def add_bg_from_local(image_file):
+    if os.path.exists(image_file):
+        with open(image_file, "rb") as f:
+            encoded_string = base64.b64encode(f.read()).decode()
+        st.markdown(
+            f"""
+            <style>
+            [data-testid="stAppViewContainer"] {{
+                background: linear-gradient(rgba(2,6,12,0.85), rgba(10,25,47,0.85)), url(data:image/jpeg;base64,{encoded_string}) !important;
+                background-size: cover !important;
+                background-position: center !important;
+                background-attachment: fixed !important;
+            }}
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
 
 # ==========================================
 # 2. دیتابیس هوشمند اکسل
@@ -138,7 +158,6 @@ def next_step(): st.session_state.step += 1; st.rerun()
 def prev_step(): st.session_state.step -= 1; st.rerun()
 def add_n(lst): return ["None"] + lst + ["Others"]
 
-# 🔴 تابع هوشمند با تزریق بک‌گراند مشکی مطلق به داخل محتوا
 def smart_select(label, options, key, help_dict=None):
     opts = add_n(options)
     curr_val = st.session_state.draft.get(key, "")
@@ -152,7 +171,6 @@ def smart_select(label, options, key, help_dict=None):
             sel = st.selectbox(label, opts, index=idx, key=f"sel_{key}")
         with c2:
             with st.popover("❕"):
-                # استایل‌های Inline برای تضمین ۱۰۰ درصدی مشکی بودن
                 help_html = f"""
                 <div style="background-color: #000000 !important; margin: -1rem; padding: 1rem; min-height: 100px;">
                     <div style="color: #00f2ff; font-weight: 900; font-family: 'Cinzel', serif; margin-bottom: 10px; font-size: 0.9rem; border-bottom: 1px solid rgba(0,242,255,0.3); padding-bottom: 5px; text-transform: uppercase;">
@@ -173,11 +191,9 @@ def smart_select(label, options, key, help_dict=None):
 
 def generate_prompt(draft):
     base_p = f"Professional cinematic portrait, {draft['size']}, {draft['cam']}, {draft['light']}. "
-    
     char_val = draft['char']
     char_desc = CONCEPTS.get(char_val, char_val)
     char_p = f"Subject: {draft['gen']}, {draft['age']}, {draft['nat']} from {draft['era']}. Concept: {char_desc}. "
-        
     h_col_val = draft['h_col']
     h_desc = HAIR_COLORS.get(h_col_val, h_col_val)
     groom_p = f"Grooming: {draft['groom']}. Hair: {h_desc} ({draft['h_tex']}). "
@@ -237,24 +253,26 @@ st.markdown("""
     .stCodeBlock { background-color: #02060c !important; border-left: 4px solid #ff00aa !important; border-radius: 8px !important; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
     .stCodeBlock code { color: #00e5ff !important; font-family: 'Courier New', Courier, monospace !important; line-height: 1.6 !important; font-size: 0.95rem !important; }
     
-    /* 🔴 استایل‌های تهاجمی برای مشکی کردن پاپ‌آپ‌ها از ریشه */
     div[data-testid="stPopover"] { padding-top: 26px; } 
     div[data-testid="stPopover"] > button {
-        background: transparent !important; border: 1px solid #00f2ff !important;
-        border-radius: 50% !important; width: 34px !important; height: 34px !important;
-        color: #00f2ff !important; font-size: 1.1rem !important; font-weight: 900 !important;
-        transition: 0.3s !important; display: flex; align-items: center; justify-content: center;
+        background: transparent !important; border: 1px solid #00f2ff !important; border-radius: 50% !important; width: 34px !important; height: 34px !important;
+        color: #00f2ff !important; font-size: 1.1rem !important; font-weight: 900 !important; transition: 0.3s !important; display: flex; align-items: center; justify-content: center;
     }
     div[data-testid="stPopover"] > button:hover { background: rgba(0, 242, 255, 0.1) !important; color: #fff !important; box-shadow: 0 0 15px #00f2ff !important; }
-    
-    /* هدف‌گیری تمام لایه‌های پورتال استریم‌لیت */
-    div[data-testid="stPopoverBody"],
-    div[data-baseweb="popover"],
-    div[data-baseweb="popover"] > div,
-    [data-testid="stPopoverBody"] > div { 
-        background-color: #000000 !important; 
-        background: #000000 !important;
-        border-color: #00f2ff !important;
+    div[data-testid="stPopoverBody"], div[data-baseweb="popover"], div[data-baseweb="popover"] > div, [data-testid="stPopoverBody"] > div { 
+        background-color: #000000 !important; background: #000000 !important; border-color: #00f2ff !important;
+    }
+
+    /* 🔥 افکت نئونی قدرتمند برای تمامی عکس‌های اپلیکیشن 🔥 */
+    [data-testid="stImage"] img {
+        border-radius: 12px !important;
+        border: 2px solid #00f2ff !important;
+        box-shadow: 0 0 15px rgba(0, 242, 255, 0.7), 0 0 35px rgba(0, 85, 255, 0.6) !important;
+        transition: all 0.3s ease-in-out !important;
+    }
+    [data-testid="stImage"] img:hover {
+        box-shadow: 0 0 25px rgba(0, 242, 255, 1), 0 0 50px rgba(0, 85, 255, 0.9) !important;
+        transform: scale(1.02) !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -357,6 +375,9 @@ if st.session_state.route == 'admin_panel':
 # ROUTE 2: DASHBOARD FLOW
 # ==========================================
 elif st.session_state.route == 'dashboard':
+    # 🔴 فراخوانی بک‌گراند اختصاصی فقط برای داشبورد
+    add_bg_from_local("background.jpg")
+    
     st.markdown("<h2 style='color:#fff; font-family:Cinzel; text-align:center;'>CONTROL CENTER</h2><div class='subtitle' style='text-align:center;'>Select a module to begin</div>", unsafe_allow_html=True)
     
     if st.session_state.is_admin:
@@ -384,6 +405,21 @@ elif st.session_state.route == 'library':
     c_btn, _ = st.columns([1, 4])
     with c_btn:
         if st.button("⬅ BACK TO DASHBOARD", use_container_width=True): go_to('dashboard')
+        
+    st.markdown("<hr style='border-color: rgba(0,242,255,0.2);'>", unsafe_allow_html=True)
+    
+    # 🔴 اضافه کردن گالری تصاویر بخش Library
+    st.markdown("<h4 style='color:#00f2ff; font-family:Cinzel; margin-bottom:15px;'>REFERENCE GALLERY</h4>", unsafe_allow_html=True)
+    l_c1, l_c2, l_c3, l_c4 = st.columns(4)
+    with l_c1:
+        if os.path.exists("desert_warn.jpg"): st.image("desert_warn.jpg", caption="Desert Warn")
+    with l_c2:
+        if os.path.exists("royal_clean.jpg"): st.image("royal_clean.jpg", caption="Royal Clean")
+    with l_c3:
+        if os.path.exists("dirty_combat.jpg"): st.image("dirty_combat.jpg", caption="Dirty Combat")
+    with l_c4:
+        if os.path.exists("urban_rebel.jpg"): st.image("urban_rebel.jpg", caption="Urban Rebel")
+        
     st.markdown("<hr style='border-color: rgba(0,242,255,0.2);'>", unsafe_allow_html=True)
     
     projects = load_json(PROJ_FILE, [])
@@ -485,6 +521,15 @@ elif st.session_state.route == 'builder':
         preview_p = generate_prompt(d)
         st.info(preview_p)
         
+        # 🔴 اضافه شدن تصاویر بخش Review
+        st.markdown("<br>", unsafe_allow_html=True)
+        rev_c1, rev_c2 = st.columns(2)
+        with rev_c1:
+            if os.path.exists("portrait_clean.PNG"): st.image("portrait_clean.PNG", caption="Visual Reference 1")
+        with rev_c2:
+            if os.path.exists("portrait_clean_2.jpg"): st.image("portrait_clean_2.jpg", caption="Visual Reference 2")
+        st.markdown("<br>", unsafe_allow_html=True)
+        
         col1, col2, col3 = st.columns([1.5, 3, 2])
         if col1.button("⬅ EDIT (BACK)"): prev_step()
         if col3.button("🚀 PROCEED TO SIMULATION"): go_to('simulation')
@@ -498,7 +543,17 @@ elif st.session_state.route == 'simulation':
     st.markdown("<h2 class='title-main'>VISUAL SIMULATION</h2>", unsafe_allow_html=True)
     c1, c2 = st.columns([2, 1])
     with c1:
-        st.markdown('<div style="background:#0a192f; height:350px; border-radius:15px; border:1px dashed #00f2ff; display:flex; align-items:center; justify-content:center; flex-direction:column;"><h1 style="color:#00f2ff; opacity:0.5;">👁️</h1><p style="color:#00f2ff; opacity:0.7; font-family:Montserrat;">LIVE PREVIEW FEED</p></div>', unsafe_allow_html=True)
+        st.markdown('<div style="background:#0a192f; height:200px; border-radius:15px; border:1px dashed #00f2ff; display:flex; align-items:center; justify-content:center; flex-direction:column; margin-bottom:20px;"><h1 style="color:#00f2ff; opacity:0.5;">👁️</h1><p style="color:#00f2ff; opacity:0.7; font-family:Montserrat;">LIVE PREVIEW FEED</p></div>', unsafe_allow_html=True)
+        
+        # 🔴 اضافه شدن تصاویر محیطی بخش Simulation
+        sim_c1, sim_c2 = st.columns(2)
+        with sim_c1:
+            if os.path.exists("desert.jpg"): st.image("desert.jpg", caption="Desert Environment Test")
+            if os.path.exists("night_neon.jpg"): st.image("night_neon.jpg", caption="Night Neon Test")
+        with sim_c2:
+            if os.path.exists("studio_portrait.jpg"): st.image("studio_portrait.jpg", caption="Studio Lighting Test")
+            if os.path.exists("humidity_tester.jpg"): st.image("humidity_tester.jpg", caption="SFX Humidity Test")
+            
     with c2:
         st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
         st.selectbox("Render Engine Test", ["Preview Mode (Fast)", "High Fidelity"])
