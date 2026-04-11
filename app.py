@@ -53,7 +53,7 @@ def add_bg_from_local(image_file):
     )
 
 # ==========================================
-# 2. دیتابیس مگا پرامپت (Mega Database)
+# 2. دیتابیس مگا پرامپت (ترجمه شده و بهینه برای AI)
 # ==========================================
 
 GENDER_LIST = ["Masculine / Male", "Feminine / Female", "Androgynous"]
@@ -119,8 +119,8 @@ CONCEPTS = {
 }
 
 GROOM_DESC = {
-    "Saudi Anchor Beard": "فرم تیز و زاویه‌دار متصل به چانه",
-    "Pyramidal Moustache": "سبیل با لبه‌های پهن و راس باریک",
+    "Saudi Anchor Beard": "Sharp and angular form connected to the chin",
+    "Pyramidal Moustache": "Mustache with wide edges and a narrow top",
     "Clean Shaven": "Smooth skin, no stubble, close-cut grooming finish",
     "Light Stubble": "Very short, even stubble, uniform shade pattern",
     "Heavy Stubble": "Thicker, rough texture, darker shade, irregular growth",
@@ -172,34 +172,34 @@ HAIR_TEX_DESC = {
 }
 
 HAIR_COLORS = {
-    "Salt and pepper beard, 10% grey hair": "ترکیب موی سیاه با تارهای سفید پراکنده",
-    "Salt and pepper beard, 30% grey hair": "ترکیب موی سیاه با تارهای سفید پراکنده",
-    "Salt and pepper beard, 50% grey hair": "ترکیب موی سیاه با تارهای سفید پراکنده",
-    "Salt and pepper beard, 70% grey hair": "ترکیب موی سیاه با تارهای سفید پراکنده",
-    "Jet black beard / Natural black": "برای جلوگیری از مات شدن، از Jet Black استفاده کن",
-    "Deep espresso brown / Dark chocolate": "گرمای رنگ را با Espresso بهتر درک می‌کند",
-    "Light chestnut brown / Sandy brown": "توناژ عسلی یا شنی به آن می‌دهد",
-    "Ash blonde / Golden blonde beard": "اگر بلوند سرد می‌خواهی Ash و اگر گرم، Golden"
+    "Salt and pepper beard, 10% grey hair": "Black hair mixed with scattered white strands",
+    "Salt and pepper beard, 30% grey hair": "Black hair mixed with noticeable white strands",
+    "Salt and pepper beard, 50% grey hair": "Even mix of black and white hair strands",
+    "Salt and pepper beard, 70% grey hair": "Mostly white hair mixed with scattered black strands",
+    "Jet black beard / Natural black": "Jet black, deep and rich natural black",
+    "Deep espresso brown / Dark chocolate": "Deep espresso brown with warm undertones",
+    "Light chestnut brown / Sandy brown": "Light chestnut brown with honey or sandy tones",
+    "Ash blonde / Golden blonde beard": "Ash blonde (cool tone) or golden blonde (warm tone)"
 }
 
 SFX_DESC = {
-    "Fresh Katana/Sword Slash": "زخم شمشیر: عمیق، لبه‌های باز، خونریزی فعال",
-    "Glass Laceration with Shards": "بریدگی با شیشه: لبه‌های نامنظم، ذرات شیشه در بافت",
-    "Blunt Force Contusion": "کوبیدگی: تورم شدید، قرمزی ملتهب، بدون بریدگی",
-    "3-Day old wound (Scabbing)": "زخم کهنه (۳ روز): شروع دلمه بستن، لبه‌های صورتی تیره",
-    "1-Week old wound (Granulation)": "زخم کهنه (۱ هفته): بافت صورتی، پوسته پوسته شدن",
-    "1-Month old Old Scar (Maturation)": "زخم کهنه (۱ ماه): بافت فیبری، قرمزی کمتر، فرورفتگی",
-    "1-Year Old Keloid Scar": "زخم کهنه (۱ سال): گوشت اضافه برجسته، بافت سفت",
-    "5-Years Old Atrophic Scar": "زخم کهنه (۵ سال): رنگ‌پریده، سفید، هم‌سطح با پوست",
-    "Fresh Periorbital Hematoma": "کبودی آنی: قرمزی مایل به بنفش، التهاب شدید",
-    "24-Hour Old Bruise (Deep Purple)": "کبودی (۱ روز): بنفش تیره و آبی، کدر شدن بافت",
-    "3-Days Old Bruise (Greenish-Yellow)": "کبودی (۳ روز): شروع زرد شدن (تجزیه خون)، لبه‌های سبز",
-    "15-Days Old Fading Bruise": "کبودی (۱۵ روز): لکه‌های زرد بسیار کمرنگ، رو به بهبودی",
-    "Chemical Acid Burn (Corrosive)": "سوختگی اسید: ذوب شدن بافت، بافت لزج و خورده شده",
-    "1st Degree Sunburn/Erythema": "سوختگی درجه ۱: قرمزی یکدست، بدون تاول، حساس",
-    "2nd Degree Burn with Blisters": "سوختگی درجه ۲: تاول‌های مایع‌دار، پوست براق و کنده شده",
-    "Bilateral Vitiligo Depigmentation": "ویتیلیگو (پیسی): لکه‌های کاملاً سفید با حاشیه مشخص، بدون بافت برجسته",
-    "Diffuse Hyperpigmentation & Melasma": "هایپرپیگمنتیشن: لکه‌های قهوه‌ای تیره نامنظم، ناشی از آفتاب یا هورمون"
+    "Fresh Katana/Sword Slash": "Deep sword wound, open edges, active bleeding",
+    "Glass Laceration with Shards": "Glass laceration, irregular edges, glass shards embedded in the tissue",
+    "Blunt Force Contusion": "Blunt force contusion, severe swelling, inflamed redness, no laceration",
+    "3-Day old wound (Scabbing)": "3-day old wound, beginning to scab, dark pink edges",
+    "1-Week old wound (Granulation)": "1-week old wound, pink granulation tissue, flaking skin",
+    "1-Month old Old Scar (Maturation)": "1-month old scar, fibrous tissue, reduced redness, slight indentation",
+    "1-Year Old Keloid Scar": "1-year old keloid scar, raised excess tissue, firm texture",
+    "5-Years Old Atrophic Scar": "5-year old atrophic scar, pale, white, flush with the skin",
+    "Fresh Periorbital Hematoma": "Fresh periorbital hematoma, purplish-red redness, severe inflammation",
+    "24-Hour Old Bruise (Deep Purple)": "24-hour old bruise, deep purple and blue, cloudy tissue",
+    "3-Days Old Bruise (Greenish-Yellow)": "3-day old bruise, starting to turn yellow, greenish edges",
+    "15-Days Old Fading Bruise": "15-day old fading bruise, very faint yellow spots, healing",
+    "Chemical Acid Burn (Corrosive)": "Chemical acid burn, melted tissue, viscous and corroded texture",
+    "1st Degree Sunburn/Erythema": "1st degree burn, uniform redness, no blisters, sensitive skin",
+    "2nd Degree Burn with Blisters": "2nd degree burn, fluid-filled blisters, shiny and peeling skin",
+    "Bilateral Vitiligo Depigmentation": "Vitiligo, completely white patches with distinct borders, no raised texture",
+    "Diffuse Hyperpigmentation & Melasma": "Hyperpigmentation, irregular dark brown spots, melasma pattern"
 }
 
 MAT_DESC = {
@@ -213,16 +213,16 @@ MAT_DESC = {
 }
 
 AGE_PROG_DESC = {
-    "Deep Nasolabial Folds": "شیار عمیق خنده؛ برای ایجاد خطوط عمیق از کنار بینی تا گوشه لب",
-    "Pronounced Crow's Feet": "چروک‌های شعاعی اطراف چشم",
-    "Hooded Eyelids / Ptosis": "افتادگی پلک؛ برای نمایش شل شدن پوست روی پلک بال",
-    "Dermal Crepiness": "بافت پوست کاغذی؛ ایجاد چروک‌های بسیار ریز و ظریف روی سطح پوست",
-    "Visible Liver Spots (Lentigines)": "لکه‌های پیری؛ پیگمنت‌های قهوه‌ای ناشی از آفتاب و سن",
-    "Sagging Jowls & Loose Skin": "افتادگی غبغب و خط فک؛ برای تخریب استراکچر و شل شدن کناره‌های صورت",
-    "Frontal Rhytids (Forehead Furrows)": "خطوط پیشانی؛ شیارهای افقی عمیق روی پیشانی",
-    "Periorbital Hollows & Eye Bags": "گودی و پف زیر چشم؛ تحلیل چربی زیر چشم و ایجاد خستگی مفرط در چهره",
-    "Vertical Lip Lines (Smoker's Lines)": "خطوط عمودی دور لب؛ عالی برای گریم‌های پیری رئال",
-    "Age-related Telangiectasia": "رگ‌های خونی نمایان؛ ایجاد مویرگ‌های ریز قرمز روی گونه‌ها و بینی"
+    "Deep Nasolabial Folds": "Deep nasolabial folds from the side of the nose to the corner of the lips",
+    "Pronounced Crow's Feet": "Radial wrinkles around the eyes",
+    "Hooded Eyelids / Ptosis": "Hooded eyelids, sagging skin on the upper eyelids",
+    "Dermal Crepiness": "Crepey skin texture, very fine and delicate wrinkles on the skin surface",
+    "Visible Liver Spots (Lentigines)": "Visible liver spots, brown pigmentation due to sun and age",
+    "Sagging Jowls & Loose Skin": "Sagging jowls and jawline, loose skin on the sides of the face",
+    "Frontal Rhytids (Forehead Furrows)": "Deep horizontal furrows on the forehead",
+    "Periorbital Hollows & Eye Bags": "Periorbital hollows and under-eye bags, fat depletion and extreme fatigue appearance",
+    "Vertical Lip Lines (Smoker's Lines)": "Vertical lip lines, realistic aging details",
+    "Age-related Telangiectasia": "Visible blood vessels, fine red capillaries on the cheeks and nose"
 }
 
 SFX_PROG_DESC = {
@@ -231,31 +231,31 @@ SFX_PROG_DESC = {
 }
 
 LIGHT_DESC = {
-    "Rembrandt Lighting": "نور کلاسیک سینمایی با مثلث کوچک زیر چشم؛ بسیار شیک و مناسب تست گریم‌های بیوتی و کاراکتر",
-    "Cold Rim Lighting": "جداسازی کاراکتر از پس‌زمینه با نور آبی",
-    "Chiaroscuro": "کنتراست بسیار بالا بین تاریکی و روشنایی",
-    "Teal and Orange Lighting": "ترکیب کلاسیک رنگ‌های سرد و گرم سینمایی",
-    "Bokeh Background": "جداسازی سوژه با عمق میدان کم",
-    "Chiaroscuro Lighting": "نورپردازی با تضاد شدید سایه و روشن؛ عالی برای نمایش حجم صورت و گریم‌های دراماتیک",
-    "Volumetric God Rays": "نورهای خطی که از میان مه یا غبار عبور می‌کنند؛ ایجاد فضای معنوی یا وهم‌آلود",
-    "Cinematic Golden Hour": "نور گرم و نرم غروب؛ زیباترین نور برای پوست و نمایش رنگ‌های طبیعی گریم",
-    "High-Key Studio Lighting": "نور تخت و روشن بدون سایه؛ مناسب برای کاتالوگ‌های آرایشی و دیدن تمام جزئیات بدون سایه مزاحم",
-    "Low-Key Moody Lighting": "نور بسیار کم و تاریک؛ فقط بخش‌های خاصی از صورت را نمایان می‌کند، مخصوص کاراکترهای مرموز",
-    "Neon Cyberpunk Rim Light": "نورهای رنگی نئونی که دور تا دور صورت را خط می‌اندازند؛ برای کارهای مدرن و فانتزی",
-    "Hard Top Lighting": "نور شدید از بالا؛ ایجاد سایه‌های تند زیر چشم و استخوان گونه، مناسب برای کاراکترهای خشن یا پیر",
-    "Flickering Candlelight": "نور لرزان شمع؛ ایجاد سایه‌های نرم و متحرک، عالی برای پروژه‌های تاریخی و کلاسیک",
-    "Soft Professional Softbox": "نور استاندارد عکاسی حرفه‌ای؛ پوست را مخملی و یکدست نشان می‌دهد"
+    "Rembrandt Lighting": "Classic cinematic light with a small triangle under the eye, highly elegant",
+    "Cold Rim Lighting": "Cold blue rim light separating the character from the background",
+    "Chiaroscuro": "Very high contrast between darkness and light",
+    "Teal and Orange Lighting": "Classic cinematic mix of cool teal and warm orange tones",
+    "Bokeh Background": "Shallow depth of field, subject separated with blurred bokeh background",
+    "Chiaroscuro Lighting": "Severe contrast between shadow and light, dramatic facial volume",
+    "Volumetric God Rays": "Linear light rays passing through fog or dust, creating a spiritual or eerie atmosphere",
+    "Cinematic Golden Hour": "Warm and soft sunset light, highlighting natural skin tones",
+    "High-Key Studio Lighting": "Flat and bright light with no shadows, revealing all details clearly",
+    "Low-Key Moody Lighting": "Very low and dark light, revealing only specific parts of the face, mysterious mood",
+    "Neon Cyberpunk Rim Light": "Colorful neon edge lights outlining the face, modern fantasy aesthetic",
+    "Hard Top Lighting": "Harsh overhead light, creating strong shadows under the eyes and cheekbones",
+    "Flickering Candlelight": "Flickering candlelight, creating soft and dynamic shadows, historical classic vibe",
+    "Soft Professional Softbox": "Standard professional photography light, making the skin look velvety and even"
 }
 
 CAM_DESC = {
-    "85 mm Lens, Eye-Level Shot": "لنز کلاسیک پرتره؛ بهترین گزینه برای نمایش بافت پوست و گریم‌های زیبایی بدون دفرمه شدن صورت",
-    "100 mm Macro Lens, Extreme Close-Up": "لنز ماکرو؛ مخصوص نمایش جزئیات خیره‌کننده مثل منافذ پوست، بافت زخم‌های SFX، یا رگ‌های داخل چشم",
-    "50 mm Lens, Dutch Angle": "لنز نرمال با زاویه کج؛ ایجاد حس تعلیق و دلهره، عالی برای کاراکترهای منفی یا گریم‌های ترسناک",
-    "35 mm Lens, Low-Angle (Hero Shot)": "کمی واید؛ زاویه از پایین به بالا که کاراکتر را مقتدر نشان می‌دهد، مناسب برای دیدن گریم صورت و بخشی از لباس",
-    "24 mm Wide-Angle, High-Angle": "لنز عریض با زاویه از بالا؛ صورت را کمی کشیده و لاغرتر نشان می‌دهد، مناسب برای کاراکترهای ضعیف یا بیمار",
-    "200 mm Telephoto, Profile View": "لنز تله؛ پس‌زمینه را کاملاً محو (Bokeh) می‌کند تا تمام تمرکز روی خط فک و جزئیات گریم از نیم‌رخ باشد",
-    "50 mm Lens, Top-Down (Bird's Eye)": "نمای کاملاً عمودی از بالا؛ عالی برای دیدن طراحی مو، فرق سر یا گریم‌های پاششی که روی کل سر اجرا شد",
-    "85 mm Lens, Three-Quarter View": "زاویه سه‌رخ؛ استانداردترین حالت برای نمایش حجم‌پردازی (Contouring) و سایه‌کاری‌های حرفه‌ای صورت"
+    "85 mm Lens, Eye-Level Shot": "Classic portrait lens, perfect for showing skin texture without facial distortion",
+    "100 mm Macro Lens, Extreme Close-Up": "Macro lens, specifically for stunning details like skin pores or SFX wound textures",
+    "50 mm Lens, Dutch Angle": "Normal lens with tilted angle, creating suspense and dread",
+    "35 mm Lens, Low-Angle (Hero Shot)": "Slightly wide, low-angle shot showing the character as powerful and heroic",
+    "24 mm Wide-Angle, High-Angle": "Wide-angle lens from a high angle, making the face look slightly elongated or vulnerable",
+    "200 mm Telephoto, Profile View": "Telephoto lens, completely blurring the background to focus entirely on the jawline from the profile",
+    "50 mm Lens, Top-Down (Bird's Eye)": "Completely vertical top-down view, excellent for overhead design details",
+    "85 mm Lens, Three-Quarter View": "Three-quarter angle, standard for showing facial volume contouring and professional shading"
 }
 
 SIZE_LIST = [
@@ -319,7 +319,6 @@ def smart_select(label, options, key, help_dict=None):
     else:
         st.session_state.draft[key] = sel
 
-# 🔴 موتور پرامپت دقیقاً منطبق با فرمول اکسل شما (تزریق مقادیر توضیحات به پرامپت)
 def generate_prompt(draft):
     G7 = draft.get('actor', '')
     J22 = "" 
@@ -339,7 +338,6 @@ def generate_prompt(draft):
     G22_key = draft.get('light', '') if draft.get('light') != "None" else ""
     G24_key = draft.get('cam', '') if draft.get('cam') != "None" else ""
 
-    # گرفتن توضیحات تخصصی از دیکشنری برای تزریق در پرامپت
     J9_desc = NAT_DESC.get(J9_key, "standard features") if J9_key else ""
     G12_desc = ERA_DESC.get(G12_key, G12_key) if G12_key else ""
     J12_desc = CONCEPTS.get(J12_key, J12_key) if J12_key else ""
@@ -423,7 +421,6 @@ st.markdown("""
     #MainMenu, footer, header {visibility: hidden;}
     .stDeployButton {display:none;}
 
-    /* 🔴 کد جادویی نابود کردن کادر دکمه لوگو */
     div.element-container:has(.logo-marker) + div.element-container button {
         background-color: transparent !important;
         border: none !important;
@@ -457,7 +454,6 @@ st.markdown("""
         text-shadow: 0 0 15px #00f2ff !important;
         transform: scale(1.02) !important;
     }
-    /* پایان کدهای لوگو */
 
     .title-main { font-family: 'Cinzel'; color: #ffffff !important; font-size: 2.5rem; font-weight: 800; letter-spacing: 10px; margin: 0; text-shadow: 0 0 15px rgba(0, 242, 255, 0.5); }
     .subtitle { color: #00f2ff; font-family: 'Montserrat'; font-size: 0.8rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 30px;}
@@ -846,3 +842,4 @@ elif st.session_state.route == 'prompt_engine':
             st.success("Saved to Library!")
         if st.button("⬅ SIMULATION", use_container_width=True): go_to('simulation')
         st.markdown('</div>', unsafe_allow_html=True)
+        
