@@ -245,37 +245,85 @@ def smart_select(label, options, key, help_dict=None):
     else:
         st.session_state.draft[key] = sel
 
+# 🔴 جایگزینی مو به مو و دقیق با فرمول اکسل شما (و حفظ تنظیمات Apex/Typography/Angle برای خراب نشدن رابط کاربری)
 def generate_prompt(draft):
-    base_p = f"Professional cinematic portrait, beautifully framed composition, three-quarter profile angle, {draft['size']}, {draft['cam']}, {draft['light']}. "
+    G7 = draft.get('actor', '')
+    J22 = "" 
+    J7 = draft.get('age', '') if draft.get('age') != "None" else ""
+    G9 = draft.get('gen', '') if draft.get('gen') != "None" else ""
+    J9 = draft.get('nat', '') if draft.get('nat') != "None" else ""
+    G12 = draft.get('era', '') if draft.get('era') != "None" else ""
+    J12 = draft.get('char', '') if draft.get('char') != "None" else ""
+    J14 = draft.get('groom', '') if draft.get('groom') != "None" else ""
     
-    char_val = draft['char']
-    char_desc = CONCEPTS.get(char_val, char_val)
-    age_val = draft.get('age', 'Unknown Age')
+    h_col = draft.get('h_col', '') if draft.get('h_col') != "None" else ""
+    h_tex = draft.get('h_tex', '') if draft.get('h_tex') != "None" else ""
+    J19 = f"{h_col} {h_tex}".strip()
     
-    char_p = f"Subject: {draft['gen']}, {age_val}, {draft['nat']} from {draft['era']}. Concept: {char_desc}. "
-    
-    h_col_val = draft['h_col']
-    h_desc = HAIR_COLORS.get(h_col_val, h_col_val)
-    groom_p = f"Grooming: {draft['groom']}. Hair: {h_desc} ({draft['h_tex']}). "
-    
-    if draft['actor'] and draft['actor'] not in ["None", "No", ""]:
-        base_p = f"Actor reference: {draft['actor']}. " + base_p
+    G19 = "" 
+    G17 = draft.get('sfx', '') if draft.get('sfx') != "None" else ""
+    J17 = draft.get('mat', '') if draft.get('mat') != "None" else ""
+    G22 = draft.get('light', '') if draft.get('light') != "None" else ""
+    G24 = draft.get('cam', '') if draft.get('cam') != "None" else ""
 
-    age_prog_val = draft.get('age_prog', '')
-    if age_prog_val and age_prog_val not in ["None", ""]:
-        char_p += f"[APEX AGE PROGRESSION: {age_prog_val}] "
+    prompt = ""
+    if G7 == "Yes":
+        prompt += "[VISUAL GUIDE: Emulate the facial structure and proportions of the attached subject. Use the photo as a likeness reference only. Apply the following design]: "
 
-    sfx_p = ""
-    if draft['sfx'] and draft['sfx'] not in ["None", ""]:
-        sfx_p = f"[CINEMATIC MAKEUP TEST: Fake {draft['sfx']} prosthetic SFX applied using {draft['mat']}. "
-        sfx_prog_val = draft.get('sfx_prog', '')
-        if sfx_prog_val and sfx_prog_val not in ["None", ""]:
-            sfx_p += f"APEX PROGRESSION STAGE: {sfx_prog_val}. "
-        sfx_p += "Note: This is a safe simulation, artificial makeup.] "
-
-    typo_p = f"Typography overlay: clearly written text '{age_val}' at the bottom margin of the image. " if age_val and age_val != "None" else ""
+    prompt += "A professional cinematic "
+    if J22: prompt += J22 + " "
+    prompt += "portrait of a "
+    
+    if J7: prompt += f"{J7} "
+    if G9: prompt += f"{G9} "
+    
+    if J9:
+        nat_features = NAT_DESC.get(J9, "standard features")
+        prompt += f"{J9} ({nat_features}) "
         
-    return base_p + char_p + groom_p + sfx_p + typo_p + "8k resolution, raw photo, highly detailed."
+    if G12:
+        prompt += f"from the {G12} era. "
+    else:
+        prompt += ". "
+        
+    if J12:
+        prompt += f"Character style: {J12}. "
+        
+    if G9 not in ["Female", "Feminine"] and J14:
+        prompt += f"Grooming: {J14}. "
+        
+    if J19:
+        prompt += f"Hair Texture: {J19}. "
+        
+    if G19:
+        prompt += f"Skin: {G19}. "
+    else:
+        prompt += "Skin: standard. "
+        
+    if "Child" not in J7 and "Teen" not in J7 and G17:
+        prompt += f"[CINEMATIC PROSTHETIC STUDY: Apply {G17} SFX as a makeup layer]. "
+        
+    if J17:
+        prompt += f"Finish: {J17}. "
+        
+    prompt += "Technical: "
+    if G22: prompt += f"Lighting: {G22}, "
+    if G24: prompt += f"Lens: {G24}, "
+    
+    # --- حفظ پارامترهای فنی جدید که قبلاً توافق کردیم ---
+    size = draft.get('size', '')
+    if size and size != "None": prompt += f"Frame: {size}, "
+    
+    age_prog = draft.get('age_prog', '')
+    if age_prog and age_prog != "None": prompt += f"APEX AGE: {age_prog}, "
+    sfx_prog = draft.get('sfx_prog', '')
+    if sfx_prog and sfx_prog != "None": prompt += f"APEX SFX: {sfx_prog}, "
+    
+    prompt += "beautifully framed composition, three-quarter profile angle, 8k, subsurface scattering, raw photography, no-retouch, focus on prosthetic makeup accuracy."
+
+    if J7: prompt += f" Typography overlay: clearly written text '{J7}' at the bottom margin of the image."
+
+    return " ".join(prompt.split())
 
 ADMIN_USER = "sep"
 ADMIN_PASS = "1386sy"
@@ -436,7 +484,6 @@ if st.session_state.route != 'login':
     c_head1, c_head2 = st.columns([1, 3])
     
     with c_head1:
-        # مارکر نامرئی که به CSS می‌گوید دکمه بعدی را کاملا به متن تبدیل کند
         st.markdown('<span class="logo-marker"></span>', unsafe_allow_html=True)
         if st.button("UONA STUDIO", key="top_home_btn"):
             st.session_state.step = 1
