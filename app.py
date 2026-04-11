@@ -394,14 +394,14 @@ def generate_prompt(draft):
     size = draft.get('size', '')
     if size and size != "None": prompt += f"Frame: {size}, "
     
-    # 🔴 منطق جدید آرک با جداکننده نئونی و دستور هوش مصنوعی 🔴
+    # 🔴 منطق آپدیت‌شده برای حفظ صددرصدی هویت و اعمال تایم‌لاین 🔴
     if is_arc_active:
         prompt += "Layout: Create a horizontal triptych composition (three equal panels side-by-side). Separate each panel with a glowing neon vertical line divider. All panels must maintain identical professional cinematic realism, raw photography, subsurface scattering, no-retouch, focus on prosthetic makeup accuracy, beautifully framed three-quarter profile angle. "
+        prompt += "CRITICAL INSTRUCTION: Maintain 100% strict facial identity and bone structure across all panels. The base character must remain exactly the same person. "
         
         if age_prog_key != "None":
             arc_desc = AGE_PROG_DESC.get(age_prog_key, age_prog_key)
-            prompt += f"Subject Progression: [APEX AGE ARC: {arc_desc}]. "
-            prompt += "Dynamic AI Instruction: Use your high-end cinematic creativity to organically age the character across the panels. Dynamically evolve and adjust the hair style, beard, mustache, skin texture, and any SFX trauma to realistically match the specific age progression in each panel. "
+            prompt += f"Subject Progression Timeline: [APEX AGE ARC: {arc_desc}]. Apply progressive aging strictly to skin texture, hair/beard graying, and the specified age arc. "
             
             if "Deep Nasolabial Folds" in age_prog_key:
                 prompt += "Panel 1 (Left): age 30. Panel 2 (Middle): age 40. Panel 3 (Right): age 50. Ensure each panel is clearly labeled with text at the bottom margin: 'Age 30', 'Age 40', 'Age 50' respectively. "
@@ -412,7 +412,7 @@ def generate_prompt(draft):
 
         elif sfx_prog_key != "None":
             arc_desc = SFX_PROG_DESC.get(sfx_prog_key, sfx_prog_key)
-            prompt += f"Makeup Progression: [APEX SFX ARC: {arc_desc}]. "
+            prompt += f"Makeup Timeline: [APEX SFX ARC: {arc_desc}]. Only progress the healing stages of the trauma across panels. "
             if "Fresh Katana/Sword Slash" in sfx_prog_key:
                 prompt += "Panel 1 (Left): fresh slash with bleeding. Panel 2 (Middle): partially scabbed (3 days old). Panel 3 (Right): fading scar (1 year old). Clearly label: 'Fresh', 'Scabbed', 'Faded'. "
             else:
