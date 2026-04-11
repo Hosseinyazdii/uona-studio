@@ -341,7 +341,6 @@ def generate_prompt(draft):
     age_prog_key = draft.get('age_prog', 'None')
     sfx_prog_key = draft.get('sfx_prog', 'None')
 
-    # بررسی فعال بودن آرک‌ها برای تغییر چیدمان تصویر
     is_arc_active = (age_prog_key != "None") or (sfx_prog_key != "None")
 
     J9_desc = NAT_DESC.get(J9_key, "standard features") if J9_key else ""
@@ -362,7 +361,6 @@ def generate_prompt(draft):
     if G7 == "Yes":
         prompt += "[VISUAL GUIDE: Emulate the facial structure and proportions of the attached subject. Use the photo as a likeness reference only. Apply the following design]: "
 
-    # شروع تعریف سوژه (ثابت)
     prompt += "A professional cinematic "
     if J22: prompt += J22 + " "
     prompt += "portrait of a "
@@ -396,40 +394,34 @@ def generate_prompt(draft):
     size = draft.get('size', '')
     if size and size != "None": prompt += f"Frame: {size}, "
     
-    # 🔴 منطق جدید آرک (تولید تصویر سه‌تایی کنار هم) 🔴
+    # 🔴 منطق جدید آرک با جداکننده نئونی و دستور هوش مصنوعی 🔴
     if is_arc_active:
-        prompt += "Layout: Create a horizontal triptych composition (three equal panels side-by-side). All panels must maintain identical professional cinematic realism, raw photography, subsurface scattering, no-retouch, focus on prosthetic makeup accuracy, beautifully framed three-quarter profile angle. "
+        prompt += "Layout: Create a horizontal triptych composition (three equal panels side-by-side). Separate each panel with a glowing neon vertical line divider. All panels must maintain identical professional cinematic realism, raw photography, subsurface scattering, no-retouch, focus on prosthetic makeup accuracy, beautifully framed three-quarter profile angle. "
         
-        # تعریف آرک پیری
         if age_prog_key != "None":
-            # مثال: فرض کنیم age_prog_key متن "Age Progression Arc" است و help_dict نداریم.
-            # برای سادگی، فعلا متن انتخابی کاربر را به انگلیسی ترجمه کرده و میفرستیم.
             arc_desc = AGE_PROG_DESC.get(age_prog_key, age_prog_key)
             prompt += f"Subject Progression: [APEX AGE ARC: {arc_desc}]. "
+            prompt += "Dynamic AI Instruction: Use your high-end cinematic creativity to organically age the character across the panels. Dynamically evolve and adjust the hair style, beard, mustache, skin texture, and any SFX trauma to realistically match the specific age progression in each panel. "
             
-            # مثال چاپی شما: arc age 30to 40 to50
-            # هوش مصنوعی باید این را به عنوان سه مرحله پیری در سه پنل درک کند.
             if "Deep Nasolabial Folds" in age_prog_key:
                 prompt += "Panel 1 (Left): age 30. Panel 2 (Middle): age 40. Panel 3 (Right): age 50. Ensure each panel is clearly labeled with text at the bottom margin: 'Age 30', 'Age 40', 'Age 50' respectively. "
             elif "Pronounced Crow's Feet" in age_prog_key:
                  prompt += "Panel 1 (Left): minor wrinkles. Panel 2 (Middle): pronounced crow's feet. Panel 3 (Right): advanced wrinkles. Clearly label: 'Minor', 'Pronounced', 'Advanced'. "
-            # ... بقیه آرک‌ها ...
+            else:
+                prompt += "Panel 1 (Left): base age. Panel 2 (Middle): +10 years older. Panel 3 (Right): +20 years older. Ensure each panel is clearly labeled with text at the bottom margin with the respective age. "
 
-        # تعریف آرک SFX
         elif sfx_prog_key != "None":
             arc_desc = SFX_PROG_DESC.get(sfx_prog_key, sfx_prog_key)
-            prompt += f"makeup Progression: [APEX SFX ARC: {arc_desc}]. "
+            prompt += f"Makeup Progression: [APEX SFX ARC: {arc_desc}]. "
             if "Fresh Katana/Sword Slash" in sfx_prog_key:
                 prompt += "Panel 1 (Left): fresh slash with bleeding. Panel 2 (Middle): partially scabbed (3 days old). Panel 3 (Right): fading scar (1 year old). Clearly label: 'Fresh', 'Scabbed', 'Faded'. "
-            # ... بقیه آرک‌ها ...
+            else:
+                prompt += "Panel 1 (Left): fresh trauma. Panel 2 (Middle): healing stage. Panel 3 (Right): fully healed scar. Clearly label each stage at the bottom margin. "
             
-    # اگر آرک فعال نباشد، چیدمان تکی عادی
     else:
-        prompt += "Layout: single cinematic raw photography portrait. beautifully framed composition, three-quarter profile angle, subsurface scattering, no-retouch, focus on prosthetic makeup accuracy. "
-        # تایپوگرافی عادی برای سن
+        prompt += "Layout: single cinematic raw photography portrait. beautifully framed composition, three-quarter profile angle, subsurface scattering, no-retouch. "
         if J7: prompt += f" Typography overlay: clearly written text '{J7}' at the bottom margin of the image. "
 
-    # بخش ثابت نهایی فنی
     prompt += "8k, focus on prosthetic makeup accuracy."
 
     return " ".join(prompt.split())
