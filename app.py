@@ -53,145 +53,219 @@ def add_bg_from_local(image_file):
     )
 
 # ==========================================
-# 2. دیتابیس جامع و هوشمند سینمایی
+# 2. دیتابیس مگا پرامپت (Mega Database)
 # ==========================================
-ACTORS_LIST = [
-    "Cillian Murphy", "Tom Hardy", "Joaquin Phoenix", "Mads Mikkelsen", 
-    "Keanu Reeves", "Brad Pitt", "Oscar Isaac", "Javier Bardem", 
-    "Christian Bale", "Timothee Chalamet"
+
+GENDER_LIST = ["Masculine / Male", "Feminine / Female", "Androgynous"]
+
+AGE_LIST = [
+    "Child / Pre-adolescent", 
+    "Adolescent / Teenager", 
+    "Young Adult (Early 20s)", 
+    "Middle-aged (Late 40s)", 
+    "Elderly / Senior", 
+    "Ancient / Centenarian"
 ]
 
-HAIR_COLORS = {
-    "Jet Black": "Jet black / Natural deep black, cool undertones",
-    "Espresso Brown": "Deep espresso brown / Dark chocolate",
-    "Chestnut Brown": "Medium chestnut brown / Warm tones",
-    "Ash Blonde": "Ash blonde (Cool tone, matte finish)",
-    "Golden Blonde": "Golden blonde (Warm, sun-kissed)",
-    "Platinum Blonde": "Platinum / Ice blonde, almost white",
-    "Ginger / Auburn": "Vibrant ginger, copper, or deep auburn",
-    "Salt & Pepper (10% Grey)": "Mostly dark with 10% faint grey hairs",
-    "Salt & Pepper (30% Grey)": "Noticeable grey streaks, 30% grey",
-    "Salt & Pepper (50% Grey)": "Even mix of grey and dark hair",
-    "Salt & Pepper (70% Grey)": "Mostly grey/silver with dark roots",
-    "Silver / Steel Grey": "Pure silver, steel grey tone",
-    "Pure White": "Pure white, aged hair",
-    "Dyed Unnatural": "Cyberpunk/Alternative dyed hair (Neon tones)"
-}
-
-CONCEPTS = {
-    "Heroic Protagonist": "Strong jawline, determined gaze, slightly battle-worn, confident posture",
-    "Sinister Villain": "Harsh angular shadows, menacing expression, sharp and calculating features",
-    "Battle-Hardened Mercenary": "Scars, grime, rugged, exhausted but highly alert",
-    "Aristocratic Royalty": "Elegant, pristine flawless skin, arrogant or noble posture, luxury textures",
-    "Street Rogue / Outlaw": "Hooded or secretive, unpolished, survivalist look, sharp eyes",
-    "Wise Scholar / Mentor": "Aged gracefully, thoughtful gentle gaze, refined appearance",
-    "Cybernetic / Augmented": "Tech implants, synthetic skin patches, sci-fi integration",
-    "Mystic / Shaman": "Ethereal look, tribal face paint or tattoos, distant otherworldly stare",
-    "Everyday Citizen / Peasant": "Naturalistic, unglamorous, relatable everyday appearance",
-    "Horror / Undead Entity": "Sunken eyes, pale or decaying skin, terrifying aura",
-    "Corporate Executive": "Sharp, confident, immaculate grooming, authoritative"
-}
-
-LIGHT_DESC = {
-    "Rembrandt Lighting": "Classic dramatic portrait lighting, distinct triangle of light on one cheek",
-    "Cinematic Teal & Orange": "Hollywood blockbuster color grading, warm highlights, cool teal shadows",
-    "Chiaroscuro (High Contrast)": "Renaissance style, extreme contrast between deep pitch-black shadows and bright highlights",
-    "Harsh Midday Sun": "Hard, sharp shadows, realistic high-intensity outdoor daylight",
-    "Overcast / Diffused Light": "Soft, shadowless, moody natural lighting",
-    "Neon / Cyberpunk Glow": "Vibrant practical lights, glowing pink, blue, or green hues",
-    "Under-lighting (Monster)": "Light positioned below the face, casting eerie upward shadows (horror style)",
-    "Silhouette / Rim Light": "Subject mostly dark, strong backlight outlining the edges of the face/hair",
-    "Golden Hour": "Warm, directional, soft sunlight associated with sunset/sunrise",
-    "Firelight / Candlelight": "Warm, flickering, low-light ambient illumination, intimate mood",
-    "Interrogation / Bare Bulb": "Top-down harsh light, gritty, realistic police-room style"
-}
-
-GROOM_DESC = {
-    "Clean Shaven": "Smooth skin, perfectly groomed, no facial hair",
-    "Light Stubble": "1-2 days of facial hair growth, faint shadow",
-    "Medium Stubble": "3-4 days of growth, visible texture and grit",
-    "Heavy Stubble": "5-7 days of dense facial hair growth, rugged look",
-    "Short Beard": "Neatly trimmed, close to the face, professional",
-    "Full Beard": "Thick, dense, well-kept full facial hair",
-    "Long Beard": "Extended length, historic or aged look",
-    "Unkempt / Dirty Beard": "Wild, untamed, survivor or historical styling",
-    "Goatee": "Chin and mustache connection only",
-    "Chevron Mustache": "Thick upper lip hair, retro/80s style",
-    "Pencil Mustache": "Thin, refined and highly styled upper lip hair",
-    "Patchy Beard": "Uneven growth, realistic imperfections and bald spots"
-}
-
-SFX_DESC = {
-    "Sword Wound": "Clean, sharp blade laceration",
-    "Glass Laceration": "Jagged cuts with micro-details",
-    "Crush/Blunt Force Wound": "Swollen, uneven skin breakage",
-    "3-Day Old Wound": "Partially scabbed, dark red/brown edges",
-    "1-Week Old Scar": "Healing pinkish tissue, fresh scar",
-    "1-Month Old Scar": "Settled scar tissue, slightly raised",
-    "1-Year Old Keloid Scar": "Thick, raised, permanent keloid tissue",
-    "5-Year Old Scar": "Faded, flat, pale scar integration",
-    "Fresh Bruise (Immediate)": "Reddish/purple surface hematoma",
-    "1-Day Old Bruise": "Deep purple and blue subdermal pooling",
-    "3-Day Old Bruise": "Yellow and green edges, fading purple",
-    "15-Day Fading Bruise": "Faint yellow/brown residual mark",
-    "Acid Burn": "Melted, distorted skin texture",
-    "1st Degree Burn": "Redness, inflamed epidermal layer",
-    "2nd Degree Burn": "Blistering, severe dermal damage",
-    "Katana Slash": "Deep, angled, highly precise slash wound"
+NAT_DESC = {
+    "Iranian": "Indo-Aryan features, prominent nasal bridge, olive skin",
+    "Egyptian": "North African features, warm bronze skin tone",
+    "Emirati": "Gulf Arab features, sharp jawline, tanned skin",
+    "Saudi": "Peninsular Arab features, high cheekbones",
+    "Kuwaiti": "Northern Gulf features, refined structure",
+    "Syrian": "Levantine features, straight profile",
+    "Turkish": "Eurasian features, strong facial contours, dark hair, medium olive skin",
+    "Indian": "South Asian features, deep-set dark eyes, thick dark hair, rich warm undertones",
+    "American": "Diverse North American features, broad range of skin tones, varied facial structures",
+    "European": "Caucasian features, varied eye colors, prominent brow ridge, fair complexion",
+    "African": "Sub-Saharan features, broad nasal structure, full lips, deep melanated skin",
+    "Chinese": "East Asian features, epicanthic folds, high cheekbones, smooth skin texture"
 }
 
 ERA_DESC = {
-    "Prehistoric / Stone Age": "Primitive, unkempt, prehistoric styling, weathered skin",
-    "Ancient Rome / Greece": "Classical antiquity, togas, armor, traditional garments",
-    "Pre-Islamic Middle East": "Ancient Arabian peninsula aesthetics, nomadic textures",
-    "Medieval / Dark Ages": "Gritty, middle ages styling, chainmail, rustic materials",
-    "Renaissance": "15th-16th century elegant styling, detailed fabrics",
-    "Victorian Era (19th Century)": "19th century historical accuracy, Victorian/Qajar era",
-    "1920s - Roaring Twenties": "1920s aesthetics, early modern styling, flapper/gangster",
-    "1970s - Retro / Vintage": "1970s retro aesthetics, distinct color grading",
-    "Contemporary / Present Day": "Modern day, current fashion and styling",
-    "Cyberpunk / Distant Future": "Neon accents, synthetic materials, futuristic tech",
-    "Post-Apocalyptic": "Wasteland survivor, scavenged gear, highly weathered"
+    "Contemporary / Modern Day": "Current lighting, sharp details, digital photography look",
+    "Stone Age / Prehistoric": "Primitive aesthetic, raw textures, survivalist look",
+    "Before Common Era (BCE)": "Ancient civilization styling, rudimentary tools/makeup",
+    "Pre-Islamic Era": "Traditional regional heritage, antique textures",
+    "Ancient Era (Hellenistic/Roman)": "Classical features, draping, historical accuracy",
+    "Medieval / Dark Ages": "Gritty, rustic, heavy textures, atmospheric mood",
+    "200 Years ago (Early 19th Century)": "Regency style, natural fiber textures, era-specific grooming",
+    "150 years ago (Victorian Era)": "Formal, structured, refined textures, pale complexions",
+    "100 Years ago (Roaring 20s)": "Vintage aesthetic, early 20th-century grooming/lighting",
+    "50 Years ago (1970s Retro)": "Analog film look, warm hues, vintage hair styles",
+    "Futuristic / Cyberpunk": "Neon accents, synthetic materials, high-tech glow",
+    "Post-Apocalyptic": "Dirty, weathered, distressed textures, gritty survivalist"
 }
 
-NAT_DESC = {
-    "Iranian/Persian": "Persian features, distinct bone structure",
-    "Peninsular Arab (Saudi/Emirati)": "Peninsular Arab features, warm olive skin tones",
-    "Levantine (Lebanese/Syrian)": "Eastern Mediterranean features",
-    "Egyptian/North African": "North African features, warm skin tones",
-    "Nordic/Scandinavian": "Fair skin, light features, structured jawline",
-    "Mediterranean (Italian/Greek)": "Olive skin, Mediterranean facial structure",
-    "Slavic/Eastern European": "Slavic facial structure, distinct cheekbones",
-    "East Asian (Japanese/Korean)": "East Asian features, distinct eye shape",
-    "South Asian (Indian/Pakistani)": "Desi features, rich brown skin tones",
-    "Latin American": "Mestizo or Latin features, warm undertones"
+CONCEPTS = {
+    "Heroic Warrior": "Strong jawline, confident gaze, slight battle wear",
+    "Sinister Villain": "Harsh shadows, menacing expression, sharp features",
+    "Scholar / Intellectual": "Refined appearance, focused eyes, thoughtful pose",
+    "Royal / Aristocratic": "Elegant posture, pristine skin, luxury textures",
+    "Mercenary / Outlaw": "Rugged, weathered, scars, untamed grooming",
+    "Mystic / Shaman": "Otherworldly look, spiritual paint, ethereal lighting",
+    "Corporate Executive / CEO": "Clean-cut, authoritative, sharp professional lighting",
+    "Elite Athlete / Fitness Pro": "Defined muscularity, healthy skin glow, sweat detail",
+    "Bohemian Artist": "Creative styling, messy hair, expressive eyes",
+    "Average Citizen": "Naturalistic, candid, everyday lighting",
+    "Blue-collar / Technician": "Grime, work-worn skin, functional appearance",
+    "Academic Student": "Youthful, inquisitive, natural-soft lighting",
+    "High-fashion Model": "Angular features, studio lighting, flawless skin",
+    "Retiree / Grandparent": "Dignified aging, soft textures, wisdom-filled gaze",
+    "Urban / Street Style": "Modern edge, trendy accessories, natural city light",
+    "Rural / Outdoorsman": "Sun-damaged skin, practical gear, natural daylight",
+    "Red Carpet / Gala Guest": "Glamorous, high-contrast lighting, perfect grooming",
+    "Ailing / Sickly Character": "Pale skin, dark circles, visible veins, weak posture"
 }
 
-CAM_DESC = {
-    "85mm Lens (Standard Portrait)": "Standard portrait lens, minimal distortion, shallow depth of field",
-    "100mm Macro (Extreme Detail)": "Extreme close-up, focusing on skin pores and SFX textures",
-    "35mm Lens (Wider Context)": "Wider angle, empowering and dramatic perspective",
-    "24mm Wide-Angle (Environmental)": "Wide view, incorporates background elements",
-    "50mm Lens (Standard Human Eye)": "Human-eye perspective, neutral framing"
+GROOM_DESC = {
+    "Saudi Anchor Beard": "فرم تیز و زاویه‌دار متصل به چانه",
+    "Pyramidal Moustache": "سبیل با لبه‌های پهن و راس باریک",
+    "Clean Shaven": "Smooth skin, no stubble, close-cut grooming finish",
+    "Light Stubble": "Very short, even stubble, uniform shade pattern",
+    "Heavy Stubble": "Thicker, rough texture, darker shade, irregular growth",
+    "Designer Stubble": "Precisely trimmed, clean sharp defined edges",
+    "Shadow Fade Beard": "Faded sides, denser hair on chin, smooth gradient transition",
+    "Goatee (No Mustache)": "Chin beard only, completely clean shaven cheeks and upper lip",
+    "Classic Goatee": "Chin beard connected to mustache, smooth circular blend",
+    "Van Dyke": "Pointed chin beard, disconnected floating mustache, sharp detail",
+    "Anchor Beard": "Pointed chin beard, thin defined floating mustache",
+    "Short Boxed Beard": "Short, full beard, precise square defined edges",
+    "Medium Boxed Beard": "Medium length, full, structured clean appearance",
+    "Long Full Beard": "Long, thick, natural growth pattern, dense hair volume",
+    "Unkempt Beard": "Messy natural growth, disheveled texture, random hair direction",
+    "Scruffy Beard": "Patchy, rough texture, slightly dirty, abandoned grooming",
+    "Wild Beard": "Long, chaotic, untamed texture, tangled strands",
+    "Bedouin Beard": "Long, natural sun-exposed texture, weathered appearance",
+    "Viking Beard": "Long, thick, braided beard strands, rugged texture",
+    "Medieval Beard": "Natural, period-authentic growth, no sharp trimming",
+    "Philosopher Beard": "Long, soft texture, intellectual appearance, flowing hair",
+    "Warrior Beard": "Thick, rugged, battle-worn appearance, natural textures",
+    "Graying Patches": "Natural gray strands, mixed-tone patches, mature appearance",
+    "Split Texture Beard": "Smooth on chin, rough on sides, dual-textured growth",
+    "Short Sideburns": "Above the ear level, clean shaven cheeks",
+    "Mid-Ear Sideburns": "Level with the tragus, standard length",
+    "Long Sideburns": "Reaches the ear lobe level",
+    "Extra-Long Sideburns": "Passes the ear lobe, extended length",
+    "High Sideburns": "Reaches the temple level, very short",
+    "Tapered Length": "Gradient length, smoothly faded into skin",
+    "Square Sideburns": "Horizontal cut bottom, clean edges",
+    "Pointed Sideburns": "Triangle point bottom, defined shape",
+    "Rounded Sideburns": "Soft, circular finish bottom",
+    "Pencil Sideburns": "Ultra-thin line, high detail trimming",
+    "Flared Sideburns": "Widens at the base, classic wide look",
+    "Angled Sideburns": "Slanted cut bottom, geometric defined shape",
+    "Mutton Chops": "Wide full sideburns connected to mustache, clean chin",
+    "Friendly Mutton Chops": "Mutton chops connected via mustache, soft blend",
+    "Soul Patch": "Small patch below the lower lip, defined connection"
 }
 
-SIZE_LIST = [
-    "4:5 (Standard Portrait)",
-    "16:9 (Cinematic Widescreen)",
-    "2.39:1 (Anamorphic Cinema)",
-    "1:1 (Square)",
-    "9:16 (Vertical Video)"
-]
+HAIR_TEX_DESC = {
+    "Afro-Textured": "Kinky-coily patterns, high density, matte finish, tight structural coils",
+    "Wavy (Type 2)": "Natural S-shape waves, effortless flow, soft luster, beachy texture",
+    "Curly (Type 3)": "Defined ringlets, springy loops, voluminous structure, high frizz detail",
+    "Straight (Sleek)": "Linear alignment, high specular highlights, silky smooth surface",
+    "Coarse & Wiry": "Thick diameter strands, rough cuticle texture, irregular graying patterns",
+    "Fine & Wispy": "Low density, translucent thin strands, sensitive to wind/motion",
+    "Disheveled & Matted": "Tangled clumps, distressed cuticles, weathered look, realistic stray hairs",
+    "Braided / Cornrows": "Intricate interlocking patterns, scalp tension detail, tight woven texture"
+}
+
+HAIR_COLORS = {
+    "Salt and pepper beard, 10% grey hair": "ترکیب موی سیاه با تارهای سفید پراکنده",
+    "Salt and pepper beard, 30% grey hair": "ترکیب موی سیاه با تارهای سفید پراکنده",
+    "Salt and pepper beard, 50% grey hair": "ترکیب موی سیاه با تارهای سفید پراکنده",
+    "Salt and pepper beard, 70% grey hair": "ترکیب موی سیاه با تارهای سفید پراکنده",
+    "Jet black beard / Natural black": "برای جلوگیری از مات شدن، از Jet Black استفاده کن",
+    "Deep espresso brown / Dark chocolate": "گرمای رنگ را با Espresso بهتر درک می‌کند",
+    "Light chestnut brown / Sandy brown": "توناژ عسلی یا شنی به آن می‌دهد",
+    "Ash blonde / Golden blonde beard": "اگر بلوند سرد می‌خواهی Ash و اگر گرم، Golden"
+}
+
+SFX_DESC = {
+    "Fresh Katana/Sword Slash": "زخم شمشیر: عمیق، لبه‌های باز، خونریزی فعال",
+    "Glass Laceration with Shards": "بریدگی با شیشه: لبه‌های نامنظم، ذرات شیشه در بافت",
+    "Blunt Force Contusion": "کوبیدگی: تورم شدید، قرمزی ملتهب، بدون بریدگی",
+    "3-Day old wound (Scabbing)": "زخم کهنه (۳ روز): شروع دلمه بستن، لبه‌های صورتی تیره",
+    "1-Week old wound (Granulation)": "زخم کهنه (۱ هفته): بافت صورتی، پوسته پوسته شدن",
+    "1-Month old Old Scar (Maturation)": "زخم کهنه (۱ ماه): بافت فیبری، قرمزی کمتر، فرورفتگی",
+    "1-Year Old Keloid Scar": "زخم کهنه (۱ سال): گوشت اضافه برجسته، بافت سفت",
+    "5-Years Old Atrophic Scar": "زخم کهنه (۵ سال): رنگ‌پریده، سفید، هم‌سطح با پوست",
+    "Fresh Periorbital Hematoma": "کبودی آنی: قرمزی مایل به بنفش، التهاب شدید",
+    "24-Hour Old Bruise (Deep Purple)": "کبودی (۱ روز): بنفش تیره و آبی، کدر شدن بافت",
+    "3-Days Old Bruise (Greenish-Yellow)": "کبودی (۳ روز): شروع زرد شدن (تجزیه خون)، لبه‌های سبز",
+    "15-Days Old Fading Bruise": "کبودی (۱۵ روز): لکه‌های زرد بسیار کمرنگ، رو به بهبودی",
+    "Chemical Acid Burn (Corrosive)": "سوختگی اسید: ذوب شدن بافت، بافت لزج و خورده شده",
+    "1st Degree Sunburn/Erythema": "سوختگی درجه ۱: قرمزی یکدست، بدون تاول، حساس",
+    "2nd Degree Burn with Blisters": "سوختگی درجه ۲: تاول‌های مایع‌دار، پوست براق و کنده شده",
+    "Bilateral Vitiligo Depigmentation": "ویتیلیگو (پیسی): لکه‌های کاملاً سفید با حاشیه مشخص، بدون بافت برجسته",
+    "Diffuse Hyperpigmentation & Melasma": "هایپرپیگمنتیشن: لکه‌های قهوه‌ای تیره نامنظم، ناشی از آفتاب یا هورمون"
+}
+
+MAT_DESC = {
+    "Encapsulated Silicone": "Realistic skin-like translucency, blended edges",
+    "Feathered Edges": "Seamless transition between prosthetic and skin",
+    "Translucent Skin Finish": "Layers of depth, natural light absorption",
+    "Prosthetic Adhesive": "Texture of professional bonding, visible seal",
+    "Matte Sealer": "Non-reflective surface, velvety skin texture",
+    "Alcohol-activated Palette": "Translucent color washes, realistic bruising/veins",
+    "Granulation Tissue": "Raw, healing tissue texture, high detail"
+}
 
 AGE_PROG_DESC = {
-    "Stage 1: Subtle Aging": "Wait for final prompt from Master...",
-    "Stage 2: Advanced Aging": "Wait for final prompt from Master..."
+    "Deep Nasolabial Folds": "شیار عمیق خنده؛ برای ایجاد خطوط عمیق از کنار بینی تا گوشه لب",
+    "Pronounced Crow's Feet": "چروک‌های شعاعی اطراف چشم",
+    "Hooded Eyelids / Ptosis": "افتادگی پلک؛ برای نمایش شل شدن پوست روی پلک بال",
+    "Dermal Crepiness": "بافت پوست کاغذی؛ ایجاد چروک‌های بسیار ریز و ظریف روی سطح پوست",
+    "Visible Liver Spots (Lentigines)": "لکه‌های پیری؛ پیگمنت‌های قهوه‌ای ناشی از آفتاب و سن",
+    "Sagging Jowls & Loose Skin": "افتادگی غبغب و خط فک؛ برای تخریب استراکچر و شل شدن کناره‌های صورت",
+    "Frontal Rhytids (Forehead Furrows)": "خطوط پیشانی؛ شیارهای افقی عمیق روی پیشانی",
+    "Periorbital Hollows & Eye Bags": "گودی و پف زیر چشم؛ تحلیل چربی زیر چشم و ایجاد خستگی مفرط در چهره",
+    "Vertical Lip Lines (Smoker's Lines)": "خطوط عمودی دور لب؛ عالی برای گریم‌های پیری رئال",
+    "Age-related Telangiectasia": "رگ‌های خونی نمایان؛ ایجاد مویرگ‌های ریز قرمز روی گونه‌ها و بینی"
 }
 
 SFX_PROG_DESC = {
     "Stage 1: Fresh & Bleeding": "Wait for final prompt from Master...",
     "Stage 2: Healing & Bruised": "Wait for final prompt from Master..."
 }
+
+LIGHT_DESC = {
+    "Rembrandt Lighting": "نور کلاسیک سینمایی با مثلث کوچک زیر چشم؛ بسیار شیک و مناسب تست گریم‌های بیوتی و کاراکتر",
+    "Cold Rim Lighting": "جداسازی کاراکتر از پس‌زمینه با نور آبی",
+    "Chiaroscuro": "کنتراست بسیار بالا بین تاریکی و روشنایی",
+    "Teal and Orange Lighting": "ترکیب کلاسیک رنگ‌های سرد و گرم سینمایی",
+    "Bokeh Background": "جداسازی سوژه با عمق میدان کم",
+    "Chiaroscuro Lighting": "نورپردازی با تضاد شدید سایه و روشن؛ عالی برای نمایش حجم صورت و گریم‌های دراماتیک",
+    "Volumetric God Rays": "نورهای خطی که از میان مه یا غبار عبور می‌کنند؛ ایجاد فضای معنوی یا وهم‌آلود",
+    "Cinematic Golden Hour": "نور گرم و نرم غروب؛ زیباترین نور برای پوست و نمایش رنگ‌های طبیعی گریم",
+    "High-Key Studio Lighting": "نور تخت و روشن بدون سایه؛ مناسب برای کاتالوگ‌های آرایشی و دیدن تمام جزئیات بدون سایه مزاحم",
+    "Low-Key Moody Lighting": "نور بسیار کم و تاریک؛ فقط بخش‌های خاصی از صورت را نمایان می‌کند، مخصوص کاراکترهای مرموز",
+    "Neon Cyberpunk Rim Light": "نورهای رنگی نئونی که دور تا دور صورت را خط می‌اندازند؛ برای کارهای مدرن و فانتزی",
+    "Hard Top Lighting": "نور شدید از بالا؛ ایجاد سایه‌های تند زیر چشم و استخوان گونه، مناسب برای کاراکترهای خشن یا پیر",
+    "Flickering Candlelight": "نور لرزان شمع؛ ایجاد سایه‌های نرم و متحرک، عالی برای پروژه‌های تاریخی و کلاسیک",
+    "Soft Professional Softbox": "نور استاندارد عکاسی حرفه‌ای؛ پوست را مخملی و یکدست نشان می‌دهد"
+}
+
+CAM_DESC = {
+    "85 mm Lens, Eye-Level Shot": "لنز کلاسیک پرتره؛ بهترین گزینه برای نمایش بافت پوست و گریم‌های زیبایی بدون دفرمه شدن صورت",
+    "100 mm Macro Lens, Extreme Close-Up": "لنز ماکرو؛ مخصوص نمایش جزئیات خیره‌کننده مثل منافذ پوست، بافت زخم‌های SFX، یا رگ‌های داخل چشم",
+    "50 mm Lens, Dutch Angle": "لنز نرمال با زاویه کج؛ ایجاد حس تعلیق و دلهره، عالی برای کاراکترهای منفی یا گریم‌های ترسناک",
+    "35 mm Lens, Low-Angle (Hero Shot)": "کمی واید؛ زاویه از پایین به بالا که کاراکتر را مقتدر نشان می‌دهد، مناسب برای دیدن گریم صورت و بخشی از لباس",
+    "24 mm Wide-Angle, High-Angle": "لنز عریض با زاویه از بالا؛ صورت را کمی کشیده و لاغرتر نشان می‌دهد، مناسب برای کاراکترهای ضعیف یا بیمار",
+    "200 mm Telephoto, Profile View": "لنز تله؛ پس‌زمینه را کاملاً محو (Bokeh) می‌کند تا تمام تمرکز روی خط فک و جزئیات گریم از نیم‌رخ باشد",
+    "50 mm Lens, Top-Down (Bird's Eye)": "نمای کاملاً عمودی از بالا؛ عالی برای دیدن طراحی مو، فرق سر یا گریم‌های پاششی که روی کل سر اجرا شد",
+    "85 mm Lens, Three-Quarter View": "زاویه سه‌رخ؛ استانداردترین حالت برای نمایش حجم‌پردازی (Contouring) و سایه‌کاری‌های حرفه‌ای صورت"
+}
+
+SIZE_LIST = [
+    "Aspect Ratio 4:5 (Portrait/Vertical)",
+    "Aspect Ratio 5:4 (Portrait)",
+    "Aspect Ratio 16:9 (Widescreen)",
+    "Aspect Ratio 9:16 (Vertical / Stories)",
+    "Aspect Ratio 2.39:1 (Anamorphic / Cinemascope)",
+    "Aspect Ratio 1:1 (Square)"
+]
 
 # ==========================================
 # 3. مدیریت وضعیت (State Machine)
@@ -245,26 +319,40 @@ def smart_select(label, options, key, help_dict=None):
     else:
         st.session_state.draft[key] = sel
 
-# 🔴 جایگزینی مو به مو و دقیق با فرمول اکسل شما (و حفظ تنظیمات Apex/Typography/Angle برای خراب نشدن رابط کاربری)
+# 🔴 موتور پرامپت دقیقاً منطبق با فرمول اکسل شما (تزریق مقادیر توضیحات به پرامپت)
 def generate_prompt(draft):
     G7 = draft.get('actor', '')
     J22 = "" 
     J7 = draft.get('age', '') if draft.get('age') != "None" else ""
     G9 = draft.get('gen', '') if draft.get('gen') != "None" else ""
-    J9 = draft.get('nat', '') if draft.get('nat') != "None" else ""
-    G12 = draft.get('era', '') if draft.get('era') != "None" else ""
-    J12 = draft.get('char', '') if draft.get('char') != "None" else ""
-    J14 = draft.get('groom', '') if draft.get('groom') != "None" else ""
     
-    h_col = draft.get('h_col', '') if draft.get('h_col') != "None" else ""
-    h_tex = draft.get('h_tex', '') if draft.get('h_tex') != "None" else ""
-    J19 = f"{h_col} {h_tex}".strip()
+    J9_key = draft.get('nat', '') if draft.get('nat') != "None" else ""
+    G12_key = draft.get('era', '') if draft.get('era') != "None" else ""
+    J12_key = draft.get('char', '') if draft.get('char') != "None" else ""
+    J14_key = draft.get('groom', '') if draft.get('groom') != "None" else ""
     
-    G19 = "" 
-    G17 = draft.get('sfx', '') if draft.get('sfx') != "None" else ""
-    J17 = draft.get('mat', '') if draft.get('mat') != "None" else ""
-    G22 = draft.get('light', '') if draft.get('light') != "None" else ""
-    G24 = draft.get('cam', '') if draft.get('cam') != "None" else ""
+    h_col_key = draft.get('h_col', '') if draft.get('h_col') != "None" else ""
+    h_tex_key = draft.get('h_tex', '') if draft.get('h_tex') != "None" else ""
+    
+    G17_key = draft.get('sfx', '') if draft.get('sfx') != "None" else ""
+    J17_key = draft.get('mat', '') if draft.get('mat') != "None" else ""
+    G22_key = draft.get('light', '') if draft.get('light') != "None" else ""
+    G24_key = draft.get('cam', '') if draft.get('cam') != "None" else ""
+
+    # گرفتن توضیحات تخصصی از دیکشنری برای تزریق در پرامپت
+    J9_desc = NAT_DESC.get(J9_key, "standard features") if J9_key else ""
+    G12_desc = ERA_DESC.get(G12_key, G12_key) if G12_key else ""
+    J12_desc = CONCEPTS.get(J12_key, J12_key) if J12_key else ""
+    J14_desc = GROOM_DESC.get(J14_key, J14_key) if J14_key else ""
+    
+    col_desc = HAIR_COLORS.get(h_col_key, h_col_key)
+    tex_desc = HAIR_TEX_DESC.get(h_tex_key, h_tex_key)
+    J19_desc = f"{col_desc} {tex_desc}".strip()
+    
+    G17_desc = SFX_DESC.get(G17_key, G17_key) if G17_key else ""
+    J17_desc = MAT_DESC.get(J17_key, J17_key) if J17_key else ""
+    G22_desc = LIGHT_DESC.get(G22_key, G22_key) if G22_key else ""
+    G24_desc = CAM_DESC.get(G24_key, G24_key) if G24_key else ""
 
     prompt = ""
     if G7 == "Yes":
@@ -277,47 +365,39 @@ def generate_prompt(draft):
     if J7: prompt += f"{J7} "
     if G9: prompt += f"{G9} "
     
-    if J9:
-        nat_features = NAT_DESC.get(J9, "standard features")
-        prompt += f"{J9} ({nat_features}) "
+    if J9_key: prompt += f"{J9_key} ({J9_desc}) "
         
-    if G12:
-        prompt += f"from the {G12} era. "
-    else:
-        prompt += ". "
+    if G12_desc: prompt += f"from the {G12_desc} era. "
+    else: prompt += ". "
         
-    if J12:
-        prompt += f"Character style: {J12}. "
+    if J12_desc: prompt += f"Character style: {J12_desc}. "
         
-    if G9 not in ["Female", "Feminine"] and J14:
-        prompt += f"Grooming: {J14}. "
+    if G9 not in ["Feminine / Female", "Female", "Feminine"] and J14_desc:
+        prompt += f"Grooming: {J14_desc}. "
         
-    if J19:
-        prompt += f"Hair Texture: {J19}. "
+    if J19_desc: prompt += f"Hair Texture: {J19_desc}. "
         
-    if G19:
-        prompt += f"Skin: {G19}. "
-    else:
-        prompt += "Skin: standard. "
+    prompt += "Skin: standard. " 
         
-    if "Child" not in J7 and "Teen" not in J7 and G17:
-        prompt += f"[CINEMATIC PROSTHETIC STUDY: Apply {G17} SFX as a makeup layer]. "
+    if "Child" not in J7 and "Teen" not in J7 and G17_desc:
+        prompt += f"[CINEMATIC PROSTHETIC STUDY: Apply {G17_desc} SFX as a makeup layer]. "
         
-    if J17:
-        prompt += f"Finish: {J17}. "
+    if J17_desc: prompt += f"Finish: {J17_desc}. "
         
     prompt += "Technical: "
-    if G22: prompt += f"Lighting: {G22}, "
-    if G24: prompt += f"Lens: {G24}, "
+    if G22_desc: prompt += f"Lighting: {G22_desc}, "
+    if G24_desc: prompt += f"Lens: {G24_desc}, "
     
-    # --- حفظ پارامترهای فنی جدید که قبلاً توافق کردیم ---
     size = draft.get('size', '')
     if size and size != "None": prompt += f"Frame: {size}, "
     
-    age_prog = draft.get('age_prog', '')
-    if age_prog and age_prog != "None": prompt += f"APEX AGE: {age_prog}, "
-    sfx_prog = draft.get('sfx_prog', '')
-    if sfx_prog and sfx_prog != "None": prompt += f"APEX SFX: {sfx_prog}, "
+    age_prog_key = draft.get('age_prog', '')
+    if age_prog_key and age_prog_key != "None": 
+        prompt += f"APEX AGE: {AGE_PROG_DESC.get(age_prog_key, age_prog_key)}, "
+        
+    sfx_prog_key = draft.get('sfx_prog', '')
+    if sfx_prog_key and sfx_prog_key != "None": 
+        prompt += f"APEX SFX: {SFX_PROG_DESC.get(sfx_prog_key, sfx_prog_key)}, "
     
     prompt += "beautifully framed composition, three-quarter profile angle, 8k, subsurface scattering, raw photography, no-retouch, focus on prosthetic makeup accuracy."
 
@@ -645,14 +725,14 @@ elif st.session_state.route == 'builder':
             idx_act = opts_act.index(d['actor']) if d['actor'] in opts_act else 0
             d['actor'] = st.selectbox("Actor Reference", opts_act, index=idx_act)
             
-            smart_select("Age Range", ["Elderly", "Middle-aged", "Young Adult", "Teenager", "Child", "Toddler"], 'age')
+            smart_select("Age Range", AGE_LIST, 'age')
             
             if st.session_state.plan in ["UONA Apex", "MASTER APEX"]:
                 st.markdown("<hr style='border-color: rgba(255, 170, 0, 0.3); margin: 10px 0;'>", unsafe_allow_html=True)
                 smart_select("Age Progression Arc", list(AGE_PROG_DESC.keys()), 'age_prog', help_dict=AGE_PROG_DESC)
 
         with c2:
-            smart_select("Gender", ["Male", "Female", "Androgynous", "Non-binary"], 'gen')
+            smart_select("Gender", GENDER_LIST, 'gen')
         
         col1, col2, col3 = st.columns([1, 4, 1])
         if col3.button("NEXT ➔"): next_step()
@@ -665,7 +745,7 @@ elif st.session_state.route == 'builder':
             smart_select("Hair Color", list(HAIR_COLORS.keys()), 'h_col', help_dict=HAIR_COLORS)
         with c2:
             smart_select("Era / Period", list(ERA_DESC.keys()), 'era', help_dict=ERA_DESC)
-            smart_select("Hair Texture", ["Straight (Silky)", "Wavy (S-shape)", "Curly (Ringlets)", "Afro (Coils)", "Matted (Weathered/Dirty)", "Bald / Shaved Head", "Thinning / Balding"], 'h_tex')
+            smart_select("Hair Texture", list(HAIR_TEX_DESC.keys()), 'h_tex', help_dict=HAIR_TEX_DESC)
         
         col1, col2, col3 = st.columns([1, 4, 1])
         if col1.button("⬅ BACK"): prev_step()
@@ -676,7 +756,7 @@ elif st.session_state.route == 'builder':
         c1, c2 = st.columns(2)
         with c1:
             smart_select("Grooming Style", list(GROOM_DESC.keys()), 'groom', help_dict=GROOM_DESC)
-            smart_select("Material Finish", ["Silicone Prosthetic", "Matte Sealer", "Alcohol Palette", "Translucent Skin", "Gelatin Prosthetic", "Foam Latex", "Sweat/Grease FX"], 'mat')
+            smart_select("Material Finish", list(MAT_DESC.keys()), 'mat', help_dict=MAT_DESC)
         with c2:
             smart_select("Trauma / SFX", list(SFX_DESC.keys()), 'sfx', help_dict=SFX_DESC)
             
