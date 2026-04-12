@@ -53,7 +53,7 @@ def add_bg_from_local(image_file):
     )
 
 # ==========================================
-# 2. دیتابیس مگا پرامپت (همان دیتابیس دقیق شما)
+# 2. دیتابیس مگا پرامپت (کامل)
 # ==========================================
 
 GENDER_LIST = ["Masculine / Male", "Feminine / Female", "Androgynous"]
@@ -119,132 +119,56 @@ CONCEPTS = {
 }
 
 GROOM_DESC = {
+    "Clean Shaven": "Smooth skin, no stubble, close-cut grooming finish",
     "Saudi Anchor Beard": "Sharp and angular form connected to the chin",
     "Pyramidal Moustache": "Mustache with wide edges and a narrow top",
-    "Clean Shaven": "Smooth skin, no stubble, close-cut grooming finish",
     "Light Stubble": "Very short, even stubble, uniform shade pattern",
     "Heavy Stubble": "Thicker, rough texture, darker shade, irregular growth",
     "Designer Stubble": "Precisely trimmed, clean sharp defined edges",
     "Shadow Fade Beard": "Faded sides, denser hair on chin, smooth gradient transition",
-    "Goatee (No Mustache)": "Chin beard only, completely clean shaven cheeks and upper lip",
     "Classic Goatee": "Chin beard connected to mustache, smooth circular blend",
-    "Van Dyke": "Pointed chin beard, disconnected floating mustache, sharp detail",
-    "Anchor Beard": "Pointed chin beard, thin defined floating mustache",
     "Short Boxed Beard": "Short, full beard, precise square defined edges",
-    "Medium Boxed Beard": "Medium length, full, structured clean appearance",
     "Long Full Beard": "Long, thick, natural growth pattern, dense hair volume",
     "Unkempt Beard": "Messy natural growth, disheveled texture, random hair direction",
-    "Scruffy Beard": "Patchy, rough texture, slightly dirty, abandoned grooming",
-    "Wild Beard": "Long, chaotic, untamed texture, tangled strands",
-    "Bedouin Beard": "Long, natural sun-exposed texture, weathered appearance",
-    "Viking Beard": "Long, thick, braided beard strands, rugged texture",
-    "Medieval Beard": "Natural, period-authentic growth, no sharp trimming",
-    "Philosopher Beard": "Long, soft texture, intellectual appearance, flowing hair",
-    "Warrior Beard": "Thick, rugged, battle-worn appearance, natural textures",
-    "Graying Patches": "Natural gray strands, mixed-tone patches, mature appearance",
-    "Split Texture Beard": "Smooth on chin, rough on sides, dual-textured growth",
-    "Short Sideburns": "Above the ear level, clean shaven cheeks",
-    "Mid-Ear Sideburns": "Level with the tragus, standard length",
-    "Long Sideburns": "Reaches the ear lobe level",
-    "Extra-Long Sideburns": "Passes the ear lobe, extended length",
-    "High Sideburns": "Reaches the temple level, very short",
-    "Tapered Length": "Gradient length, smoothly faded into skin",
-    "Square Sideburns": "Horizontal cut bottom, clean edges",
-    "Pointed Sideburns": "Triangle point bottom, defined shape",
-    "Rounded Sideburns": "Soft, circular finish bottom",
-    "Pencil Sideburns": "Ultra-thin line, high detail trimming",
-    "Flared Sideburns": "Widens at the base, classic wide look",
-    "Angled Sideburns": "Slanted cut bottom, geometric defined shape",
-    "Mutton Chops": "Wide full sideburns connected to mustache, clean chin",
-    "Friendly Mutton Chops": "Mutton chops connected via mustache, soft blend",
-    "Soul Patch": "Small patch below the lower lip, defined connection"
+    "Warrior Beard": "Thick, rugged, battle-worn appearance, natural textures"
 }
 
 HAIR_TEX_DESC = {
-    "Afro-Textured": "Kinky-coily patterns, high density, matte finish, tight structural coils",
+    "Straight (Sleek)": "Linear alignment, high specular highlights, silky smooth surface",
     "Wavy (Type 2)": "Natural S-shape waves, effortless flow, soft luster, beachy texture",
     "Curly (Type 3)": "Defined ringlets, springy loops, voluminous structure, high frizz detail",
-    "Straight (Sleek)": "Linear alignment, high specular highlights, silky smooth surface",
-    "Coarse & Wiry": "Thick diameter strands, rough cuticle texture, irregular graying patterns",
-    "Fine & Wispy": "Low density, translucent thin strands, sensitive to wind/motion",
-    "Disheveled & Matted": "Tangled clumps, distressed cuticles, weathered look, realistic stray hairs",
-    "Braided / Cornrows": "Intricate interlocking patterns, scalp tension detail, tight woven texture"
+    "Afro-Textured": "Kinky-coily patterns, high density, matte finish, tight structural coils",
+    "Disheveled & Matted": "Tangled clumps, distressed cuticles, weathered look, realistic stray hairs"
 }
 
 HAIR_COLORS = {
-    "Salt and pepper beard, 10% grey hair": "Black hair mixed with scattered white strands",
-    "Salt and pepper beard, 30% grey hair": "Black hair mixed with noticeable white strands",
-    "Salt and pepper beard, 50% grey hair": "Even mix of black and white hair strands",
-    "Salt and pepper beard, 70% grey hair": "Mostly white hair mixed with scattered black strands",
-    "Jet black beard / Natural black": "Jet black, deep and rich natural black",
-    "Deep espresso brown / Dark chocolate": "Deep espresso brown with warm undertones",
-    "Light chestnut brown / Sandy brown": "Light chestnut brown with honey or sandy tones",
-    "Ash blonde / Golden blonde beard": "Ash blonde (cool tone) or golden blonde (warm tone)"
+    "Jet black / Natural black": "Jet black, deep and rich natural black",
+    "Deep espresso brown": "Deep espresso brown with warm undertones",
+    "Light chestnut / Sandy brown": "Light chestnut brown with honey or sandy tones",
+    "Salt and pepper, 30% grey": "Black hair mixed with noticeable white strands",
+    "Salt and pepper, 70% grey": "Mostly white hair mixed with scattered black strands",
+    "Ash blonde / Golden blonde": "Ash blonde (cool tone) or golden blonde (warm tone)"
 }
 
 SFX_DESC = {
     "Fresh Katana/Sword Slash": "Deep sword wound, open edges, active bleeding",
-    "Glass Laceration with Shards": "Glass laceration, irregular edges, glass shards embedded in the tissue",
     "Blunt Force Contusion": "Blunt force contusion, severe swelling, inflamed redness, no laceration",
-    "3-Day old wound (Scabbing)": "3-day old wound, beginning to scab, dark pink edges",
     "1-Week old wound (Granulation)": "1-week old wound, pink granulation tissue, flaking skin",
-    "1-Month old Old Scar (Maturation)": "1-month old scar, fibrous tissue, reduced redness, slight indentation",
     "1-Year Old Keloid Scar": "1-year old keloid scar, raised excess tissue, firm texture",
-    "5-Years Old Atrophic Scar": "5-year old atrophic scar, pale, white, flush with the skin",
     "Fresh Periorbital Hematoma": "Fresh periorbital hematoma, purplish-red redness, severe inflammation",
     "24-Hour Old Bruise (Deep Purple)": "24-hour old bruise, deep purple and blue, cloudy tissue",
-    "3-Days Old Bruise (Greenish-Yellow)": "3-day old bruise, starting to turn yellow, greenish edges",
-    "15-Days Old Fading Bruise": "15-day old fading bruise, very faint yellow spots, healing",
     "Chemical Acid Burn (Corrosive)": "Chemical acid burn, melted tissue, viscous and corroded texture",
-    "1st Degree Sunburn/Erythema": "1st degree burn, uniform redness, no blisters, sensitive skin",
-    "2nd Degree Burn with Blisters": "2nd degree burn, fluid-filled blisters, shiny and peeling skin",
-    "Bilateral Vitiligo Depigmentation": "Vitiligo, completely white patches with distinct borders, no raised texture",
-    "Diffuse Hyperpigmentation & Melasma": "Hyperpigmentation, irregular dark brown spots, melasma pattern"
-}
-
-MAT_DESC = {
-    "Encapsulated Silicone": "Realistic skin-like translucency, blended edges",
-    "Feathered Edges": "Seamless transition between prosthetic and skin",
-    "Translucent Skin Finish": "Layers of depth, natural light absorption",
-    "Prosthetic Adhesive": "Texture of professional bonding, visible seal",
-    "Matte Sealer": "Non-reflective surface, velvety skin texture",
-    "Alcohol-activated Palette": "Translucent color washes, realistic bruising/veins",
-    "Granulation Tissue": "Raw, healing tissue texture, high detail"
-}
-
-AGE_PROG_DESC = {
-    "Deep Nasolabial Folds": "Deep nasolabial folds from the side of the nose to the corner of the lips",
-    "Pronounced Crow's Feet": "Radial wrinkles around the eyes",
-    "Hooded Eyelids / Ptosis": "Hooded eyelids, sagging skin on the upper eyelids",
-    "Dermal Crepiness": "Crepey skin texture, very fine and delicate wrinkles on the skin surface",
-    "Visible Liver Spots (Lentigines)": "Visible liver spots, brown pigmentation due to sun and age",
-    "Sagging Jowls & Loose Skin": "Sagging jowls and jawline, loose skin on the sides of the face",
-    "Frontal Rhytids (Forehead Furrows)": "Deep horizontal furrows on the forehead",
-    "Periorbital Hollows & Eye Bags": "Periorbital hollows and under-eye bags, fat depletion and extreme fatigue appearance",
-    "Vertical Lip Lines (Smoker's Lines)": "Vertical lip lines, realistic aging details",
-    "Age-related Telangiectasia": "Visible blood vessels, fine red capillaries on the cheeks and nose"
-}
-
-SFX_PROG_DESC = {
-    "Stage 1: Fresh & Bleeding": "Wait for final prompt from Master...",
-    "Stage 2: Healing & Bruised": "Wait for final prompt from Master..."
+    "2nd Degree Burn with Blisters": "2nd degree burn, fluid-filled blisters, shiny and peeling skin"
 }
 
 LIGHT_DESC = {
     "Rembrandt Lighting": "Classic cinematic light with a small triangle under the eye, highly elegant",
-    "Cold Rim Lighting": "Cold blue rim light separating the character from the background",
-    "Chiaroscuro": "Very high contrast between darkness and light",
-    "Teal and Orange Lighting": "Classic cinematic mix of cool teal and warm orange tones",
-    "Bokeh Background": "Shallow depth of field, subject separated with blurred bokeh background",
     "Chiaroscuro Lighting": "Severe contrast between shadow and light, dramatic facial volume",
-    "Volumetric God Rays": "Linear light rays passing through fog or dust, creating a spiritual or eerie atmosphere",
+    "Teal and Orange Lighting": "Classic cinematic mix of cool teal and warm orange tones",
     "Cinematic Golden Hour": "Warm and soft sunset light, highlighting natural skin tones",
     "High-Key Studio Lighting": "Flat and bright light with no shadows, revealing all details clearly",
     "Low-Key Moody Lighting": "Very low and dark light, revealing only specific parts of the face, mysterious mood",
-    "Neon Cyberpunk Rim Light": "Colorful neon edge lights outlining the face, modern fantasy aesthetic",
-    "Hard Top Lighting": "Harsh overhead light, creating strong shadows under the eyes and cheekbones",
-    "Flickering Candlelight": "Flickering candlelight, creating soft and dynamic shadows, historical classic vibe",
-    "Soft Professional Softbox": "Standard professional photography light, making the skin look velvety and even"
+    "Neon Cyberpunk Rim Light": "Colorful neon edge lights outlining the face, modern fantasy aesthetic"
 }
 
 CAM_DESC = {
@@ -252,17 +176,13 @@ CAM_DESC = {
     "100 mm Macro Lens, Extreme Close-Up": "Macro lens, specifically for stunning details like skin pores or SFX wound textures",
     "50 mm Lens, Dutch Angle": "Normal lens with tilted angle, creating suspense and dread",
     "35 mm Lens, Low-Angle (Hero Shot)": "Slightly wide, low-angle shot showing the character as powerful and heroic",
-    "24 mm Wide-Angle, High-Angle": "Wide-angle lens from a high angle, making the face look slightly elongated or vulnerable",
-    "200 mm Telephoto, Profile View": "Telephoto lens, completely blurring the background to focus entirely on the jawline from the profile",
-    "50 mm Lens, Top-Down (Bird's Eye)": "Completely vertical top-down view, excellent for overhead design details",
-    "85 mm Lens, Three-Quarter View": "Three-quarter angle, standard for showing facial volume contouring and professional shading"
+    "24 mm Wide-Angle, High-Angle": "Wide-angle lens from a high angle, making the face look slightly elongated or vulnerable"
 }
 
 SIZE_LIST = [
+    "Aspect Ratio 16:9 (Widescreen)",
     "Aspect Ratio 4:5 (Portrait/Vertical)",
     "Aspect Ratio 5:4 (Portrait)",
-    "Aspect Ratio 16:9 (Widescreen)",
-    "Aspect Ratio 9:16 (Vertical / Stories)",
     "Aspect Ratio 2.39:1 (Anamorphic / Cinemascope)",
     "Aspect Ratio 1:1 (Square)"
 ]
@@ -278,151 +198,55 @@ if 'step' not in st.session_state: st.session_state.step = 1
 
 if 'draft' not in st.session_state: 
     st.session_state.draft = {
-        "actor":"None", "gen":"", "age":"", "nat":"", "era":"", "h_col":"", 
-        "h_tex":"", "sfx":"", "mat":"", "char":"", "groom":"", "cam":"", "light":"", "size":"",
-        "age_prog":"None", "sfx_prog":"None", "scenario":""
+        "actor":"None", "gen":"Masculine / Male", "age":"Young Adult (Early 20s)", "nat":"Iranian", 
+        "era":"Contemporary / Modern Day", "h_col":"Jet black / Natural black", "h_tex":"Straight (Sleek)", 
+        "sfx":"None", "char":"Average Citizen", "groom":"Clean Shaven", 
+        "cam":"85 mm Lens, Eye-Level Shot", "light":"Rembrandt Lighting", "size":"Aspect Ratio 16:9 (Widescreen)",
+        "arc_type":"None", "arc_stages": 4, "scenario_text": ""
     }
 
 def go_to(route): st.session_state.route = route; st.rerun()
 def next_step(): st.session_state.step += 1; st.rerun()
 def prev_step(): st.session_state.step -= 1; st.rerun()
-def add_n(lst): return ["None"] + lst + ["Others"]
-
-def smart_select(label, options, key, help_dict=None):
-    opts = add_n(options)
-    curr_val = st.session_state.draft.get(key, "")
-    idx = 0
-    if curr_val in opts: idx = opts.index(curr_val)
-    elif curr_val and curr_val != "None": idx = len(opts) - 1
-    
-    if help_dict:
-        c1, c2 = st.columns([11, 1])
-        with c1:
-            sel = st.selectbox(label, opts, index=idx, key=f"sel_{key}")
-        with c2:
-            with st.popover("❕"):
-                help_html = f"""
-                <div style="background-color: #000000 !important; margin: -1rem; padding: 1rem; min-height: 100px;">
-                    <div style="color: #00f2ff; font-weight: 900; font-family: 'Cinzel', serif; margin-bottom: 10px; font-size: 0.9rem; border-bottom: 1px solid rgba(0,242,255,0.3); padding-bottom: 5px; text-transform: uppercase;">
-                        EXCEL DICTIONARY: {label}
-                    </div>
-                    {"".join([f"<div style='color: #d0e0f0; font-family: Montserrat; font-size: 0.8rem; line-height: 1.8; margin-bottom: 4px;'><b style='color: #00f2ff;'>{k}:</b> {v}</div>" for k, v in help_dict.items()])}
-                </div>
-                """
-                st.markdown(help_html, unsafe_allow_html=True)
-    else:
-        sel = st.selectbox(label, opts, index=idx, key=f"sel_{key}")
-        
-    if sel == "Others":
-        custom = st.text_input(f"Type Custom {label}", value=curr_val if curr_val not in opts else "", key=f"txt_{key}")
-        st.session_state.draft[key] = custom
-    else:
-        st.session_state.draft[key] = sel
-
-# 🔴 تابع پردازش هوشمند آپدیت شده بر اساس ورک‌فلوی جدید شما 🔴
-def generate_prompt(draft):
-    G7 = draft.get('actor', '')
-    J7 = draft.get('age', '') if draft.get('age') != "None" else ""
-    G9 = draft.get('gen', '') if draft.get('gen') != "None" else ""
-    
-    J9_key = draft.get('nat', '') if draft.get('nat') != "None" else ""
-    G12_key = draft.get('era', '') if draft.get('era') != "None" else ""
-    J12_key = draft.get('char', '') if draft.get('char') != "None" else ""
-    J14_key = draft.get('groom', '') if draft.get('groom') != "None" else ""
-    
-    h_col_key = draft.get('h_col', '') if draft.get('h_col') != "None" else ""
-    h_tex_key = draft.get('h_tex', '') if draft.get('h_tex') != "None" else ""
-    
-    G17_key = draft.get('sfx', '') if draft.get('sfx') != "None" else ""
-    J17_key = draft.get('mat', '') if draft.get('mat') != "None" else ""
-    G22_key = draft.get('light', '') if draft.get('light') != "None" else ""
-    G24_key = draft.get('cam', '') if draft.get('cam') != "None" else ""
-    
-    age_prog_key = draft.get('age_prog', 'None')
-    sfx_prog_key = draft.get('sfx_prog', 'None')
-    scenario_desc = draft.get('scenario', '')
-
-    is_arc_active = (age_prog_key != "None") or (sfx_prog_key != "None")
-
-    J9_desc = NAT_DESC.get(J9_key, "")
-    G12_desc = ERA_DESC.get(G12_key, G12_key) if G12_key else ""
-    J12_desc = CONCEPTS.get(J12_key, J12_key) if J12_key else ""
-    J14_desc = GROOM_DESC.get(J14_key, J14_key) if J14_key else ""
-    col_desc = HAIR_COLORS.get(h_col_key, h_col_key)
-    tex_desc = HAIR_TEX_DESC.get(h_tex_key, h_tex_key)
-    J19_desc = f"{col_desc} {tex_desc}".strip()
-    G17_desc = SFX_DESC.get(G17_key, G17_key) if G17_key else ""
-    J17_desc = MAT_DESC.get(J17_key, J17_key) if J17_key else ""
-    G22_desc = LIGHT_DESC.get(G22_key, G22_key) if G22_key else ""
-    G24_desc = CAM_DESC.get(G24_key, G24_key) if G24_key else ""
-
-    prompt = ""
-    if G7 == "Yes":
-        prompt += "[VISUAL GUIDE: Use the facial structure of the attached subject. The following is the prosthetic design]: "
-
-    # منطق تولید پرامپت با حفظ Baseline و تغییرات علمی
-    if is_arc_active:
-        prompt += "A cinematic horizontal progression sheet. FOUR separate panels seamlessly divided by 1px vertical lines. The EXACT SAME facial identity and bone structure of a "
-        if G9: prompt += f"{G9} "
-        if J9_key: prompt += f"({J9_desc}) "
-        prompt += "character at different sequential stages. "
-        if scenario_desc: prompt += f"Scenario: [{scenario_desc}]. "
-    else:
-        prompt += "A professional cinematic portrait of a "
-        if J7: prompt += f"{J7} "
-        if G9: prompt += f"{G9} "
-        if J9_key: prompt += f"{J9_key} ({J9_desc}) "
-
-    if G12_desc: prompt += f"from the {G12_desc} era. "
-    else: prompt += ". "
-        
-    if J12_desc: prompt += f"Character style: {J12_desc}. "
-        
-    if G9 not in ["Feminine / Female", "Female", "Feminine"] and J14_desc:
-        prompt += f"Grooming: {J14_desc}. "
-        
-    if J19_desc: prompt += f"Hair Texture: {J19_desc}. "
-        
-    prompt += "Skin: standard. " 
-        
-    if not is_arc_active and G17_desc:
-        prompt += f"[CINEMATIC PROSTHETIC STUDY: Apply {G17_desc} SFX as a makeup layer]. "
-        
-    if J17_desc: prompt += f"Finish: {J17_desc}. "
-        
-    prompt += "Technical Baseline: "
-    if G22_desc: prompt += f"Lighting: {G22_desc}, "
-    if G24_desc: prompt += f"Lens: {G24_desc}, "
-    
-    size = draft.get('size', '')
-    if size and size != "None": prompt += f"Frame: {size}, "
-    
-    if is_arc_active:
-        prompt += "CRITICAL: Underlying facial identity MUST remain 100% identical. Apply changes solely to skin aging/healing. "
-        
-        # ترجمه و تزریق زبان علمی برای موتور هوشمند
-        if age_prog_key != "None":
-            arc_desc = AGE_PROG_DESC.get(age_prog_key, age_prog_key)
-            prompt += f"Age Progression Arc: [{arc_desc}]. "
-            prompt += "SCIENTIFIC AGING LOGIC: Systematically apply [Epidermal thinning, Bone density loss, Solar lentigines, Dermal ptosis]. "
-        elif sfx_prog_key != "None":
-            prompt += f"SFX Trauma Healing Arc: Base is {G17_desc}. "
-            prompt += "SCIENTIFIC TRAUMA LOGIC: Apply Color Shift (from wet arterial crimson to dark oxidized scabbing) and Material Transformation (from fresh exudate to rigid fibrous scar tissue). "
-            
-        prompt += "Add a visible progress line. Typography labels under each panel: 'Initial' -> 'Spread' -> 'Damage' -> 'Final'. "
-    else:
-        prompt += "beautifully framed composition, subsurface scattering, no-retouch. "
-        if J7: prompt += f" Typography overlay: clearly written text '{J7}' at the bottom margin. "
-
-    prompt += "8k, cinematic raw photography, subsurface scattering, focus on prosthetic makeup accuracy."
-
-    return " ".join(prompt.split())
-
-ADMIN_USER = "sep"
-ADMIN_PASS = "1386sy"
 
 # ==========================================
-# 4. موتور استایل (CSS Engine)
+# 4. موتور پردازش هوشمند (Logic Engine)
+# ==========================================
+def generate_prompt(draft):
+    # Fixed Technical & Baseline
+    baseline = f"Uona Studio Signature (Scientific Makeup Design). [Fixed Technical: {draft['cam']}, {draft['light']}, {draft['size']}]. "
+    
+    # Identity & Appearance
+    J9_desc = NAT_DESC.get(draft['nat'], "")
+    G12_desc = ERA_DESC.get(draft['era'], "")
+    identity = f"Character Identity: {draft['gen']}, Base Age {draft['age']}, Nationality: {draft['nat']} ({J9_desc}), Type: {draft['char']}, Era: {G12_desc}. "
+    
+    groom_desc = GROOM_DESC.get(draft['groom'], "")
+    appearance = f"Grooming/Appearance: {draft['groom']} ({groom_desc}), Hair Color: {draft['h_col']}, Texture: {draft['h_tex']}. "
+    
+    # Intelligence Layer (Phase 3)
+    progression = ""
+    if draft['arc_type'] != "None":
+        progression = f"HORIZONTAL TRIPTYCH ARC. Four stages divided by 1px separators. Scenario Context: [{draft['scenario_text']}]. "
+        
+        # تزریق لغات علمی بر اساس انتخاب کاربر
+        if draft['arc_type'] == "Makeup/Aging":
+            progression += "SCIENTIFIC AGING LOGIC: Inject [Epidermal thinning, Bone density loss, Solar lentigines, Gravity-induced ptosis]. "
+        elif draft['arc_type'] == "SFX/Trauma" or draft['arc_type'] == "Hybrid":
+            sfx_base = SFX_DESC.get(draft['sfx'], draft['sfx'])
+            progression += f"Base Trauma: {sfx_base}. SCIENTIFIC TRAUMA LOGIC: Apply Color Shift from wet crimson to dark scabbing, and Material Transformation to fibrous scar tissue. "
+        
+        progression += f"PROGRESSION LABELS: Typography labels under each panel ('Initial' -> 'Spread' -> 'Damage' -> 'Final'). PROGRESS LINE ACTIVE. CRITICAL: Underlying facial identity MUST remain 100% identical across all panels."
+    else:
+        if draft['sfx'] != "None":
+            sfx_base = SFX_DESC.get(draft['sfx'], draft['sfx'])
+            progression += f"[CINEMATIC PROSTHETIC STUDY: Apply {sfx_base} as a makeup layer]. "
+    
+    final_p = baseline + identity + appearance + progression + " 8k, hyper-realistic, subsurface scattering, focus on prosthetic makeup accuracy."
+    return " ".join(final_p.split())
+
+# ==========================================
+# 5. موتور استایل (CSS Engine)
 # ==========================================
 st.markdown("""
     <style>
@@ -712,109 +536,92 @@ elif st.session_state.route == 'settings':
     st.markdown('</div>', unsafe_allow_html=True)
 
 # ==========================================
-# ROUTE 3: CHARACTER BUILDER (MULTI-STEP)
+# 🔴 ROUTE 3: CHARACTER BUILDER (NEW 3-STEP UI) 🔴
 # ==========================================
 elif st.session_state.route == 'builder':
     st.markdown(f"""
         <div class="step-indicator">
-            <span class="{'step-active' if st.session_state.step==1 else ''}">1. IDENTITY</span> ➔
-            <span class="{'step-active' if st.session_state.step==2 else ''}">2. PHYSICAL</span> ➔
-            <span class="{'step-active' if st.session_state.step==3 else ''}">3. GROOM/SFX</span> ➔
-            <span class="{'step-active' if st.session_state.step==4 else ''}">4. TECHNICAL</span> ➔
-            <span class="{'step-active' if st.session_state.step==5 else ''}">5. REVIEW</span>
+            <span class="{'step-active' if st.session_state.step==1 else ''}">1. BASELINE (FIXED)</span> ➔
+            <span class="{'step-active' if st.session_state.step==2 else ''}">2. ARC CONFIG</span> ➔
+            <span class="{'step-active' if st.session_state.step==3 else ''}">3. LOGIC REVIEW</span>
         </div>
     """, unsafe_allow_html=True)
 
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
     d = st.session_state.draft
 
+    # --- Phase 1: Baseline ---
     if st.session_state.step == 1:
-        st.markdown("<h3 style='color:#00f2ff; font-family:Cinzel;'>STEP 1: Core Identity</h3>", unsafe_allow_html=True)
-        c1, c2 = st.columns(2)
+        st.markdown("<h3 style='color:#00f2ff; font-family:Cinzel;'>Phase 1: Character & Technical Baseline</h3>", unsafe_allow_html=True)
+        st.markdown("<p style='color:#7b8ea8; font-family:Montserrat; font-size:0.8rem; margin-bottom:20px;'>Define the core identity and technical settings. These will remain locked across all stages.</p>", unsafe_allow_html=True)
+        
+        c1, c2, c3 = st.columns(3)
         with c1:
-            opts_act = ["None", "Yes", "No"]
-            idx_act = opts_act.index(d['actor']) if d['actor'] in opts_act else 0
-            d['actor'] = st.selectbox("Actor Reference", opts_act, index=idx_act)
-            
-            smart_select("Age Range", AGE_LIST, 'age')
-            
-            if st.session_state.plan in ["UONA Apex", "MASTER APEX"]:
-                st.markdown("<hr style='border-color: rgba(255, 170, 0, 0.3); margin: 10px 0;'>", unsafe_allow_html=True)
-                smart_select("Age Progression Arc", list(AGE_PROG_DESC.keys()), 'age_prog', help_dict=AGE_PROG_DESC)
+            st.markdown("<p style='color:#ffaa00; font-weight:bold;'>💠 CORE IDENTITY</p>", unsafe_allow_html=True)
+            d['gen'] = st.selectbox("GENDER", GENDER_LIST, index=GENDER_LIST.index(d.get('gen', GENDER_LIST[0])) if d.get('gen') in GENDER_LIST else 0)
+            d['age'] = st.selectbox("BASE AGE", AGE_LIST, index=AGE_LIST.index(d.get('age', AGE_LIST[0])) if d.get('age') in AGE_LIST else 0)
+            d['nat'] = st.selectbox("NATIONALITY", list(NAT_DESC.keys()), index=list(NAT_DESC.keys()).index(d.get('nat', list(NAT_DESC.keys())[0])) if d.get('nat') in NAT_DESC else 0)
+            d['char'] = st.selectbox("CHARACTER TYPE", list(CONCEPTS.keys()), index=list(CONCEPTS.keys()).index(d.get('char', list(CONCEPTS.keys())[0])) if d.get('char') in CONCEPTS else 0)
+            d['era'] = st.selectbox("ERA / PERIOD", list(ERA_DESC.keys()), index=list(ERA_DESC.keys()).index(d.get('era', list(ERA_DESC.keys())[0])) if d.get('era') in ERA_DESC else 0)
 
         with c2:
-            smart_select("Gender", GENDER_LIST, 'gen')
-        
-        col1, col2, col3 = st.columns([1, 4, 1])
-        if col3.button("NEXT ➔"): next_step()
+            st.markdown("<p style='color:#ffaa00; font-weight:bold;'>💠 APPEARANCE & SFX</p>", unsafe_allow_html=True)
+            d['groom'] = st.selectbox("GROOMING", list(GROOM_DESC.keys()), index=list(GROOM_DESC.keys()).index(d.get('groom', list(GROOM_DESC.keys())[0])) if d.get('groom') in GROOM_DESC else 0)
+            d['h_col'] = st.selectbox("HAIR COLOR", list(HAIR_COLORS.keys()), index=list(HAIR_COLORS.keys()).index(d.get('h_col', list(HAIR_COLORS.keys())[0])) if d.get('h_col') in HAIR_COLORS else 0)
+            d['h_tex'] = st.selectbox("HAIR TEXTURE", list(HAIR_TEX_DESC.keys()), index=list(HAIR_TEX_DESC.keys()).index(d.get('h_tex', list(HAIR_TEX_DESC.keys())[0])) if d.get('h_tex') in HAIR_TEX_DESC else 0)
+            
+            sfx_opts = ["None"] + list(SFX_DESC.keys())
+            d['sfx'] = st.selectbox("BASE TRAUMA / SFX", sfx_opts, index=sfx_opts.index(d.get('sfx', "None")) if d.get('sfx') in sfx_opts else 0)
 
+        with c3:
+            st.markdown("<p style='color:#ffaa00; font-weight:bold;'>💠 TECHNICAL SPECS</p>", unsafe_allow_html=True)
+            d['cam'] = st.selectbox("CAMERA LENS", list(CAM_DESC.keys()), index=list(CAM_DESC.keys()).index(d.get('cam', list(CAM_DESC.keys())[0])) if d.get('cam') in CAM_DESC else 0)
+            d['light'] = st.selectbox("CINEMATIC LIGHTING", list(LIGHT_DESC.keys()), index=list(LIGHT_DESC.keys()).index(d.get('light', list(LIGHT_DESC.keys())[0])) if d.get('light') in LIGHT_DESC else 0)
+            d['size'] = st.selectbox("ASPECT RATIO", SIZE_LIST, index=SIZE_LIST.index(d.get('size', SIZE_LIST[0])) if d.get('size') in SIZE_LIST else 0)
+            
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("NEXT: ARC CONFIGURATION ➔", use_container_width=True): next_step()
+
+    # --- Phase 2: Arc Config ---
     elif st.session_state.step == 2:
-        st.markdown("<h3 style='color:#00f2ff; font-family:Cinzel;'>STEP 2: Physical Attributes</h3>", unsafe_allow_html=True)
-        c1, c2 = st.columns(2)
-        with c1:
-            smart_select("Nationality", list(NAT_DESC.keys()), 'nat', help_dict=NAT_DESC)
-            smart_select("Hair Color", list(HAIR_COLORS.keys()), 'h_col', help_dict=HAIR_COLORS)
-        with c2:
-            smart_select("Era / Period", list(ERA_DESC.keys()), 'era', help_dict=ERA_DESC)
-            smart_select("Hair Texture", list(HAIR_TEX_DESC.keys()), 'h_tex', help_dict=HAIR_TEX_DESC)
+        st.markdown("<h3 style='color:#00f2ff; font-family:Cinzel;'>Phase 2: Arc Configuration</h3>", unsafe_allow_html=True)
+        st.markdown("<p style='color:#7b8ea8; font-family:Montserrat; font-size:0.8rem; margin-bottom:20px;'>Set the progression logic for character transformation over time.</p>", unsafe_allow_html=True)
         
-        col1, col2, col3 = st.columns([1, 4, 1])
-        if col1.button("⬅ BACK"): prev_step()
-        if col3.button("NEXT ➔"): next_step()
-
-    elif st.session_state.step == 3:
-        st.markdown("<h3 style='color:#00f2ff; font-family:Cinzel;'>STEP 3: Grooming & SFX Trauma</h3>", unsafe_allow_html=True)
-        c1, c2 = st.columns(2)
-        with c1:
-            smart_select("Grooming Style", list(GROOM_DESC.keys()), 'groom', help_dict=GROOM_DESC)
-            smart_select("Material Finish", list(MAT_DESC.keys()), 'mat', help_dict=MAT_DESC)
-        with c2:
-            smart_select("Trauma / SFX", list(SFX_DESC.keys()), 'sfx', help_dict=SFX_DESC)
+        c_arc1, c_arc2 = st.columns([1, 1])
+        with c_arc1:
+            arc_opts = ["None", "Makeup/Aging", "SFX/Trauma", "Hybrid"]
+            d['arc_type'] = st.selectbox("SELECT ARC TYPE", arc_opts, index=arc_opts.index(d.get('arc_type', "None")) if d.get('arc_type') in arc_opts else 0)
+            d['arc_stages'] = st.slider("NUMBER OF STAGES", 2, 6, d.get('arc_stages', 4))
             
-            if st.session_state.plan in ["UONA Apex", "MASTER APEX"]:
-                st.markdown("<hr style='border-color: rgba(255, 170, 0, 0.3); margin: 10px 0;'>", unsafe_allow_html=True)
-                smart_select("SFX Progression Arc", list(SFX_PROG_DESC.keys()), 'sfx_prog', help_dict=SFX_PROG_DESC)
-        
-        # 🔴 اضافه شدن کادر توضیحات سناریو در رابط کاربری اصلی بدون تخریب ستون‌ها 🔴
-        if d.get('age_prog') != "None" or d.get('sfx_prog') != "None":
-            st.markdown("<hr style='border-color: rgba(0, 242, 255, 0.1); margin: 15px 0;'>", unsafe_allow_html=True)
-            d['scenario'] = st.text_input("SCENARIO DESCRIPTION", value=d.get('scenario', ''), placeholder="e.g., A wound getting infected over a week...")
+        with c_arc2:
+            d['scenario_text'] = st.text_area("SCENARIO DESCRIPTION", value=d.get('scenario_text', ''), placeholder="Describe the transformation scenario (e.g., A fresh sword slash getting infected and healing over 30 days)...", height=120)
+            
+        st.markdown("<br>", unsafe_allow_html=True)
+        c_btn1, c_btn2 = st.columns(2)
+        if c_btn1.button("⬅ BACK TO BASELINE", use_container_width=True): prev_step()
+        if c_btn2.button("NEXT: LOGIC ENGINE ➔", use_container_width=True): next_step()
 
-        col1, col2, col3 = st.columns([1, 4, 1])
-        if col1.button("⬅ BACK"): prev_step()
-        if col3.button("NEXT ➔"): next_step()
-
-    elif st.session_state.step == 4:
-        st.markdown("<h3 style='color:#00f2ff; font-family:Cinzel;'>STEP 4: Technical Specs</h3>", unsafe_allow_html=True)
-        c1, c2 = st.columns(2)
-        with c1:
-            smart_select("Character Concept", list(CONCEPTS.keys()), 'char', help_dict=CONCEPTS)
-            smart_select("Lighting Style", list(LIGHT_DESC.keys()), 'light', help_dict=LIGHT_DESC)
-        with c2:
-            smart_select("Camera & Lens", list(CAM_DESC.keys()), 'cam', help_dict=CAM_DESC)
-            smart_select("Frame Size", SIZE_LIST, 'size')
+    # --- Phase 3: Review ---
+    elif st.session_state.step == 3:
+        st.markdown("<h3 style='color:#00f2ff; font-family:Cinzel;'>Phase 3: Logic Engine Output</h3>", unsafe_allow_html=True)
+        st.markdown("<p style='color:#7b8ea8; font-family:Montserrat; font-size:0.8rem; margin-bottom:20px;'>The AI has translated your setup into scientific makeup terminology.</p>", unsafe_allow_html=True)
         
-        col1, col2, col3 = st.columns([1, 4, 1])
-        if col1.button("⬅ BACK"): prev_step()
-        if col3.button("REVIEW ➔"): next_step()
-
-    elif st.session_state.step == 5:
-        st.markdown("<h3 style='color:#00f2ff; font-family:Cinzel;'>STEP 5: Final Review</h3>", unsafe_allow_html=True)
-        
-        preview_p = generate_prompt(d)
-        st.info(preview_p)
+        final_prompt = generate_prompt(d)
+        st.info(final_prompt)
         
         st.markdown("<br>", unsafe_allow_html=True)
-        col1, col2, col3 = st.columns([1.5, 3, 2])
-        if col1.button("⬅ EDIT (BACK)"): prev_step()
-        if col3.button("🚀 PROCEED TO SIMULATION"): go_to('simulation')
-
-        st.markdown("<br>", unsafe_allow_html=True)
+        c_btn1, c_btn2 = st.columns(2)
+        if c_btn1.button("⬅ EDIT PARAMETERS", use_container_width=True): prev_step()
+        if c_btn2.button("PROCEED TO SIMULATION 🚀", use_container_width=True): go_to('simulation')
+        
+        st.markdown("<br><hr style='border-color: rgba(0, 242, 255, 0.1);'>", unsafe_allow_html=True)
+        st.markdown("<h5 style='color:#ffaa00; font-family:Cinzel; text-align:center; margin-bottom:15px;'>REFERENCE GALLERY</h5>", unsafe_allow_html=True)
+        
         _, rev_c1, rev_c2, _ = st.columns([1, 2, 2, 1])
         with rev_c1:
-            if os.path.exists("portrait_clean.PNG"): st.image("portrait_clean.PNG", caption="Visual Reference 1", use_container_width=True)
+            if os.path.exists("portrait_clean.PNG"): st.image("portrait_clean.PNG", caption="Baseline Reference", use_container_width=True)
         with rev_c2:
-            if os.path.exists("portrait_clean_2.jpg"): st.image("portrait_clean_2.jpg", caption="Visual Reference 2", use_container_width=True)
+            if os.path.exists("portrait_clean_2.jpg"): st.image("portrait_clean_2.jpg", caption="Target Arc Reference", use_container_width=True)
 
     st.markdown('</div>', unsafe_allow_html=True)
 
