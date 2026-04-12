@@ -53,7 +53,7 @@ def add_bg_from_local(image_file):
     )
 
 # ==========================================
-# 2. دیتابیس مگا پرامپت
+# 2. دیتابیس مگا پرامپت (V2.0 Specification)
 # ==========================================
 
 GENDER_LIST = ["Masculine / Male", "Feminine / Female", "Androgynous"]
@@ -212,22 +212,23 @@ MAT_DESC = {
     "Granulation Tissue": "Raw, healing tissue texture, high detail"
 }
 
-AGE_PROG_DESC = {
-    "Deep Nasolabial Folds": "Deep nasolabial folds from the side of the nose to the corner of the lips",
-    "Pronounced Crow's Feet": "Radial wrinkles around the eyes",
-    "Hooded Eyelids / Ptosis": "Hooded eyelids, sagging skin on the upper eyelids",
-    "Dermal Crepiness": "Crepey skin texture, very fine and delicate wrinkles on the skin surface",
-    "Visible Liver Spots (Lentigines)": "Visible liver spots, brown pigmentation due to sun and age",
-    "Sagging Jowls & Loose Skin": "Sagging jowls and jawline, loose skin on the sides of the face",
-    "Frontal Rhytids (Forehead Furrows)": "Deep horizontal furrows on the forehead",
-    "Periorbital Hollows & Eye Bags": "Periorbital hollows and under-eye bags, fat depletion and extreme fatigue appearance",
-    "Vertical Lip Lines (Smoker's Lines)": "Vertical lip lines, realistic aging details",
-    "Age-related Telangiectasia": "Visible blood vessels, fine red capillaries on the cheeks and nose"
+# --- V2.0 4-Stage Libraries ---
+AGING_ARC_DATA = {
+    "Wrinkles": ["Dynamic lines (crow's feet)", "Fixed nasolabial folds", "Deep perioral creases", "Advanced parchment-like rhytids"],
+    "Volume & Sagging": ["Youthful malar pads", "Early sagging/softened jawline", "Structural shift/ptosis", "Facial atrophy/sunken cheeks"],
+    "Skin Texture": ["Uniform tone", "Uneven grain/lentigines", "Patchy hyperpigmentation", "Senile texture/liver spots"],
+    "Hair & Brows": ["Baseline density", "20% Salt & pepper", "80% dominant white", "Full depigmentation/wispy"]
 }
 
-SFX_PROG_DESC = {
-    "Stage 1: Fresh & Bleeding": "Wait for final prompt from Master...",
-    "Stage 2: Healing & Bruised": "Wait for final prompt from Master..."
+SFX_TRAUMA_ARC_DATA = {
+    "Bruises": ["Fresh Trauma: Deep crimson prosthetic pigment", "Hematoma Stage: Deep violet and indigo hues", "Oxidation: Greenish-yellow sulfur tones", "Resolution: Faint pale-amber tint"],
+    "Contusions": ["Impact Point: Subtle skin elevation", "Active Edema: Pronounced swelling", "Tissue Shift: Softened margins", "Leveling: Receded swelling"],
+    "Abrasions": ["Friction Marks: Surface stippling", "Coagulation: Darkened red-brown crust", "Scab Development: Rigid eschar-style", "New Skin: Smooth pinkish epithelial"],
+    "Burns (1st & 2nd)": ["Flash Burn: Uniform intense redness", "Vesiculation: Translucent SFX blisters", "Exudate Stage: Raw pink tissue", "Desquamation: Peeling skin edges"],
+    "Acid Burns": ["Chemical Reaction: Localized bubbling", "Deep Corrosion: Uneven dermal pits", "Eschar Stage: Charred black leathery", "Atrophic Scar: Deeply sunken skin folds"],
+    "Keloids": ["Early Fibrosis: Raised pinkish ridge", "Hypertrophic Growth: Thickened collagen", "Mature Keloid: Bulbous prosthetic mass", "Aging Keloid: Desaturated pale-gray tone"],
+    "Vitiligo": ["Focal Point: Small symmetric depigmented islands", "Expansion: Large map-like white patches", "Bilateral Spread: Extensive loss of pigment", "Total Integration: Residual pigment islands"],
+    "Melasma": ["Sun-induced: Light tan mottled spots", "Diffuse Pigment: Darker brown patches", "Deep Melasma: Heavily pigmented zones", "Chronic State: Fixed hyperpigmented mask-like"]
 }
 
 LIGHT_DESC = {
@@ -354,13 +355,15 @@ def generate_prompt(draft):
     G22_desc = LIGHT_DESC.get(G22_key, G22_key) if G22_key else ""
     G24_desc = CAM_DESC.get(G24_key, G24_key) if G24_key else ""
 
-    prompt = ""
+    # Uona Signature (V2.0)
+    prompt = "Uona Studio Signature Style: [Neutral Matte Background, Cinematic Color Grading, Prosthetic Makeup Application]. "
+    
     if G7 == "Yes":
         prompt += "[VISUAL GUIDE: Use the facial structure of the attached subject. The following is the prosthetic design]: "
 
-    # 🔴 اصلاح معماری پرامپت برای جداساز نئونی در آرک‌ها 🔴
+    # 🔴 V2.0 Logic: 4 Stages + Neon Divider 🔴
     if is_arc_active:
-        prompt += "A cinematic horizontal triptych composition, split-screen. Three separate panels are seamlessly divided by glowing neon lines of cyan light. Each panel features the exact same facial identity of a "
+        prompt += "Horizontal Character progression sheet. FOUR separate side-by-side panels seamlessly divided by glowing neon lines of cyan light. Each panel features the EXACT SAME facial identity and bone structure of a "
         if G9: prompt += f"{G9} "
         if J9_key: prompt += f"({J9_desc}) "
         prompt += "character at different sequential stages. "
@@ -378,7 +381,8 @@ def generate_prompt(draft):
     if G9 not in ["Feminine / Female", "Female", "Feminine"] and J14_desc:
         prompt += f"Grooming: {J14_desc}. "
         
-    if J19_desc: prompt += f"Hair Texture: {J19_desc}. "
+    # Rule 3: Consistency Anchor (Locking Hair/Color in prompt)
+    if J19_desc: prompt += f"Hair/Beard Texture & Color Anchor: {J19_desc}. "
         
     prompt += "Skin: standard. " 
         
@@ -395,12 +399,17 @@ def generate_prompt(draft):
     if size and size != "None": prompt += f"Frame: {size}, "
     
     if is_arc_active:
-        prompt += "CRITICAL: Underlying facial structure and bone identity MUST remain identical across panels. Apply changes solely to skin aging/healing. "
+        prompt += "CRITICAL RULE: Underlying facial structure and identity MUST remain 100% identical across all 4 panels. Apply changes solely to skin aging/healing. "
         if age_prog_key != "None":
-            arc_desc = AGE_PROG_DESC.get(age_prog_key, age_prog_key)
-            prompt += f"Age Progression Timeline: [{arc_desc}]. Apply progressive graying and wrinkles. Panel 1: age 30. Panel 2: age 40. Panel 3: age 50. Add clear typography labels at the bottom margin of each panel: 'Age 30', 'Age 40', 'Age 50'. "
+            stages = AGING_ARC_DATA.get(age_prog_key, ["", "", "", ""])
+            prompt += f"Age Progression Timeline [{age_prog_key}]. "
+            prompt += f"Panel 1 (Initial Stage): {stages[0]}. Panel 2 (Mid Progression): {stages[1]}. Panel 3 (Damage/Mid): {stages[2]}. Panel 4 (Final State): {stages[3]}. "
+            prompt += "Add clear typography labels at the bottom margin of each panel: 'Initial', 'Spread', 'Damage', 'Final'. "
         elif sfx_prog_key != "None":
-            prompt += f"SFX Trauma Healing Timeline: Base is {G17_desc}. Progressive healing stages. Panel 1: fresh. Panel 2: scabbed. Panel 3: healed scar. Clearly label stages. "
+            stages = SFX_TRAUMA_ARC_DATA.get(sfx_prog_key, ["", "", "", ""])
+            prompt += f"SFX Trauma Healing Timeline [{sfx_prog_key}]. Base injury is {G17_desc}. "
+            prompt += f"Panel 1 (Initial): {stages[0]}. Panel 2 (Spread): {stages[1]}. Panel 3 (Damage): {stages[2]}. Panel 4 (Final/Healed): {stages[3]}. "
+            prompt += "Add clear typography labels at the bottom margin of each panel: 'Initial', 'Spread', 'Damage', 'Final'. "
             
     else:
         prompt += "beautifully framed composition, subsurface scattering, no-retouch. "
@@ -732,7 +741,7 @@ elif st.session_state.route == 'builder':
             
             if st.session_state.plan in ["UONA Apex", "MASTER APEX"]:
                 st.markdown("<hr style='border-color: rgba(255, 170, 0, 0.3); margin: 10px 0;'>", unsafe_allow_html=True)
-                smart_select("Age Progression Arc", list(AGE_PROG_DESC.keys()), 'age_prog', help_dict=AGE_PROG_DESC)
+                smart_select("Age Progression Arc", list(AGING_ARC_DATA.keys()), 'age_prog', help_dict={k:v[3] for k,v in AGING_ARC_DATA.items()})
 
         with c2:
             smart_select("Gender", GENDER_LIST, 'gen')
@@ -758,14 +767,29 @@ elif st.session_state.route == 'builder':
         st.markdown("<h3 style='color:#00f2ff; font-family:Cinzel;'>STEP 3: Grooming & SFX Trauma</h3>", unsafe_allow_html=True)
         c1, c2 = st.columns(2)
         with c1:
-            smart_select("Grooming Style", list(GROOM_DESC.keys()), 'groom', help_dict=GROOM_DESC)
+            # Rule 1 Logic: Gender Lock
+            if d.get('gen') in ["Feminine / Female", "Female", "Feminine"]:
+                st.warning("🔒 Grooming Locked for Female Character")
+                st.session_state.draft['groom'] = "None"
+            else:
+                smart_select("Grooming Style", list(GROOM_DESC.keys()), 'groom', help_dict=GROOM_DESC)
+                
             smart_select("Material Finish", list(MAT_DESC.keys()), 'mat', help_dict=MAT_DESC)
-        with c2:
-            smart_select("Trauma / SFX", list(SFX_DESC.keys()), 'sfx', help_dict=SFX_DESC)
             
-            if st.session_state.plan in ["UONA Apex", "MASTER APEX"]:
-                st.markdown("<hr style='border-color: rgba(255, 170, 0, 0.3); margin: 10px 0;'>", unsafe_allow_html=True)
-                smart_select("SFX Progression Arc", list(SFX_PROG_DESC.keys()), 'sfx_prog', help_dict=SFX_PROG_DESC)
+        with c2:
+            # Rule 2 Logic: Age Lock for SFX
+            is_young = d.get('age') in ["Child / Pre-adolescent", "Adolescent / Teenager"]
+            
+            if is_young:
+                st.warning("🔒 SFX Trauma Locked for characters under 22")
+                st.session_state.draft['sfx'] = "None"
+                st.session_state.draft['sfx_prog'] = "None"
+            else:
+                smart_select("Trauma / SFX", list(SFX_DESC.keys()), 'sfx', help_dict=SFX_DESC)
+                
+                if st.session_state.plan in ["UONA Apex", "MASTER APEX"]:
+                    st.markdown("<hr style='border-color: rgba(255, 170, 0, 0.3); margin: 10px 0;'>", unsafe_allow_html=True)
+                    smart_select("SFX Progression Arc", list(SFX_TRAUMA_ARC_DATA.keys()), 'sfx_prog', help_dict={k:v[0] for k,v in SFX_TRAUMA_ARC_DATA.items()})
         
         col1, col2, col3 = st.columns([1, 4, 1])
         if col1.button("⬅ BACK"): prev_step()
