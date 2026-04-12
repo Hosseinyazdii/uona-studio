@@ -53,7 +53,7 @@ def add_bg_from_local(image_file):
     )
 
 # ==========================================
-# 2. دیتابیس جامع V2.0 (Full Baseline)
+# 2. دیتابیس جامع V2.1 (Full Baseline)
 # ==========================================
 
 GENDER_LIST = ["Masculine / Male", "Feminine / Female", "Androgynous"]
@@ -172,7 +172,7 @@ def next_step(): st.session_state.step += 1; st.rerun()
 def prev_step(): st.session_state.step -= 1; st.rerun()
 
 # ==========================================
-# 4. موتور پردازش هوشمند (Logic Engine)
+# 4. موتور پردازش هوشمند (Logic Engine V2.1)
 # ==========================================
 def generate_prompt(draft):
     baseline = f"Uona Studio Signature (Scientific Makeup Design). [Fixed Technical: {draft['cam']}, {draft['light']}, {draft['size']}]. "
@@ -240,15 +240,60 @@ if st.session_state.route != 'login':
         st.markdown(f'<div style="text-align:right; color:white; font-family:Montserrat; font-size:0.8rem; padding-top:15px;">{st.session_state.plan} | {st.session_state.user.upper()}</div>', unsafe_allow_html=True)
     st.markdown("<hr style='border-color: rgba(0,242,255,0.2); margin-top: 5px; margin-bottom: 20px;'>", unsafe_allow_html=True)
 
+# --- DASHBOARD ---
 if st.session_state.route == 'dashboard':
     bg = find_bg_file()
     if bg: add_bg_from_local(bg)
     st.markdown("<h2 class='title-main' style='text-align:center;'>CONTROL CENTER</h2>", unsafe_allow_html=True)
-    c1, _, _ = st.columns(3)
+    c1, c2, c3 = st.columns(3)
     with c1:
         st.markdown('<div class="glass-panel" style="text-align:center;"><h1>🎬</h1><h3>WORKFLOW V2.1</h3></div>', unsafe_allow_html=True)
         if st.button("START ARCHITECT", key="b1", use_container_width=True): st.session_state.step = 1; go_to('builder')
+    with c2:
+        st.markdown('<div class="glass-panel" style="text-align:center;"><h1>📂</h1><h3>LIBRARY</h3></div>', unsafe_allow_html=True)
+        if st.button("OPEN LIBRARY", key="b2", use_container_width=True): go_to('library')
+    with c3:
+        st.markdown('<div class="glass-panel" style="text-align:center;"><h1>⚙️</h1><h3>SETTINGS</h3></div>', unsafe_allow_html=True)
+        if st.button("OPEN SETTINGS", key="b3", use_container_width=True): go_to('settings')
 
+# --- LIBRARY ---
+elif st.session_state.route == 'library':
+    st.markdown("<h2 class='title-main' style='text-align:center;'>PROJECT LIBRARY</h2>", unsafe_allow_html=True)
+    projects = load_json(PROJ_FILE, [])
+    my_projs = [p for p in projects if p.get("user") == st.session_state.user]
+    
+    if not my_projs:
+        st.info("No projects saved yet.")
+    else:
+        for p in my_projs:
+            with st.expander(f"📁 PROJECT LOG | {p['date']}"):
+                st.code(p['prompt'], language="markdown")
+
+    st.markdown("<hr style='border-color: rgba(0,242,255,0.2);'>", unsafe_allow_html=True)
+    st.markdown("<h4 style='color:#00f2ff; font-family:Cinzel; margin-bottom:15px;'>REFERENCE GALLERY</h4>", unsafe_allow_html=True)
+    l_c1, l_c2, l_c3, l_c4 = st.columns(4)
+    with l_c1:
+        if os.path.exists("desert_warn.jpg"): st.image("desert_warn.jpg", caption="Desert Warn")
+    with l_c2:
+        if os.path.exists("royal_clean.jpg"): st.image("royal_clean.jpg", caption="Royal Clean")
+    with l_c3:
+        if os.path.exists("dirty_combat.jpg"): st.image("dirty_combat.jpg", caption="Dirty Combat")
+    with l_c4:
+        if os.path.exists("urban_rebel.jpg"): st.image("urban_rebel.jpg", caption="Urban Rebel")
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    if st.button("⬅ BACK TO DASHBOARD", use_container_width=True): go_to('dashboard')
+
+# --- SETTINGS ---
+elif st.session_state.route == 'settings':
+    st.markdown("<h2 class='title-main'>SYSTEM SETTINGS</h2>", unsafe_allow_html=True)
+    st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
+    st.selectbox("Default AI Engine", ["Midjourney V6", "Gemini Pro Vision", "Stable Diffusion XL"])
+    st.selectbox("Theme Mode", ["Dark Cinematic", "Light Mode (Not Recommended)"])
+    if st.button("⬅ BACK TO DASHBOARD", use_container_width=True): go_to('dashboard')
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# --- BUILDER ---
 elif st.session_state.route == 'builder':
     st.markdown(f"""<div class="step-indicator"><span class="{'step-active' if st.session_state.step==1 else ''}">1. BASELINE (FIXED)</span> ➔ <span class="{'step-active' if st.session_state.step==2 else ''}">2. ARC CONFIG</span> ➔ <span class="{'step-active' if st.session_state.step==3 else ''}">3. REVIEW</span></div>""", unsafe_allow_html=True)
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
@@ -290,11 +335,44 @@ elif st.session_state.route == 'builder':
         st.markdown("<h4 style='color:#00f2ff;'>Phase 4: Expert Output Review</h4>", unsafe_allow_html=True)
         final_prompt = generate_prompt(d)
         st.info(final_prompt)
+        
+        st.markdown("<br>", unsafe_allow_html=True)
         c1, c2 = st.columns(2)
         if c1.button("⬅ EDIT", use_container_width=True): prev_step()
-        if c2.button("SAVE & GENERATE 🚀", use_container_width=True): go_to('result')
+        if c2.button("PROCEED TO SIMULATION 🚀", use_container_width=True): go_to('simulation')
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+        _, rev_c1, rev_c2, _ = st.columns([1, 2, 2, 1])
+        with rev_c1:
+            if os.path.exists("portrait_clean.PNG"): st.image("portrait_clean.PNG", caption="Visual Reference 1", use_container_width=True)
+        with rev_c2:
+            if os.path.exists("portrait_clean_2.jpg"): st.image("portrait_clean_2.jpg", caption="Visual Reference 2", use_container_width=True)
+            
     st.markdown('</div>', unsafe_allow_html=True)
 
+# --- SIMULATION ---
+elif st.session_state.route == 'simulation':
+    st.markdown("<h2 class='title-main'>VISUAL SIMULATION</h2>", unsafe_allow_html=True)
+    c1, c2 = st.columns([2, 1])
+    with c1:
+        st.markdown('<div style="background:#0a192f; height:200px; border-radius:15px; border:1px dashed #00f2ff; display:flex; align-items:center; justify-content:center; flex-direction:column; margin-bottom:20px;"><h1 style="color:#00f2ff; opacity:0.5;">👁️</h1><p style="color:#00f2ff; opacity:0.7; font-family:Montserrat;">LIVE PREVIEW FEED</p></div>', unsafe_allow_html=True)
+        
+        sim_c1, sim_c2 = st.columns(2)
+        with sim_c1:
+            if os.path.exists("desert.jpg"): st.image("desert.jpg", caption="Desert Environment Test")
+            if os.path.exists("night_neon.jpg"): st.image("night_neon.jpg", caption="Night Neon Test")
+        with sim_c2:
+            if os.path.exists("studio_portrait.jpg"): st.image("studio_portrait.jpg", caption="Studio Lighting Test")
+            if os.path.exists("humidity_tester.jpg"): st.image("humidity_tester.jpg", caption="SFX Humidity Test")
+            
+    with c2:
+        st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
+        st.selectbox("Render Engine Test", ["Preview Mode (Fast)", "High Fidelity"])
+        if st.button("⬅ BACK TO BUILDER", use_container_width=True): go_to('builder')
+        if st.button("⚡ GENERATE PROMPT", use_container_width=True): go_to('result')
+        st.markdown('</div>', unsafe_allow_html=True)
+
+# --- RESULT ---
 elif st.session_state.route == 'result':
     st.markdown("<h2 class='title-main'>FINAL MAKEUP DOCUMENT</h2>", unsafe_allow_html=True)
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
