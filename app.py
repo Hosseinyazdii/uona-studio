@@ -53,18 +53,104 @@ def add_bg_from_local(image_file):
     )
 
 # ==========================================
-# 2. دیتابیس مگا پرامپت (V2.1 - Scientific Logic)
+# 2. دیتابیس جامع V2.0 (Full Baseline)
 # ==========================================
 
 GENDER_LIST = ["Masculine / Male", "Feminine / Female", "Androgynous"]
-AGE_LIST = ["Child / Pre-adolescent", "Adolescent / Teenager", "Young Adult (Early 20s)", "Middle-aged (Late 40s)", "Elderly / Senior", "Ancient / Centenarian"]
 
-NAT_DESC = {"Iranian": "Indo-Aryan features, prominent nasal bridge, olive skin", "Egyptian": "North African features, warm bronze skin tone", "Emirati": "Gulf Arab features, sharp jawline, tanned skin", "Saudi": "Peninsular Arab features, high cheekbones", "Kuwaiti": "Northern Gulf features", "Syrian": "Levantine features", "Turkish": "Eurasian features", "Indian": "South Asian features", "American": "Diverse features", "European": "Caucasian features", "African": "Sub-Saharan features", "Chinese": "East Asian features"}
-ERA_DESC = {"Contemporary / Modern Day": "Current lighting, sharp details", "Stone Age / Prehistoric": "Primitive aesthetic, raw textures", "Before Common Era (BCE)": "Ancient civilization styling", "Pre-Islamic Era": "Traditional regional heritage", "Ancient Era (Hellenistic/Roman)": "Classical features", "Medieval / Dark Ages": "Gritty, rustic, heavy textures", "Victorian Era": "Formal, structured", "1970s Retro": "Analog film look", "Futuristic / Cyberpunk": "Neon accents", "Post-Apocalyptic": "Dirty, weathered textures"}
-CONCEPTS = {"Heroic Warrior": "Strong jawline, confident gaze", "Sinister Villain": "Harsh shadows, menacing expression", "Scholar / Intellectual": "Refined appearance", "Royal / Aristocratic": "Elegant posture", "Mercenary / Outlaw": "Rugged, weathered", "Mystic / Shaman": "Otherworldly look", "Corporate CEO": "Clean-cut professional", "Elite Athlete": "Defined muscularity", "Ailing Character": "Pale skin, dark circles"}
-GROOM_DESC = {"Saudi Anchor Beard": "Sharp angular form", "Pyramidal Moustache": "Wide edges", "Clean Shaven": "Smooth skin", "Light Stubble": "Very short stubble", "Heavy Stubble": "Thicker rough texture", "Goatee": "Chin beard only", "Full Beard": "Natural dense growth"}
-TECH_LENS = {"85 mm Lens": "Portrait, shallow DOF", "100 mm Macro": "Extreme detail, skin pores", "35 mm Lens": "Cinematic context"}
-TECH_LIGHT = {"Rembrandt Lighting": "Dramatic triangle shadow", "Cinematic Golden Hour": "Soft warm sunset", "High-Key Studio": "Clear SFX visibility", "Neon Cyberpunk": "Colorful rim light"}
+AGE_LIST = [
+    "Child / Pre-adolescent", "Adolescent / Teenager", "Young Adult (Early 20s)", 
+    "Middle-aged (Late 40s)", "Elderly / Senior", "Ancient / Centenarian"
+]
+
+NAT_DESC = {
+    "Iranian": "Indo-Aryan features, prominent nasal bridge, olive skin",
+    "Egyptian": "North African features, warm bronze skin tone",
+    "Emirati": "Gulf Arab features, sharp jawline, tanned skin",
+    "Saudi": "Peninsular Arab features, high cheekbones",
+    "Kuwaiti": "Northern Gulf features",
+    "Syrian": "Levantine features",
+    "Turkish": "Eurasian features, dark hair, medium olive skin",
+    "Indian": "South Asian features, deep-set dark eyes",
+    "American": "Diverse North American features",
+    "European": "Caucasian features, fair complexion",
+    "African": "Sub-Saharan features, deep melanated skin",
+    "Chinese": "East Asian features, epicanthic folds"
+}
+
+ERA_DESC = {
+    "Contemporary / Modern Day": "Current lighting, sharp details",
+    "Stone Age / Prehistoric": "Primitive aesthetic, raw textures",
+    "Before Common Era (BCE)": "Ancient civilization styling",
+    "Pre-Islamic Era": "Traditional regional heritage",
+    "Ancient Era (Hellenistic/Roman)": "Classical features",
+    "Medieval / Dark Ages": "Gritty, rustic textures",
+    "200 Years ago (Early 19th Century)": "Regency style",
+    "150 years ago (Victorian Era)": "Formal, refined textures",
+    "100 Years ago (Roaring 20s)": "Vintage aesthetic",
+    "50 Years ago (1970s Retro)": "Analog film look",
+    "Futuristic / Cyberpunk": "Neon accents",
+    "Post-Apocalyptic": "Dirty, weathered textures"
+}
+
+CONCEPTS = {
+    "Heroic Warrior": "Strong jawline, battle wear",
+    "Sinister Villain": "Harsh shadows, menacing expression",
+    "Scholar / Intellectual": "Refined appearance, focused eyes",
+    "Royal / Aristocratic": "Elegant posture, luxury textures",
+    "Mercenary / Outlaw": "Rugged, weathered",
+    "Mystic / Shaman": "Otherworldly look, spiritual paint",
+    "Corporate Executive / CEO": "Clean-cut professional",
+    "Elite Athlete": "Defined muscularity",
+    "Bohemian Artist": "Creative styling, messy hair",
+    "Average Citizen": "Naturalistic, everyday lighting",
+    "High-fashion Model": "Angular features, studio lighting",
+    "Retiree / Grandparent": "Dignified aging",
+    "Ailing / Sickly Character": "Pale skin, dark circles"
+}
+
+GROOM_DESC = {
+    "Saudi Anchor Beard": "Sharp angular form",
+    "Pyramidal Moustache": "Wide edges, narrow top",
+    "Clean Shaven": "Smooth skin finish",
+    "Light Stubble": "Very short uniform stubble",
+    "Heavy Stubble": "Thicker rough texture",
+    "Designer Stubble": "Precisely trimmed edges",
+    "Shadow Fade Beard": "Faded sides, dense chin hair",
+    "Goatee (No Mustache)": "Chin beard only",
+    "Classic Goatee": "Chin beard connected to mustache",
+    "Van Dyke": "Pointed chin beard, floating mustache",
+    "Short Boxed Beard": "Short full beard, square edges",
+    "Long Full Beard": "Long natural growth",
+    "Unkempt Beard": "Messy disheveled texture",
+    "Viking Beard": "Long thick braided strands",
+    "Warrior Beard": "Thick rugged battle-worn",
+    "Mutton Chops": "Wide sideburns",
+    "Soul Patch": "Small patch below lower lip"
+}
+
+HAIR_TEX_DESC = {
+    "Afro-Textured": "Kinky-coily patterns",
+    "Wavy (Type 2)": "Natural S-shape waves",
+    "Curly (Type 3)": "Defined ringlets",
+    "Straight (Sleek)": "Silky smooth surface",
+    "Coarse & Wiry": "Thick diameter strands",
+    "Fine & Wispy": "Low density strands",
+    "Disheveled & Matted": "Tangled clumps, weathered",
+    "Braided / Cornrows": "Intricate woven texture"
+}
+
+HAIR_COLORS = {
+    "Salt and pepper, 10% grey": "Black mixed with scattered white",
+    "Salt and pepper, 50% grey": "Even mix of black and white",
+    "Jet black / Natural black": "Deep rich black",
+    "Deep espresso brown": "Dark brown with warm tones",
+    "Light chestnut / Sandy brown": "Honey or sandy tones",
+    "Ash blonde / Golden blonde": "Cool or warm blonde tones"
+}
+
+TECH_LENS = {"85 mm Lens": "Portrait, shallow DOF", "100 mm Macro": "Extreme detail, skin pores", "50 mm Lens": "Suspenseful, Susbtle distortion", "35 mm Lens": "Hero shot, wider context", "24 mm Wide-Angle": "Environmental portrait"}
+TECH_LIGHT = {"Rembrandt Lighting": "Dramatic triangle shadow", "Cinematic Golden Hour": "Soft warm sunset", "High-Key Studio": "Clear SFX visibility", "Low-Key Moody": "Mysterious shadows", "Neon Cyberpunk": "Colorful rim light", "Volumetric God Rays": "Atmospheric light rays"}
 
 # ==========================================
 # 3. مدیریت وضعیت (State Machine)
@@ -84,32 +170,29 @@ if 'draft' not in st.session_state:
 def go_to(route): st.session_state.route = route; st.rerun()
 def next_step(): st.session_state.step += 1; st.rerun()
 def prev_step(): st.session_state.step -= 1; st.rerun()
-def add_n(lst): return ["None"] + lst + ["Others"]
 
 # ==========================================
 # 4. موتور پردازش هوشمند (Logic Engine)
 # ==========================================
 def generate_prompt(draft):
-    # Baseline Constants
     baseline = f"Uona Studio Signature (Scientific Makeup Design). [Fixed Technical: {draft['cam']}, {draft['light']}, {draft['size']}]. "
-    identity = f"Character Identity: {draft['gen']}, Base Age {draft['age']}, Nationality: {draft['nat']}, Type: {draft['char']}. Grooming: {draft['groom']}. "
+    identity = f"Character Identity: {draft['gen']}, Base Age {draft['age']}, Nationality: {draft['nat']}, Type: {draft['char']}. "
+    appearance = f"Grooming/Appearance: {draft['groom']}, Hair Color: {draft['h_col']}, Texture: {draft['h_tex']}. "
     
-    # Intelligence Layer (Phase 3)
     progression = ""
     if draft['arc_type'] != "None":
-        progression = f"HORIZONTAL TRIPTYCH ARC. Four stages divided by 1px separators. Scenario: {draft['scenario_text']}. "
+        progression = f"HORIZONTAL TRIPTYCH ARC. Four stages separated by 1px separators. Scenario: {draft['scenario_text']}. "
         if draft['arc_type'] == "Makeup/Aging":
             progression += "SCIENTIFIC AGING LOGIC: Inject [Epidermal thinning, Bone density loss, Solar lentigines, Gravity-induced ptosis]. "
         elif draft['arc_type'] == "SFX/Trauma":
             progression += "SCIENTIFIC TRAUMA LOGIC: Color Shift from wet crimson to dark scabbing, Material Transformation to fibrous scar tissue. "
-        
         progression += f"PROGRESSION LABELS: Initial -> Spread -> Damage -> Final. PROGRESS LINE ACTIVE."
     
-    final_p = baseline + identity + progression + " 8k, hyper-realistic, subsurface scattering, focus on prosthetic makeup accuracy."
+    final_p = baseline + identity + appearance + progression + " 8k, hyper-realistic, subsurface scattering, focus on prosthetic accuracy."
     return " ".join(final_p.split())
 
 # ==========================================
-# 5. رابط کاربری (UI Engine - NO CHANGES)
+# 5. رابط کاربری (UI Engine - ORIGINAL)
 # ==========================================
 st.markdown("""
     <style>
@@ -167,47 +250,54 @@ if st.session_state.route == 'dashboard':
         if st.button("START ARCHITECT", key="b1", use_container_width=True): st.session_state.step = 1; go_to('builder')
 
 elif st.session_state.route == 'builder':
-    st.markdown(f"""<div class="step-indicator"><span class="{'step-active' if st.session_state.step==1 else ''}">1. BASELINE</span> ➔ <span class="{'step-active' if st.session_state.step==2 else ''}">2. ARC CONFIG</span> ➔ <span class="{'step-active' if st.session_state.step==3 else ''}">3. REVIEW</span></div>""", unsafe_allow_html=True)
+    st.markdown(f"""<div class="step-indicator"><span class="{'step-active' if st.session_state.step==1 else ''}">1. BASELINE (FIXED)</span> ➔ <span class="{'step-active' if st.session_state.step==2 else ''}">2. ARC CONFIG</span> ➔ <span class="{'step-active' if st.session_state.step==3 else ''}">3. REVIEW</span></div>""", unsafe_allow_html=True)
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
     d = st.session_state.draft
 
     if st.session_state.step == 1:
         st.markdown("<h4 style='color:#00f2ff;'>Phase 1: Character & Technical Baseline</h4>", unsafe_allow_html=True)
-        c1, c2 = st.columns(2)
+        c1, c2, c3 = st.columns(3)
         with c1:
+            st.markdown("💠 **Identity**")
             d['gen'] = st.selectbox("GENDER", GENDER_LIST)
             d['age'] = st.selectbox("BASE AGE", AGE_LIST)
             d['nat'] = st.selectbox("NATIONALITY", list(NAT_DESC.keys()))
             d['char'] = st.selectbox("CHARACTER TYPE", list(CONCEPTS.keys()))
         with c2:
+            st.markdown("💠 **Appearance**")
             d['groom'] = st.selectbox("GROOMING", list(GROOM_DESC.keys()))
+            d['h_col'] = st.selectbox("HAIR/BEARD COLOR", list(HAIR_COLORS.keys()))
+            d['h_tex'] = st.selectbox("HAIR TEXTURE", list(HAIR_TEX_DESC.keys()))
+        with c3:
+            st.markdown("💠 **Technical**")
             d['cam'] = st.selectbox("CAMERA LENS", list(TECH_LENS.keys()))
             d['light'] = st.selectbox("CINEMATIC LIGHTING", list(TECH_LIGHT.keys()))
             d['size'] = st.selectbox("ASPECT RATIO", ["16:9", "4:5", "2.39:1", "1:1"])
-        if st.button("NEXT ➔"): next_step()
+            
+        if st.button("NEXT ➔", use_container_width=True): next_step()
 
     elif st.session_state.step == 2:
         st.markdown("<h4 style='color:#00f2ff;'>Phase 2: Arc Configuration</h4>", unsafe_allow_html=True)
         d['arc_type'] = st.selectbox("SELECT ARC TYPE", ["None", "Makeup/Aging", "SFX/Trauma", "Hybrid"])
         d['arc_stages'] = st.slider("NUMBER OF STAGES", 2, 6, 4)
-        d['scenario_text'] = st.text_area("SCENARIO DESCRIPTION (e.g., A bullet wound getting infected over 30 days)", placeholder="Write your cinematic scenario here...")
+        d['scenario_text'] = st.text_area("SCENARIO DESCRIPTION", placeholder="Describe the transformation (e.g., A burn scar healing over 6 months)...")
         
         c1, c2 = st.columns(2)
-        if c1.button("⬅ BACK"): prev_step()
-        if c2.button("NEXT ➔"): next_step()
+        if c1.button("⬅ BACK", use_container_width=True): prev_step()
+        if c2.button("NEXT ➔", use_container_width=True): next_step()
 
     elif st.session_state.step == 3:
         st.markdown("<h4 style='color:#00f2ff;'>Phase 4: Expert Output Review</h4>", unsafe_allow_html=True)
         final_prompt = generate_prompt(d)
         st.info(final_prompt)
         c1, c2 = st.columns(2)
-        if c1.button("⬅ EDIT"): prev_step()
-        if c2.button("SAVE & GENERATE 🚀"): go_to('result')
+        if c1.button("⬅ EDIT", use_container_width=True): prev_step()
+        if c2.button("SAVE & GENERATE 🚀", use_container_width=True): go_to('result')
     st.markdown('</div>', unsafe_allow_html=True)
 
 elif st.session_state.route == 'result':
     st.markdown("<h2 class='title-main'>FINAL MAKEUP DOCUMENT</h2>", unsafe_allow_html=True)
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
     st.code(generate_prompt(st.session_state.draft))
-    if st.button("RETURN TO DASHBOARD"): go_to('dashboard')
+    if st.button("RETURN TO DASHBOARD", use_container_width=True): go_to('dashboard')
     st.markdown('</div>', unsafe_allow_html=True)
