@@ -53,7 +53,7 @@ def add_bg_from_local(image_file):
     )
 
 # ==========================================
-# 2. دیتابیس مگا پرامپت
+# 2. دیتابیس مگا پرامپت (همان دیتابیس دقیق شما)
 # ==========================================
 
 GENDER_LIST = ["Masculine / Male", "Feminine / Female", "Androgynous"]
@@ -319,6 +319,7 @@ def smart_select(label, options, key, help_dict=None):
     else:
         st.session_state.draft[key] = sel
 
+# 🔴 تابع پردازش هوشمند آپدیت شده بر اساس ورک‌فلوی جدید شما 🔴
 def generate_prompt(draft):
     G7 = draft.get('actor', '')
     J7 = draft.get('age', '') if draft.get('age') != "None" else ""
@@ -339,7 +340,7 @@ def generate_prompt(draft):
     
     age_prog_key = draft.get('age_prog', 'None')
     sfx_prog_key = draft.get('sfx_prog', 'None')
-    scenario_text = draft.get('scenario', '')
+    scenario_desc = draft.get('scenario', '')
 
     is_arc_active = (age_prog_key != "None") or (sfx_prog_key != "None")
 
@@ -359,15 +360,13 @@ def generate_prompt(draft):
     if G7 == "Yes":
         prompt += "[VISUAL GUIDE: Use the facial structure of the attached subject. The following is the prosthetic design]: "
 
-    # 🔴 منطق هوشمند UONA V2.0 🔴
+    # منطق تولید پرامپت با حفظ Baseline و تغییرات علمی
     if is_arc_active:
-        prompt += "A cinematic horizontal triptych progression sheet. FOUR separate panels seamlessly divided by 1px glowing cyan neon lines. Each panel features the EXACT SAME facial identity and underlying bone structure of a "
+        prompt += "A cinematic horizontal progression sheet. FOUR separate panels seamlessly divided by 1px vertical lines. The EXACT SAME facial identity and bone structure of a "
         if G9: prompt += f"{G9} "
         if J9_key: prompt += f"({J9_desc}) "
         prompt += "character at different sequential stages. "
-        
-        if scenario_text:
-            prompt += f"Scenario Context: [{scenario_text}]. "
+        if scenario_desc: prompt += f"Scenario: [{scenario_desc}]. "
     else:
         prompt += "A professional cinematic portrait of a "
         if J7: prompt += f"{J7} "
@@ -391,25 +390,26 @@ def generate_prompt(draft):
         
     if J17_desc: prompt += f"Finish: {J17_desc}. "
         
-    prompt += "Technical: "
+    prompt += "Technical Baseline: "
     if G22_desc: prompt += f"Lighting: {G22_desc}, "
     if G24_desc: prompt += f"Lens: {G24_desc}, "
     
     size = draft.get('size', '')
     if size and size != "None": prompt += f"Frame: {size}, "
     
-    # 🔴 ترجمه علمی سیستم به زبان AI 🔴
     if is_arc_active:
         prompt += "CRITICAL: Underlying facial identity MUST remain 100% identical. Apply changes solely to skin aging/healing. "
+        
+        # ترجمه و تزریق زبان علمی برای موتور هوشمند
         if age_prog_key != "None":
             arc_desc = AGE_PROG_DESC.get(age_prog_key, age_prog_key)
-            prompt += f"Age Progression Timeline: [{arc_desc}]. "
-            prompt += "SCIENTIFIC AGING LOGIC: Systematically inject [Epidermal thinning, Bone density loss, Solar lentigines, Gravity-induced ptosis] as stages advance. "
+            prompt += f"Age Progression Arc: [{arc_desc}]. "
+            prompt += "SCIENTIFIC AGING LOGIC: Systematically apply [Epidermal thinning, Bone density loss, Solar lentigines, Dermal ptosis]. "
         elif sfx_prog_key != "None":
-            prompt += f"SFX Trauma Healing Timeline: Base is {G17_desc}. "
+            prompt += f"SFX Trauma Healing Arc: Base is {G17_desc}. "
             prompt += "SCIENTIFIC TRAUMA LOGIC: Apply Color Shift (from wet arterial crimson to dark oxidized scabbing) and Material Transformation (from fresh exudate to rigid fibrous scar tissue). "
             
-        prompt += "Add a visible progress line tracking the visual arc. Label text at the bottom margin of each frame: 'Initial' -> 'Spread' -> 'Damage' -> 'Final'. "
+        prompt += "Add a visible progress line. Typography labels under each panel: 'Initial' -> 'Spread' -> 'Damage' -> 'Final'. "
     else:
         prompt += "beautifully framed composition, subsurface scattering, no-retouch. "
         if J7: prompt += f" Typography overlay: clearly written text '{J7}' at the bottom margin. "
@@ -774,11 +774,11 @@ elif st.session_state.route == 'builder':
             if st.session_state.plan in ["UONA Apex", "MASTER APEX"]:
                 st.markdown("<hr style='border-color: rgba(255, 170, 0, 0.3); margin: 10px 0;'>", unsafe_allow_html=True)
                 smart_select("SFX Progression Arc", list(SFX_PROG_DESC.keys()), 'sfx_prog', help_dict=SFX_PROG_DESC)
-                
-        # 🔴 اضافه شدن کادر سناریو به صورت نامرئی در UI تو 🔴
+        
+        # 🔴 اضافه شدن کادر توضیحات سناریو در رابط کاربری اصلی بدون تخریب ستون‌ها 🔴
         if d.get('age_prog') != "None" or d.get('sfx_prog') != "None":
-            st.markdown("<hr style='border-color: rgba(0, 242, 255, 0.1); margin: 20px 0;'>", unsafe_allow_html=True)
-            d['scenario'] = st.text_area("Scenario Description", value=d.get('scenario', ''), placeholder="مثال: یک زخم شمشیر که پس از یک هفته در حال ترمیم است...")
+            st.markdown("<hr style='border-color: rgba(0, 242, 255, 0.1); margin: 15px 0;'>", unsafe_allow_html=True)
+            d['scenario'] = st.text_input("SCENARIO DESCRIPTION", value=d.get('scenario', ''), placeholder="e.g., A wound getting infected over a week...")
 
         col1, col2, col3 = st.columns([1, 4, 1])
         if col1.button("⬅ BACK"): prev_step()
