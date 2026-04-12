@@ -17,6 +17,10 @@ st.set_page_config(
 DB_FILE = ".users_db.json"
 PROJ_FILE = ".projects_db.json"
 
+# رفع باگ: متغیرهای ادمین به بالای کد منتقل شدند تا همیشه در دسترس باشند
+ADMIN_USER = "sep"
+ADMIN_PASS = "1386sy"
+
 def load_json(file, default):
     if not os.path.exists(file):
         with open(file, "w") as f: json.dump(default, f)
@@ -208,42 +212,137 @@ if 'draft' not in st.session_state:
 def go_to(route): st.session_state.route = route; st.rerun()
 def next_step(): st.session_state.step += 1; st.rerun()
 def prev_step(): st.session_state.step -= 1; st.rerun()
+def add_n(lst): return ["None"] + lst + ["Others"]
 
-# ==========================================
-# 4. موتور پردازش هوشمند (Logic Engine)
-# ==========================================
-def generate_prompt(draft):
-    # Fixed Technical & Baseline
-    baseline = f"Uona Studio Signature (Scientific Makeup Design). [Fixed Technical: {draft['cam']}, {draft['light']}, {draft['size']}]. "
+def smart_select(label, options, key, help_dict=None):
+    opts = add_n(options)
+    curr_val = st.session_state.draft.get(key, "")
+    idx = 0
+    if curr_val in opts: idx = opts.index(curr_val)
+    elif curr_val and curr_val != "None": idx = len(opts) - 1
     
-    # Identity & Appearance
-    J9_desc = NAT_DESC.get(draft['nat'], "")
-    G12_desc = ERA_DESC.get(draft['era'], "")
-    identity = f"Character Identity: {draft['gen']}, Base Age {draft['age']}, Nationality: {draft['nat']} ({J9_desc}), Type: {draft['char']}, Era: {G12_desc}. "
-    
-    groom_desc = GROOM_DESC.get(draft['groom'], "")
-    appearance = f"Grooming/Appearance: {draft['groom']} ({groom_desc}), Hair Color: {draft['h_col']}, Texture: {draft['h_tex']}. "
-    
-    # Intelligence Layer (Phase 3)
-    progression = ""
-    if draft['arc_type'] != "None":
-        progression = f"HORIZONTAL TRIPTYCH ARC. Four stages divided by 1px separators. Scenario Context: [{draft['scenario_text']}]. "
-        
-        # تزریق لغات علمی بر اساس انتخاب کاربر
-        if draft['arc_type'] == "Makeup/Aging":
-            progression += "SCIENTIFIC AGING LOGIC: Inject [Epidermal thinning, Bone density loss, Solar lentigines, Gravity-induced ptosis]. "
-        elif draft['arc_type'] == "SFX/Trauma" or draft['arc_type'] == "Hybrid":
-            sfx_base = SFX_DESC.get(draft['sfx'], draft['sfx'])
-            progression += f"Base Trauma: {sfx_base}. SCIENTIFIC TRAUMA LOGIC: Apply Color Shift from wet crimson to dark scabbing, and Material Transformation to fibrous scar tissue. "
-        
-        progression += f"PROGRESSION LABELS: Typography labels under each panel ('Initial' -> 'Spread' -> 'Damage' -> 'Final'). PROGRESS LINE ACTIVE. CRITICAL: Underlying facial identity MUST remain 100% identical across all panels."
+    if help_dict:
+        c1, c2 = st.columns([11, 1])
+        with c1:
+            sel = st.selectbox(label, opts, index=idx, key=f"sel_{key}")
+        with c2:
+            with st.popover("❕"):
+                help_html = f"""
+                <div style="background-color: #000000 !important; margin: -1rem; padding: 1rem; min-height: 100px;">
+                    <div style="color: #00f2ff; font-weight: 900; font-family: 'Cinzel', serif; margin-bottom: 10px; font-size: 0.9rem; border-bottom: 1px solid rgba(0,242,255,0.3); padding-bottom: 5px; text-transform: uppercase;">
+                        EXCEL DICTIONARY: {label}
+                    </div>
+                    {"".join([f"<div style='color: #d0e0f0; font-family: Montserrat; font-size: 0.8rem; line-height: 1.8; margin-bottom: 4px;'><b style='color: #00f2ff;'>{k}:</b> {v}</div>" for k, v in help_dict.items()])}
+                </div>
+                """
+                st.markdown(help_html, unsafe_allow_html=True)
     else:
-        if draft['sfx'] != "None":
-            sfx_base = SFX_DESC.get(draft['sfx'], draft['sfx'])
-            progression += f"[CINEMATIC PROSTHETIC STUDY: Apply {sfx_base} as a makeup layer]. "
+        sel = st.selectbox(label, opts, index=idx, key=f"sel_{key}")
+        
+    if sel == "Others":
+        custom = st.text_input(f"Type Custom {label}", value=curr_val if curr_val not in opts else "", key=f"txt_{key}")
+        st.session_state.draft[key] = custom
+    else:
+        st.session_state.draft[key] = sel
+
+# 🔴 تابع پردازش هوشمند آپدیت شده بر اساس ورک‌فلوی جدید شما 🔴
+def generate_prompt(draft):
+    G7 = draft.get('actor', '')
+    J7 = draft.get('age', '') if draft.get('age') != "None" else ""
+    G9 = draft.get('gen', '') if draft.get('gen') != "None" else ""
     
-    final_p = baseline + identity + appearance + progression + " 8k, hyper-realistic, subsurface scattering, focus on prosthetic makeup accuracy."
-    return " ".join(final_p.split())
+    J9_key = draft.get('nat', '') if draft.get('nat') != "None" else ""
+    G12_key = draft.get('era', '') if draft.get('era') != "None" else ""
+    J12_key = draft.get('char', '') if draft.get('char') != "None" else ""
+    J14_key = draft.get('groom', '') if draft.get('groom') != "None" else ""
+    
+    h_col_key = draft.get('h_col', '') if draft.get('h_col') != "None" else ""
+    h_tex_key = draft.get('h_tex', '') if draft.get('h_tex') != "None" else ""
+    
+    G17_key = draft.get('sfx', '') if draft.get('sfx') != "None" else ""
+    J17_key = draft.get('mat', '') if draft.get('mat') != "None" else ""
+    G22_key = draft.get('light', '') if draft.get('light') != "None" else ""
+    G24_key = draft.get('cam', '') if draft.get('cam') != "None" else ""
+    
+    age_prog_key = draft.get('age_prog', 'None')
+    sfx_prog_key = draft.get('sfx_prog', 'None')
+    scenario_desc = draft.get('scenario', '')
+
+    is_arc_active = (age_prog_key != "None") or (sfx_prog_key != "None")
+
+    J9_desc = NAT_DESC.get(J9_key, "")
+    G12_desc = ERA_DESC.get(G12_key, G12_key) if G12_key else ""
+    J12_desc = CONCEPTS.get(J12_key, J12_key) if J12_key else ""
+    J14_desc = GROOM_DESC.get(J14_key, J14_key) if J14_key else ""
+    col_desc = HAIR_COLORS.get(h_col_key, h_col_key)
+    tex_desc = HAIR_TEX_DESC.get(h_tex_key, h_tex_key)
+    J19_desc = f"{col_desc} {tex_desc}".strip()
+    G17_desc = SFX_DESC.get(G17_key, G17_key) if G17_key else ""
+    J17_desc = MAT_DESC.get(J17_key, J17_key) if J17_key else ""
+    G22_desc = LIGHT_DESC.get(G22_key, G22_key) if G22_key else ""
+    G24_desc = CAM_DESC.get(G24_key, G24_key) if G24_key else ""
+
+    prompt = ""
+    if G7 == "Yes":
+        prompt += "[VISUAL GUIDE: Use the facial structure of the attached subject. The following is the prosthetic design]: "
+
+    # منطق تولید پرامپت با حفظ Baseline و تغییرات علمی
+    if is_arc_active:
+        prompt += "A cinematic horizontal progression sheet. FOUR separate panels seamlessly divided by 1px vertical lines. The EXACT SAME facial identity and bone structure of a "
+        if G9: prompt += f"{G9} "
+        if J9_key: prompt += f"({J9_desc}) "
+        prompt += "character at different sequential stages. "
+        if scenario_desc: prompt += f"Scenario: [{scenario_desc}]. "
+    else:
+        prompt += "A professional cinematic portrait of a "
+        if J7: prompt += f"{J7} "
+        if G9: prompt += f"{G9} "
+        if J9_key: prompt += f"{J9_key} ({J9_desc}) "
+
+    if G12_desc: prompt += f"from the {G12_desc} era. "
+    else: prompt += ". "
+        
+    if J12_desc: prompt += f"Character style: {J12_desc}. "
+        
+    if G9 not in ["Feminine / Female", "Female", "Feminine"] and J14_desc:
+        prompt += f"Grooming: {J14_desc}. "
+        
+    if J19_desc: prompt += f"Hair Texture: {J19_desc}. "
+        
+    prompt += "Skin: standard. " 
+        
+    if not is_arc_active and G17_desc:
+        prompt += f"[CINEMATIC PROSTHETIC STUDY: Apply {G17_desc} SFX as a makeup layer]. "
+        
+    if J17_desc: prompt += f"Finish: {J17_desc}. "
+        
+    prompt += "Technical Baseline: "
+    if G22_desc: prompt += f"Lighting: {G22_desc}, "
+    if G24_desc: prompt += f"Lens: {G24_desc}, "
+    
+    size = draft.get('size', '')
+    if size and size != "None": prompt += f"Frame: {size}, "
+    
+    if is_arc_active:
+        prompt += "CRITICAL: Underlying facial identity MUST remain 100% identical. Apply changes solely to skin aging/healing. "
+        
+        # ترجمه و تزریق زبان علمی برای موتور هوشمند
+        if age_prog_key != "None":
+            # Just putting the key text as description if it exists
+            prompt += f"Age Progression Arc: [{age_prog_key}]. "
+            prompt += "SCIENTIFIC AGING LOGIC: Systematically apply [Epidermal thinning, Bone density loss, Solar lentigines, Dermal ptosis]. "
+        elif sfx_prog_key != "None":
+            prompt += f"SFX Trauma Healing Arc: Base is {G17_desc}. "
+            prompt += "SCIENTIFIC TRAUMA LOGIC: Apply Color Shift (from wet arterial crimson to dark oxidized scabbing) and Material Transformation (from fresh exudate to rigid fibrous scar tissue). "
+            
+        prompt += "Add a visible progress line. Typography labels under each panel: 'Initial' -> 'Spread' -> 'Damage' -> 'Final'. "
+    else:
+        prompt += "beautifully framed composition, subsurface scattering, no-retouch. "
+        if J7: prompt += f" Typography overlay: clearly written text '{J7}' at the bottom margin. "
+
+    prompt += "8k, cinematic raw photography, subsurface scattering, focus on prosthetic makeup accuracy."
+
+    return " ".join(prompt.split())
 
 # ==========================================
 # 5. موتور استایل (CSS Engine)
