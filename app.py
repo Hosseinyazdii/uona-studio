@@ -116,31 +116,32 @@ def prev_step(): st.session_state.step -= 1; st.rerun()
 # ==========================================
 # 4. موتور پارسر هوشمند (AI Narrative Parser)
 # ==========================================
-def ai_narrative_parser(text):
+def ai_narrative_parser(text, default_stages):
     text = text.lower()
     extracted_data = []
     
-    stages = 4
-    if "2 stage" in text or "two" in text or "2" in text: stages = 2
-    elif "3 stage" in text or "three" in text or "3" in text: stages = 3
-    elif "5 stage" in text or "five" in text or "5" in text: stages = 5
+    # 🔴 FIX: اگر در متن عددی نبود، از همان عدد منوی UI (default_stages) استفاده می‌کند
+    stages = default_stages
+    if "2" in text or "two" in text or "۲" in text: stages = 2
+    elif "3" in text or "three" in text or "۳" in text: stages = 3
+    elif "5" in text or "five" in text or "۵" in text: stages = 5
 
-    # بررسی تطابق با دیتابیس سیستم
-    if "acid" in text or "chemical" in text or "اسید" in text:
+    # 🔴 FIX: اضافه شدن کلمات فینگلیش برای تشخیص دقیق
+    if "acid" in text or "chemical" in text or "اسید" in text or "asid" in text:
         extracted_data.append(("SFX ARC [Chemical Burns]", SFX_STAGES["Chemical Burns (Acid-Type Simulation)"]))
-    elif "burn" in text or "fire" in text or "سوختگی" in text or "آتش" in text:
+    elif "burn" in text or "fire" in text or "سوختگی" in text or "آتش" in text or "sukhtegi" in text or "atash" in text:
         extracted_data.append(("SFX ARC [First & Second Degree Burns]", SFX_STAGES["First & Second Degree Burns"]))
-    elif "bruise" in text or "punch" in text or "کبودی" in text or "مشت" in text:
+    elif "bruise" in text or "punch" in text or "کبودی" in text or "مشت" in text or "kabudi" in text or "mosht" in text:
         extracted_data.append(("SFX ARC [Bruises]", SFX_STAGES["Bruises"]))
-    elif "sword" in text or "slash" in text or "cut" in text or "شمشیر" in text or "زخم" in text:
+    elif "sword" in text or "slash" in text or "cut" in text or "شمشیر" in text or "زخم" in text or "zakhm" in text:
         extracted_data.append(("SFX ARC [Abrasions]", SFX_STAGES["Abrasions"]))
 
-    if "age" in text or "old" in text or "years" in text or "پیر" in text or "سن" in text:
+    if "age" in text or "old" in text or "years" in text or "پیر" in text or "سن" in text or "pir" in text or "sen" in text:
         extracted_data.append(("AGING ARC [Volume & Sagging]", AGING_STAGES["Volume & Sagging"]))
 
-    if "vitiligo" in text or "پیسی" in text:
+    if "vitiligo" in text or "پیسی" in text or "pisi" in text:
         extracted_data.append(("PIGMENTATION ARC [Vitiligo]", PIGMENT_STAGES["Vitiligo"]))
-    elif "freckle" in text or "کک" in text or "مک" in text:
+    elif "freckle" in text or "کک" in text or "مک" in text or "kak" in text or "mak" in text:
         extracted_data.append(("PIGMENTATION ARC [Freckles]", PIGMENT_STAGES["Freckles"]))
         
     return stages, extracted_data
@@ -168,12 +169,16 @@ def generate_prompt(draft):
     scenario = draft.get('scenario_text', '').strip()
     is_ui_active = (draft.get('arc_aging', 'None') != "None") or (draft.get('arc_sfx', 'None') != "None") or (draft.get('arc_pigment', 'None') != "None")
     
+    ui_stages = draft.get('arc_stages', 4) # دریافت تعداد مراحل از منوی رابط کاربری
+    
     if scenario:
-        parsed_stages, extracted_db = ai_narrative_parser(scenario)
+        # ارسال ui_stages به عنوان پیش‌فرض به پارسر
+        parsed_stages, extracted_db = ai_narrative_parser(scenario, ui_stages)
+        
         if extracted_db:
             dynamic_stage = f"[HORIZONTAL SEQUENCE ARC. {parsed_stages} stages separated by 1px white line. "
             for arc_title, arc_details in extracted_db:
-                # 🔴 FIX: Array slice to match exact stages
+                # برش دقیق دیتابیس به تعداد مراحل خروجی
                 sliced_details = arc_details[:parsed_stages] if len(arc_details) >= parsed_stages else arc_details
                 dynamic_stage += f"SYSTEM APPLIED {arc_title}: " + ", ".join([f"Stage {i+1} ({d})" for i, d in enumerate(sliced_details)]) + ". "
             dynamic_stage += "CRITICAL: Underlying facial identity MUST remain 100% identical across all panels.]"
@@ -181,10 +186,9 @@ def generate_prompt(draft):
             dynamic_stage = f"[HORIZONTAL SEQUENCE ARC. {parsed_stages} stages separated by 1px white line. NARRATIVE TRANSFORMATION: '{scenario}'. Extract biological aging, SFX evolution, and grooming dynamically based on this narrative. CRITICAL: Underlying facial identity MUST remain 100% identical across all panels.]"
             
     elif is_ui_active:
-        stages_count = draft.get('arc_stages', 4)
+        stages_count = ui_stages
         dynamic_stage = f"[HORIZONTAL SEQUENCE ARC. {stages_count} stages separated by 1px white line. "
         
-        # 🔴 FIX: Array slice to match exact stages from UI dropdowns
         if draft.get('arc_aging', 'None') != "None":
             aging_arr = AGING_STAGES.get(draft.get('arc_aging'), [])
             sliced = aging_arr[:stages_count] if aging_arr else []
