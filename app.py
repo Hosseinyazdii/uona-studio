@@ -123,13 +123,11 @@ def ai_narrative_parser(text):
     text = text.lower()
     extracted_data = []
     
-    # 1. Stage Detection
     stages = 4
     if "2 stage" in text or "two stage" in text or "2 marhale" in text: stages = 2
     elif "3 stage" in text or "three stage" in text or "3 marhale" in text: stages = 3
     elif "5 stage" in text or "five stage" in text or "5 marhale" in text: stages = 5
 
-    # 2. SFX / Trauma Automation
     if "acid" in text or "chemical" in text or "asid" in text:
         extracted_data.append(("SFX ARC [Chemical Burns]", SFX_STAGES["Chemical Burns (Acid-Type Simulation)"]))
     elif "burn" in text or "fire" in text or "sukhtegi" in text or "atash" in text:
@@ -139,12 +137,10 @@ def ai_narrative_parser(text):
     elif "sword" in text or "slash" in text or "cut" in text or "shamshir" in text or "zakhm" in text:
         extracted_data.append(("SFX ARC [Abrasions/Contusions]", SFX_STAGES["Abrasions"]))
 
-    # 3. Aging Automation
     if "age" in text or "old" in text or "years" in text or "pir" in text or "sen" in text:
         extracted_data.append(("AGING ARC [Volume & Sagging]", AGING_STAGES["Volume & Sagging"]))
         extracted_data.append(("AGING ARC [Skin Texture]", AGING_STAGES["Skin Texture & Pigmentation"]))
 
-    # 4. Pigmentation Automation
     if "vitiligo" in text or "pisi" in text:
         extracted_data.append(("PIGMENTATION ARC [Vitiligo]", PIGMENT_STAGES["Vitiligo"]))
     elif "freckle" in text or "kaj" in text or "mak" in text:
@@ -172,7 +168,7 @@ def generate_prompt(draft):
     scenario = draft.get('scenario_text', '').strip()
     is_ui_arc_active = (draft.get('arc_aging', 'None') != "None") or (draft.get('arc_sfx', 'None') != "None") or (draft.get('arc_pigment', 'None') != "None")
     
-    # ⚡ CRITICAL OVERRIDE RULE CHECK ⚡
+    # اینجا همون قانون Override که میخواستی به صورت نامرئی اعمال میشه
     if scenario:
         parsed_stages, extracted_db = ai_narrative_parser(scenario)
         progression = f"\n🔥 [CRITICAL OVERRIDE: NARRATIVE PARSER ACTIVE] 🔥\n"
@@ -192,7 +188,6 @@ def generate_prompt(draft):
         progression += "\nCRITICAL: Underlying facial identity MUST remain 100% identical across all panels. UI visualizing results only."
         
     elif is_ui_arc_active:
-        # حالت عادی اگر متنی نوشته نشده باشه (Static UI Mode)
         progression = f"HORIZONTAL SEQUENCE ARC. {draft.get('arc_stages', 4)} stages divided by 1px separators. "
         if draft.get('arc_aging', 'None') != "None":
             progression += f"SCIENTIFIC AGING LOGIC ({draft.get('arc_aging')} | Stage: {draft.get('arc_aging_stage')}): Implement progressive biological transformation. "
@@ -202,7 +197,6 @@ def generate_prompt(draft):
             progression += f"PIGMENTATION ARC ({draft.get('arc_pigment')} | Stage: {draft.get('arc_pigment_stage')}): Apply progressive textural and dermal shift. "
         progression += f"CRITICAL: Underlying facial identity MUST remain 100% identical across all panels. "
     else:
-        # حالت تک فریم (Single Shot)
         progression += "Single Shot Portrait. "
         if draft.get('sfx') != "None":
             base_sfx_desc = SFX_DESC.get(draft.get('sfx'), draft.get('sfx'))
@@ -424,6 +418,7 @@ elif st.session_state.route == 'builder':
             <div style='position:absolute; top: 10px; left: 15px; display: flex; flex-direction: column; gap: 5px;'>
                 <span style='color:#00f2ff; font-size:0.65rem; background: rgba(0,0,0,0.6); padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(0,242,255,0.3);'>🟢 Identity Engine Active</span>
                 <span style='color:#00f2ff; font-size:0.65rem; background: rgba(0,0,0,0.6); padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(0,242,255,0.3);'>🔒 Biometric Continuity Locked</span>
+                <span style='color:#00f2ff; font-size:0.65rem; background: rgba(0,0,0,0.6); padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(0,242,255,0.3);'>⚡ Material Simulation Running</span>
             </div>
             """, unsafe_allow_html=True)
 
@@ -449,7 +444,7 @@ elif st.session_state.route == 'builder':
             if c_btn2.button("NEXT: REVIEW ➔", use_container_width=True): next_step()
             st.markdown('</div>', unsafe_allow_html=True)
 
-        # 3. پنل راست: دیتابیس‌های تخصصی + ⚡ AI NARRATIVE OVERRIDE ⚡
+        # 3. پنل راست: دیتابیس‌های تخصصی
         with c_right:
             st.markdown('<div class="glass-panel" style="padding: 20px; height: 100%; overflow-y: auto;">', unsafe_allow_html=True)
             st.markdown("<h4 style='color:#ffaa00; font-family:Cinzel;'>⚙️ TRANSFORMATION ENGINE</h4>", unsafe_allow_html=True)
@@ -462,64 +457,61 @@ elif st.session_state.route == 'builder':
                     <p style='color: #888; font-size: 0.7rem;'>Arc Modules require Apex tier.</p>
                 </div>
                 """, unsafe_allow_html=True)
-                d['arc_stages'] = 4; d['arc_aging'] = "None"; d['arc_sfx'] = "None"; d['arc_pigment'] = "None"; d['scenario_text'] = ""
+                d['arc_stages'] = 4
+                d['arc_aging'] = "None"; d['arc_sfx'] = "None"; d['arc_pigment'] = "None"; d['bio_fatigue'] = False; d['bio_lips'] = False; d['scenario_text'] = ""
             else:
-                # Narrative AI Input
-                st.markdown("<p style='color:#ff00aa; font-weight:bold; font-size:0.75rem; text-transform:uppercase;'>🧠 Narrative AI Parser</p>", unsafe_allow_html=True)
-                d['scenario_text'] = st.text_area("CRITICAL OVERRIDE RULE", value=d.get('scenario_text', ''), placeholder="Describe transformation. (Overrides all dropdowns below)", height=80)
+                d['arc_stages'] = st.slider("NUMBER OF STAGES", 2, 5, d.get('arc_stages', 4))
                 
-                # بررسی اینکه آیا کاربر چیزی تایپ کرده یا نه
-                is_override_active = len(d['scenario_text'].strip()) > 0
+                with st.expander("A. AGING ENGINE", expanded=True):
+                    d['arc_aging'] = st.selectbox("Aging Categories", ["None", "Wrinkles", "Volume & Sagging", "Skin Texture & Pigmentation", "Hair & Brows"])
+                    if d['arc_aging'] != "None":
+                        aging_stages = AGING_STAGES.get(d['arc_aging'], ["Stage 1", "Stage 2", "Stage 3", "Stage 4"])
+                        d['arc_aging_stage'] = st.selectbox("Select Stage", ["All Stages (Progression Arc)"] + aging_stages)
                 
-                if is_override_active:
-                    st.markdown("""
-                    <div style='margin-top: -10px; margin-bottom: 20px; padding: 12px; background: rgba(255, 0, 170, 0.1); border-left: 3px solid #ff00aa; border-radius: 0 4px 4px 0;'>
-                        <b style='color: #ff00aa; font-size: 0.75rem; font-family: Montserrat;'>⚡ NARRATIVE ENGINE ACTIVE</b><br>
-                        <span style='color: #aaa; font-size: 0.65rem;'>Manual selections are bypassed. The AI will auto-extract stages, aging, and SFX directly from the V2.0 Database based on your text.</span>
-                    </div>
-                    """, unsafe_allow_html=True)
-                
-                # اگر Override فعال باشه، منوها رو نشون میدیم ولی با یک افکت خاموش (Disabled visual logic)
-                with st.expander("A. STATIC AGING ENGINE", expanded=not is_override_active):
-                    d['arc_stages'] = st.slider("NUMBER OF STAGES", 2, 5, d.get('arc_stages', 4), disabled=is_override_active)
-                    d['arc_aging'] = st.selectbox("Aging Categories", ["None", "Wrinkles", "Volume & Sagging", "Skin Texture & Pigmentation", "Hair & Brows"], disabled=is_override_active)
-                    if d['arc_aging'] != "None" and not is_override_active:
-                        d['arc_aging_stage'] = st.selectbox("Select Stage", ["All Stages (Progression Arc)"] + AGING_STAGES.get(d['arc_aging'], []))
-                
-                with st.expander("B. STATIC SFX & TRAUMA ENGINE", expanded=not is_override_active):
+                with st.expander("B. SFX & TRAUMA ENGINE", expanded=True):
                     if is_under_22:
                         st.markdown("<div style='padding: 5px; border-left: 3px solid red; color: #aaa; font-size: 0.7rem;'>🔒 SFX Locked (Age Constraint)</div>", unsafe_allow_html=True)
                         d['arc_sfx'] = "None"
                     else:
-                        d['arc_sfx'] = st.selectbox("Trauma Simulation", ["None", "Bruises", "Contusions", "Abrasions", "First & Second Degree Burns", "Chemical Burns (Acid-Type Simulation)", "Keloids (Fibrotic Overgrowth)"], disabled=is_override_active)
-                        if d['arc_sfx'] != "None" and not is_override_active:
-                            d['arc_sfx_stage'] = st.selectbox("Select Stage", ["All Stages (Progression Arc)"] + SFX_STAGES.get(d['arc_sfx'], []))
+                        sfx_v2_opts = ["None", "Bruises", "Contusions", "Abrasions", "First & Second Degree Burns", "Chemical Burns (Acid-Type Simulation)", "Keloids (Fibrotic Overgrowth)"]
+                        d['arc_sfx'] = st.selectbox("Trauma Simulation", sfx_v2_opts)
+                        if d['arc_sfx'] != "None":
+                            sfx_stages = SFX_STAGES.get(d['arc_sfx'], ["Stage 1", "Stage 2", "Stage 3", "Stage 4"])
+                            d['arc_sfx_stage'] = st.selectbox("Select Stage", ["All Stages (Progression Arc)"] + sfx_stages)
                         
-                with st.expander("C. STATIC PIGMENTATION ARC", expanded=not is_override_active):
-                    d['arc_pigment'] = st.selectbox("Skin Pigmentation", ["None", "Vitiligo", "Melasma & Hyperpigmentation", "Freckles"], disabled=is_override_active)
-                    if d['arc_pigment'] != "None" and not is_override_active:
-                        d['arc_pigment_stage'] = st.selectbox("Select Stage", ["All Stages (Progression Arc)"] + PIGMENT_STAGES.get(d['arc_pigment'], []))
+                with st.expander("C. PIGMENTATION ARC", expanded=True):
+                    pigment_opts = ["None", "Vitiligo", "Melasma & Hyperpigmentation", "Freckles"]
+                    d['arc_pigment'] = st.selectbox("Skin Pigmentation", pigment_opts)
+                    if d['arc_pigment'] != "None":
+                        pig_stages = PIGMENT_STAGES.get(d['arc_pigment'], ["Stage 1", "Stage 2", "Stage 3", "Stage 4"])
+                        d['arc_pigment_stage'] = st.selectbox("Select Stage", ["All Stages (Progression Arc)"] + pig_stages)
+                    
+                with st.expander("D. BIOLOGICAL DETAILS", expanded=False):
+                    d['bio_fatigue'] = st.checkbox("Fatigue & Sallow Skin", value=d.get('bio_fatigue', False))
+                    d['bio_lips'] = st.checkbox("Lips Volume Loss", value=d.get('bio_lips', False))
+                
+                # قانون Critical Override فقط روی متن کار می‌کنه بدون تغییر در ظاهر فرم
+                d['scenario_text'] = st.text_area("NARRATIVE", value=d.get('scenario_text', ''), placeholder="e.g. A 40-year-old man with a deep wound, aging to 80...")
 
-            if st.session_state.plan != "UONA Core":
-                if is_override_active: f_text, f_color = "⚡ Override Active (AI Managed)", "#ff00aa"
-                elif is_female or is_under_22: f_text, f_color = "🔒 Constraints Safely Enforced", "#00f2ff"
-                elif d['arc_sfx'] != "None" and d['arc_aging'] != "None": f_text, f_color = "⚠️ Arc Conflict Detected", "#ffaa00"
-                else: f_text, f_color = "✅ Continuity Preserved", "#00ffaa"
-                st.markdown(f"<div style='margin-top: 15px; padding: 10px; border-left: 3px solid {f_color}; color: {f_color}; font-size: 0.7rem;'>{f_text}</div>", unsafe_allow_html=True)
-            
+            if is_female or is_under_22: 
+                f_text = "🔒 Constraints Safely Enforced"
+                f_color = "#00f2ff"
+            elif d['arc_sfx'] != "None" and d['arc_aging'] != "None":
+                f_text = "⚠️ Arc Conflict Detected"
+                f_color = "#ffaa00"
+            else: 
+                f_text = "✅ Continuity Preserved"
+                f_color = "#00ffaa"
+                
+            st.markdown(f"<div style='margin-top: 15px; padding: 10px; border-left: 3px solid {f_color}; color: {f_color}; font-size: 0.7rem;'>{f_text}</div>", unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
 
     # --- Phase 3: REVIEW ---
     elif st.session_state.step == 3:
         st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
         st.markdown("<h3 style='color:#00f2ff; font-family:Cinzel;'>Phase 3: Logic Engine Output</h3>", unsafe_allow_html=True)
-        
         final_prompt = generate_prompt(d)
-        
-        if d.get('scenario_text', '').strip():
-            st.markdown("<div style='margin-bottom: 15px; padding: 15px; background: rgba(255, 0, 170, 0.1); border: 1px solid #ff00aa; border-radius: 8px;'><h4 style='color:#ff00aa; font-family:Cinzel; margin:0;'>🧠 AI NARRATIVE INJECTION SUCCESSFUL</h4><p style='color:#ccc; font-size:0.8rem; margin:5px 0 0 0;'>The parser extracted library items and bypassed manual UI selections.</p></div>", unsafe_allow_html=True)
-            
-        st.code(final_prompt, language="markdown")
+        st.info(final_prompt)
         
         st.markdown("<br>", unsafe_allow_html=True)
         c_btn1, c_btn2 = st.columns(2)
