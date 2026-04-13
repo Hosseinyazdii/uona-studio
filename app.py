@@ -52,7 +52,7 @@ def add_bg_from_local(image_file):
     )
 
 # ==========================================
-# 2. دیتابیس مگا پرامپت
+# 2. دیتابیس مگا پرامپت (به‌روز شده با V2.0)
 # ==========================================
 GENDER_LIST = ["Masculine / Male", "Feminine / Female", "Androgynous"]
 AGE_LIST = ["Child / Pre-adolescent", "Adolescent / Teenager", "Young Adult (Early 20s)", "Middle-aged (Late 40s)", "Elderly / Senior", "Ancient / Centenarian"]
@@ -68,6 +68,29 @@ LIGHT_DESC = {"Rembrandt Lighting": "Classic cinematic light", "Chiaroscuro Ligh
 CAM_DESC = {"85 mm Lens, Eye-Level Shot": "Classic portrait lens", "100 mm Macro Lens, Extreme Close-Up": "Macro lens for extreme detail", "50 mm Lens, Dutch Angle": "Normal lens with tilted angle", "35 mm Lens, Low-Angle (Hero Shot)": "Slightly wide, heroic angle", "24 mm Wide-Angle, High-Angle": "Wide-angle from a high angle"}
 SIZE_LIST = ["Aspect Ratio 16:9 (Widescreen)", "Aspect Ratio 4:5 (Portrait/Vertical)", "Aspect Ratio 5:4 (Portrait)", "Aspect Ratio 2.39:1 (Anamorphic / Cinemascope)", "Aspect Ratio 1:1 (Square)"]
 MAT_DESC = {"None": "", "Matte Sealer": "Non-reflective surface, velvety skin texture", "Prosthetic Adhesive": "Texture of professional bonding", "Encapsulated Silicone": "Realistic skin-like translucency"}
+
+# --- V2.0 Dynamic Stage Libraries ---
+AGING_STAGES = {
+    "Wrinkles": ["Stage 1 (Age 30–40) – Dynamic Lines", "Stage 2 (Age 45–55) – Fixed Lines", "Stage 3 (Age 60–75) – Deep Creases", "Stage 4 (Age 85+) – Advanced Rhytids"],
+    "Volume & Sagging": ["Stage 1 (Age 30–40) – Youthful Volume", "Stage 2 (Age 45–55) – Early Sagging", "Stage 3 (Age 60–75) – Structural Shift", "Stage 4 (Age 85+) – Facial Atrophy"],
+    "Skin Texture & Pigmentation": ["Stage 1 (Age 30–40) – Uniform Tone", "Stage 2 (Age 45–55) – Textural Change", "Stage 3 (Age 60–75) – Pigment Shift", "Stage 4 (Age 85+) – Senile Texture"],
+    "Hair & Brows": ["Stage 1 - Initial Graying", "Stage 2 - Moderate Graying", "Stage 3 - Significant Graying", "Stage 4 - Full White/Thinning"]
+}
+
+SFX_STAGES = {
+    "Bruises": ["Stage 1 – Initial (Fresh Trauma)", "Stage 2 – Spread (Hematoma Stage)", "Stage 3 – Mid (Oxidation)", "Stage 4 – Final (Resolution)"],
+    "Contusions": ["Stage 1 – Initial (Impact Point)", "Stage 2 – Spread (Active Edema)", "Stage 3 – Mid (Tissue Shift)", "Stage 4 – Final (Leveling)"],
+    "Abrasions": ["Stage 1 – Initial (Friction Marks)", "Stage 2 – Spread (Coagulation)", "Stage 3 – Mid (Scab Development)", "Stage 4 – Final (New Skin)"],
+    "First & Second Degree Burns": ["Stage 1 – Initial (Flash Burn)", "Stage 2 – Spread (Vesiculation)", "Stage 3 – Mid (Exudate Stage)", "Stage 4 – Final (Desquamation)"],
+    "Chemical Burns (Acid-Type Simulation)": ["Stage 1 – Initial (Chemical Reaction)", "Stage 2 – Spread (Deep Corrosion)", "Stage 3 – Mid (Eschar Stage)", "Stage 4 – Final (Atrophic Scar)"],
+    "Keloids (Fibrotic Overgrowth)": ["Stage 1 – Initial (Early Fibrosis)", "Stage 2 – Spread (Hypertrophic Growth)", "Stage 3 – Mid (Mature Keloid)", "Stage 4 – Final (Aging Keloid)"]
+}
+
+PIGMENT_STAGES = {
+    "Vitiligo": ["Stage 1 – Initial: Small, symmetrical spots", "Stage 2 – Expansion: Larger map-like patches", "Stage 3 – Bilateral Spread: Widespread loss", "Stage 4 – Final / Integrated: Mostly depigmented"],
+    "Melasma & Hyperpigmentation": ["Stage 1 – Initial: Light tan patches", "Stage 2 – Diffuse Spread: Darker brown, uneven", "Stage 3 – Deep Pigmentation: Dense areas", "Stage 4 – Chronic State: Mask-like pattern"],
+    "Freckles": ["Stage 1 – Sparse: Light distribution", "Stage 2 – Dense: Increased concentration", "Stage 3 – Heavy: Merging freckles", "Stage 4 – Full Coverage: Extensive mottled appearance"]
+}
 
 # ==========================================
 # 3. مدیریت وضعیت (State Machine)
@@ -85,6 +108,7 @@ if 'draft' not in st.session_state:
         "h_tex": "Straight (Sleek)", "h_col": "Jet black / Natural black", "mat": "None", "sfx": "None",
         "cam": list(CAM_DESC.keys())[0], "light": list(LIGHT_DESC.keys())[0], "size": SIZE_LIST[0],
         "scenario_text": "", "arc_stages": 4, "arc_aging": "None", "arc_sfx": "None", "arc_pigment": "None",
+        "arc_aging_stage": "All Stages (Progression Arc)", "arc_sfx_stage": "All Stages (Progression Arc)", "arc_pigment_stage": "All Stages (Progression Arc)",
         "bio_fatigue": False, "bio_lips": False
     }
 
@@ -112,15 +136,19 @@ def generate_prompt(draft):
     is_arc_active = (draft.get('arc_aging', 'None') != "None") or (draft.get('arc_sfx', 'None') != "None") or (draft.get('arc_pigment', 'None') != "None")
     
     if is_arc_active:
-        progression = f"HORIZONTAL SEQUENCE ARC. {draft.get('arc_stages', 4)} stages divided by 1px separators. Scenario Context: [{draft.get('scenario_text', '')}]. "
+        if draft.get('scenario_text', '').strip() != "":
+            progression = f"NARRATIVE OVERRIDE ACTIVE. Scenario Context: [{draft.get('scenario_text', '')}]. "
+        else:
+            progression = f"HORIZONTAL SEQUENCE ARC. {draft.get('arc_stages', 4)} stages divided by 1px separators. "
+            
         if draft.get('arc_aging', 'None') != "None":
-            progression += f"SCIENTIFIC AGING LOGIC ({draft.get('arc_aging')}): Implement progressive biological transformation across stages. "
+            progression += f"SCIENTIFIC AGING LOGIC ({draft.get('arc_aging')} | Stage: {draft.get('arc_aging_stage')}): Implement progressive biological transformation. "
         if draft.get('arc_sfx', 'None') != "None":
-            progression += f"SFX TRAUMA ARC ({draft.get('arc_sfx')}): Apply chronological color shift and material transformation. "
+            progression += f"SFX TRAUMA ARC ({draft.get('arc_sfx')} | Stage: {draft.get('arc_sfx_stage')}): Apply chronological color shift and material transformation. "
         if draft.get('arc_pigment', 'None') != "None":
-            progression += f"PIGMENTATION ARC ({draft.get('arc_pigment')}): Apply progressive textural and dermal shift. "
+            progression += f"PIGMENTATION ARC ({draft.get('arc_pigment')} | Stage: {draft.get('arc_pigment_stage')}): Apply progressive textural and dermal shift. "
         
-        progression += f"PROGRESSION LABELS: Typography labels under each panel ('Initial' -> 'Spread' -> 'Damage' -> 'Final'). PROGRESS LINE ACTIVE. CRITICAL: Underlying facial identity MUST remain 100% identical across all panels. "
+        progression += f"CRITICAL: Underlying facial identity MUST remain 100% identical across all panels. "
     else:
         progression += "Single Shot Portrait. "
         if draft.get('sfx') != "None":
@@ -318,7 +346,7 @@ elif st.session_state.route == 'builder':
         if st.button("NEXT: ARC CONFIGURATION ➔", use_container_width=True): next_step()
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # --- Phase 2: ARC CONFIG (آپدیت شده دقیقاً بر اساس دیتابیس V2.0) ---
+    # --- Phase 2: ARC CONFIG (آپدیت شده فقط در پنل راست) ---
     elif st.session_state.step == 2:
         age_val = d.get('age', AGE_LIST[2])
         is_under_22 = AGE_LIST.index(age_val) < 2 if age_val in AGE_LIST else False
@@ -334,7 +362,7 @@ elif st.session_state.route == 'builder':
             st.markdown("<div style='padding: 10px; background: rgba(0,242,255,0.1); border-left: 3px solid #00f2ff; color: #00f2ff; font-size: 0.75rem;'>🔒 Identity Locked.<br>Base parameters are preserved for continuous execution.</div>", unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
 
-        # 2. پنل وسط: پیش‌نمایش و Overlays جدید V2.0
+        # 2. پنل وسط: پیش‌نمایش
         with c_center:
             st.markdown('<div class="glass-panel" style="padding: 20px; height: 100%; display: flex; flex-direction: column;">', unsafe_allow_html=True)
             st.markdown("<div style='flex-grow: 1; border: 1px solid rgba(0,242,255,0.3); border-radius: 10px; background: #02060c; position:relative; overflow: hidden; display:flex; justify-content:center; align-items:center; min-height: 350px;'>", unsafe_allow_html=True)
@@ -369,7 +397,7 @@ elif st.session_state.route == 'builder':
             if c_btn2.button("NEXT: REVIEW ➔", use_container_width=True): next_step()
             st.markdown('</div>', unsafe_allow_html=True)
 
-        # 3. پنل راست: دیتابیس‌های تخصصی Arc بر اساس V2.0
+        # 3. پنل راست: دیتابیس‌های تخصصی Arc با Stage Selector اختصاصی
         with c_right:
             st.markdown('<div class="glass-panel" style="padding: 20px; height: 100%; overflow-y: auto;">', unsafe_allow_html=True)
             st.markdown("<h4 style='color:#ffaa00; font-family:Cinzel;'>⚙️ TRANSFORMATION ENGINE</h4>", unsafe_allow_html=True)
@@ -388,7 +416,10 @@ elif st.session_state.route == 'builder':
                 d['arc_stages'] = st.slider("NUMBER OF STAGES", 2, 5, d.get('arc_stages', 4))
                 
                 with st.expander("A. AGING ENGINE", expanded=True):
-                    d['arc_aging'] = st.selectbox("Aging Arc Categories", ["None", "Wrinkles", "Volume & Sagging", "Skin Texture & Pigmentation", "Hair & Brows"])
+                    d['arc_aging'] = st.selectbox("Aging Categories", ["None", "Wrinkles", "Volume & Sagging", "Skin Texture & Pigmentation", "Hair & Brows"])
+                    if d['arc_aging'] != "None":
+                        aging_stages = AGING_STAGES.get(d['arc_aging'], ["Stage 1", "Stage 2", "Stage 3", "Stage 4"])
+                        d['arc_aging_stage'] = st.selectbox("Select Stage", ["All Stages (Progression Arc)"] + aging_stages)
                 
                 with st.expander("B. SFX & TRAUMA ENGINE", expanded=True):
                     if is_under_22:
@@ -397,16 +428,23 @@ elif st.session_state.route == 'builder':
                     else:
                         sfx_v2_opts = ["None", "Bruises", "Contusions", "Abrasions", "First & Second Degree Burns", "Chemical Burns (Acid-Type Simulation)", "Keloids (Fibrotic Overgrowth)"]
                         d['arc_sfx'] = st.selectbox("Trauma Simulation", sfx_v2_opts)
+                        if d['arc_sfx'] != "None":
+                            sfx_stages = SFX_STAGES.get(d['arc_sfx'], ["Stage 1", "Stage 2", "Stage 3", "Stage 4"])
+                            d['arc_sfx_stage'] = st.selectbox("Select Stage", ["All Stages (Progression Arc)"] + sfx_stages)
                         
                 with st.expander("C. PIGMENTATION ARC", expanded=True):
                     pigment_opts = ["None", "Vitiligo", "Melasma & Hyperpigmentation", "Freckles"]
                     d['arc_pigment'] = st.selectbox("Skin Pigmentation", pigment_opts)
+                    if d['arc_pigment'] != "None":
+                        pig_stages = PIGMENT_STAGES.get(d['arc_pigment'], ["Stage 1", "Stage 2", "Stage 3", "Stage 4"])
+                        d['arc_pigment_stage'] = st.selectbox("Select Stage", ["All Stages (Progression Arc)"] + pig_stages)
                     
                 with st.expander("D. BIOLOGICAL DETAILS", expanded=False):
                     d['bio_fatigue'] = st.checkbox("Fatigue & Sallow Skin", value=d.get('bio_fatigue', False))
                     d['bio_lips'] = st.checkbox("Lips Volume Loss", value=d.get('bio_lips', False))
                 
-                d['scenario_text'] = st.text_area("NARRATIVE (OPTIONAL)", value=d.get('scenario_text', ''), placeholder="e.g. A 40-year-old man with a deep wound, aging to 80...")
+                st.markdown("<p style='color:#00f2ff; font-size: 0.7rem; text-transform:uppercase;'>Narrative AI Parser Override</p>", unsafe_allow_html=True)
+                d['scenario_text'] = st.text_area("NARRATIVE", value=d.get('scenario_text', ''), placeholder="e.g. A 40-year-old man with a deep wound, aging to 80...")
 
             if is_female or is_under_22: 
                 f_text = "🔒 Constraints Safely Enforced"
