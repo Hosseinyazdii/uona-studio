@@ -549,23 +549,41 @@ elif st.session_state.route == 'builder':
             d['h_col'] = st.selectbox("HAIR & BEARD COLOR", list(HAIR_COLORS.keys()), index=list(HAIR_COLORS.keys()).index(d.get('h_col', list(HAIR_COLORS.keys())[0])) if d.get('h_col') in HAIR_COLORS else 0)
 
         with st.expander("B. ADVANCED MODULES (ARC)", expanded=True):
-            d['arc_aging'] = st.selectbox("AGING ENGINE", ["None", "Wrinkles", "Volume & Sagging", "Skin Texture & Pigmentation", "Hair & Brows"], index=0)
-            
-            # Age < 22 SFX Constraint Logic
-            if is_under_22:
-                st.markdown("<div style='margin: 10px 0; padding: 8px; background: rgba(255, 0, 0, 0.1); border-left: 3px solid red; color: #aaa; font-family: Montserrat; font-size: 0.75rem;'>🔒 SFX Locked (Age Constraint: ≥ 22)</div>", unsafe_allow_html=True)
-                d['arc_sfx'] = "None"
-            else:
-                sfx_opts = ["None"] + list(SFX_DESC.keys())
-                d['arc_sfx'] = st.selectbox("SFX & TRAUMA ENGINE", sfx_opts, index=0)
+            # 🔴 فیکس مهم: بستن دسترسی اکانت‌های Core به ماژول‌های Arc 🔴
+            if st.session_state.plan == "UONA Core":
+                st.markdown("""
+                <div style='margin: 10px 0; padding: 15px; background: rgba(255, 170, 0, 0.05); border: 1px solid rgba(255, 170, 0, 0.3); border-radius: 8px; text-align: center;'>
+                    <span style='font-size: 2rem;'>🔒</span><br>
+                    <b style='color: #ffaa00; font-family: Montserrat; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;'>Premium Feature</b>
+                    <p style='color: #888; font-size: 0.7rem; margin-top: 5px;'>Arc Modules (Aging, SFX, Pigmentation) require an Apex or Master subscription.</p>
+                </div>
+                """, unsafe_allow_html=True)
                 
-            d['arc_pigment'] = st.selectbox("SKIN PIGMENTATION", ["None", "Vitiligo", "Melasma & Hyperpigmentation", "Freckles"], index=0)
-            
-            st.markdown("<p style='color:#00f2ff; font-size: 0.7rem; margin-top: 15px; text-transform:uppercase;'>Biological Detail Layers</p>", unsafe_allow_html=True)
-            d['bio_fatigue'] = st.checkbox("Fatigue & Illness", value=d.get('bio_fatigue', False))
-            d['bio_lips'] = st.checkbox("Lips Volume Loss", value=d.get('bio_lips', False))
-            
-            d['scenario_text'] = st.text_input("SCENARIO DESCRIPTION", value=d.get('scenario_text', ''), placeholder="e.g. A slash wound oxidizing over time...")
+                d['arc_aging'] = "None"
+                d['arc_sfx'] = "None"
+                d['arc_pigment'] = "None"
+                d['bio_fatigue'] = False
+                d['bio_lips'] = False
+                d['scenario_text'] = ""
+                
+            else:
+                d['arc_aging'] = st.selectbox("AGING ENGINE", ["None", "Wrinkles", "Volume & Sagging", "Skin Texture & Pigmentation", "Hair & Brows"], index=0)
+                
+                # Age < 22 SFX Constraint Logic
+                if is_under_22:
+                    st.markdown("<div style='margin: 10px 0; padding: 8px; background: rgba(255, 0, 0, 0.1); border-left: 3px solid red; color: #aaa; font-family: Montserrat; font-size: 0.75rem;'>🔒 SFX Locked (Age Constraint: ≥ 22)</div>", unsafe_allow_html=True)
+                    d['arc_sfx'] = "None"
+                else:
+                    sfx_opts = ["None"] + list(SFX_DESC.keys())
+                    d['arc_sfx'] = st.selectbox("SFX & TRAUMA ENGINE", sfx_opts, index=0)
+                    
+                d['arc_pigment'] = st.selectbox("SKIN PIGMENTATION", ["None", "Vitiligo", "Melasma & Hyperpigmentation", "Freckles"], index=0)
+                
+                st.markdown("<p style='color:#00f2ff; font-size: 0.7rem; margin-top: 15px; text-transform:uppercase;'>Biological Detail Layers</p>", unsafe_allow_html=True)
+                d['bio_fatigue'] = st.checkbox("Fatigue & Illness", value=d.get('bio_fatigue', False))
+                d['bio_lips'] = st.checkbox("Lips Volume Loss", value=d.get('bio_lips', False))
+                
+                d['scenario_text'] = st.text_input("SCENARIO DESCRIPTION", value=d.get('scenario_text', ''), placeholder="e.g. A slash wound oxidizing over time...")
 
         # System Feedback Bar
         if d['arc_sfx'] != "None" and d['arc_aging'] != "None":
