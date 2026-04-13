@@ -115,7 +115,6 @@ if 'draft' not in st.session_state:
 def go_to(route): st.session_state.route = route; st.rerun()
 def next_step(): st.session_state.step += 1; st.rerun()
 def prev_step(): st.session_state.step -= 1; st.rerun()
-
 # ==========================================
 # 4. موتور پارسر هوشمند (AI Narrative Parser)
 # ==========================================
@@ -124,93 +123,93 @@ def ai_narrative_parser(text):
     extracted_data = []
     
     stages = 4
-    if "2 stage" in text or "two stage" in text or "2 marhale" in text: stages = 2
-    elif "3 stage" in text or "three stage" in text or "3 marhale" in text: stages = 3
-    elif "5 stage" in text or "five stage" in text or "5 marhale" in text: stages = 5
+    if "2 stage" in text or "two" in text or "2" in text: stages = 2
+    elif "3 stage" in text or "three" in text or "3" in text: stages = 3
+    elif "5 stage" in text or "five" in text or "5" in text: stages = 5
 
-    if "acid" in text or "chemical" in text or "asid" in text:
+    # بررسی تطابق با دیتابیس سیستم
+    if "acid" in text or "chemical" in text or "اسید" in text:
         extracted_data.append(("SFX ARC [Chemical Burns]", SFX_STAGES["Chemical Burns (Acid-Type Simulation)"]))
-    elif "burn" in text or "fire" in text or "sukhtegi" in text or "atash" in text:
+    elif "burn" in text or "fire" in text or "سوختگی" in text or "آتش" in text:
         extracted_data.append(("SFX ARC [First & Second Degree Burns]", SFX_STAGES["First & Second Degree Burns"]))
-    elif "bruise" in text or "punch" in text or "kabudi" in text or "mosht" in text:
+    elif "bruise" in text or "punch" in text or "کبودی" in text or "مشت" in text:
         extracted_data.append(("SFX ARC [Bruises]", SFX_STAGES["Bruises"]))
-    elif "sword" in text or "slash" in text or "cut" in text or "shamshir" in text or "zakhm" in text:
-        extracted_data.append(("SFX ARC [Abrasions/Contusions]", SFX_STAGES["Abrasions"]))
+    elif "sword" in text or "slash" in text or "cut" in text or "شمشیر" in text or "زخم" in text:
+        extracted_data.append(("SFX ARC [Abrasions]", SFX_STAGES["Abrasions"]))
 
-    if "age" in text or "old" in text or "years" in text or "pir" in text or "sen" in text:
+    if "age" in text or "old" in text or "years" in text or "پیر" in text or "سن" in text:
         extracted_data.append(("AGING ARC [Volume & Sagging]", AGING_STAGES["Volume & Sagging"]))
-        extracted_data.append(("AGING ARC [Skin Texture]", AGING_STAGES["Skin Texture & Pigmentation"]))
 
-    if "vitiligo" in text or "pisi" in text:
+    if "vitiligo" in text or "پیسی" in text:
         extracted_data.append(("PIGMENTATION ARC [Vitiligo]", PIGMENT_STAGES["Vitiligo"]))
-    elif "freckle" in text or "kaj" in text or "mak" in text:
+    elif "freckle" in text or "کک" in text or "مک" in text:
         extracted_data.append(("PIGMENTATION ARC [Freckles]", PIGMENT_STAGES["Freckles"]))
         
     return stages, extracted_data
 
 # ==========================================
-# 5. موتور پردازش نهایی پرامپت (Core Override)
+# 5. موتور پردازش نهایی پرامپت (Strict Formula Mode)
 # ==========================================
 def generate_prompt(draft):
-    baseline = f"Uona Studio Signature (Scientific Makeup Design). [Fixed Technical: {draft.get('cam')}, {draft.get('light')}, {draft.get('size')}]. "
+    # بخش اول: [Uona_Signature]
+    uona_signature = "Uona Studio Signature (Scientific Makeup Design)."
     
-    act_str = "[VISUAL GUIDE: Use facial structure of attached subject] " if draft.get('actor') == "Yes" else ""
-    J9_desc = NAT_DESC.get(draft.get('nat'), "")
-    G12_desc = ERA_DESC.get(draft.get('era'), "")
-    identity = f"{act_str}Character Identity: {draft.get('gen')}, Base Age {draft.get('age')}, Nationality: {draft.get('nat')} ({J9_desc}), Type: {draft.get('char')}, Era: {G12_desc}. "
+    # بخش دوم: [Technical_Specs]
+    tech_specs = f"[Fixed Technical: {draft.get('cam')}, {draft.get('light')}, {draft.get('size')}]."
     
+    # بخش سوم: [Character_Base (Locked)]
+    act_str = "VISUAL GUIDE: Use facial structure of attached subject. " if draft.get('actor') == "Yes" else ""
+    nat_desc = NAT_DESC.get(draft.get('nat'), "")
+    era_desc = ERA_DESC.get(draft.get('era'), "")
     groom_val = draft.get('groom', 'Clean Shaven')
     groom_desc = GROOM_DESC.get(groom_val, "")
-    appearance = f"Grooming/Appearance: {groom_val} ({groom_desc}), Hair Color: {draft.get('h_col')}, Texture: {draft.get('h_tex')}. "
-    if draft.get('mat') != "None": appearance += f"Material Finish: {MAT_DESC.get(draft.get('mat'), '')}. "
     
-    progression = ""
+    identity = f"Character Identity: {draft.get('gen')}, Base Age {draft.get('age')}, Nationality: {draft.get('nat')} ({nat_desc}), Type: {draft.get('char')}, Era: {era_desc}. "
+    appearance = f"Grooming/Appearance: {groom_val} ({groom_desc}), Hair Color: {draft.get('h_col')}, Texture: {draft.get('h_tex')}. "
+    mat_finish = f"Material Finish: {MAT_DESC.get(draft.get('mat'), '')}. " if draft.get('mat') != "None" else ""
+    
+    char_base = f"[{act_str}{identity}{appearance}{mat_finish}]"
+    
+    # بخش چهارم: [Dynamic_Stage_Logic]
+    dynamic_stage = ""
     scenario = draft.get('scenario_text', '').strip()
-    is_ui_arc_active = (draft.get('arc_aging', 'None') != "None") or (draft.get('arc_sfx', 'None') != "None") or (draft.get('arc_pigment', 'None') != "None")
+    is_ui_active = (draft.get('arc_aging', 'None') != "None") or (draft.get('arc_sfx', 'None') != "None") or (draft.get('arc_pigment', 'None') != "None")
     
     if scenario:
-        # ⚠️ CRITICAL OVERRIDE RULE: Injeksion ghabl az UI
+        # کاربر متن نوشته است -> بررسی با دیتابیس
         parsed_stages, extracted_db = ai_narrative_parser(scenario)
-        progression = f"\n[CRITICAL OVERRIDE: NARRATIVE PARSER ACTIVE]\n"
-        progression += f"Dynamic_Stage_Logic is overriding all static UI inputs. The following narrative is the SINGLE SOURCE OF TRUTH.\n"
-        progression += f"Narrative Input: '{scenario}'\n"
-        progression += f"Output Format: HORIZONTAL SEQUENCE ARC ({parsed_stages} stages divided by 1px separators).\n\n"
         
         if extracted_db:
-            progression += "AUTOMATED LIBRARY INJECTION:\n"
+            # 1. تطابق پیدا شد -> استفاده از گزینه‌های سیستم
+            dynamic_stage = f"[HORIZONTAL SEQUENCE ARC. {parsed_stages} stages separated by 1px white line. "
             for arc_title, arc_details in extracted_db:
-                progression += f"✔️ {arc_title}:\n"
-                for i, detail in enumerate(arc_details):
-                    progression += f"   - Stage {i+1}: {detail}\n"
+                dynamic_stage += f"SYSTEM APPLIED {arc_title}: " + ", ".join([f"Stage {i+1} ({d})" for i, d in enumerate(arc_details)]) + ". "
+            dynamic_stage += "CRITICAL: Underlying facial identity MUST remain 100% identical across all panels.]"
         else:
-            progression += "AUTOMATED LIBRARY INJECTION: Extract biological aging, SFX evolution, and grooming dynamically based on the narrative above.\n"
+            # 2. تطابق پیدا نشد -> جایگذاری مستقیم متن کاربر طبق فرمول
+            dynamic_stage = f"[HORIZONTAL SEQUENCE ARC. {parsed_stages} stages separated by 1px white line. NARRATIVE TRANSFORMATION: '{scenario}'. Extract biological aging, SFX evolution, and grooming dynamically based on this narrative. CRITICAL: Underlying facial identity MUST remain 100% identical across all panels.]"
             
-        progression += "\nCRITICAL: Underlying facial identity MUST remain 100% identical across all panels."
-        
-    elif is_ui_arc_active:
-        progression = f"HORIZONTAL SEQUENCE ARC. {draft.get('arc_stages', 4)} stages divided by 1px separators. "
+    elif is_ui_active:
+        # 3. متنی در کار نیست و کاربر از منوها (Dropdowns) استفاده کرده
+        dynamic_stage = f"[HORIZONTAL SEQUENCE ARC. {draft.get('arc_stages', 4)} stages separated by 1px white line. "
         if draft.get('arc_aging', 'None') != "None":
-            progression += f"SCIENTIFIC AGING LOGIC ({draft.get('arc_aging')} | Stage: {draft.get('arc_aging_stage')}): Implement progressive biological transformation. "
+            dynamic_stage += f"SCIENTIFIC AGING LOGIC: {draft.get('arc_aging')}. "
         if draft.get('arc_sfx', 'None') != "None":
-            progression += f"SFX TRAUMA ARC ({draft.get('arc_sfx')} | Stage: {draft.get('arc_sfx_stage')}): Apply chronological color shift and material transformation. "
+            dynamic_stage += f"SFX TRAUMA ARC: {draft.get('arc_sfx')}. "
         if draft.get('arc_pigment', 'None') != "None":
-            progression += f"PIGMENTATION ARC ({draft.get('arc_pigment')} | Stage: {draft.get('arc_pigment_stage')}): Apply progressive textural and dermal shift. "
-        progression += f"CRITICAL: Underlying facial identity MUST remain 100% identical across all panels. "
+            dynamic_stage += f"PIGMENTATION ARC: {draft.get('arc_pigment')}. "
+        dynamic_stage += "CRITICAL: Underlying facial identity MUST remain 100% identical across all panels.]"
+        
     else:
-        progression += "Single Shot Portrait. "
-        if draft.get('sfx') != "None":
-            base_sfx_desc = SFX_DESC.get(draft.get('sfx'), draft.get('sfx'))
-            progression += f"[CINEMATIC PROSTHETIC STUDY: Apply {base_sfx_desc} as a makeup layer]. "
+        # 4. بدون Arc (تک فریم)
+        base_sfx = SFX_DESC.get(draft.get('sfx'), draft.get('sfx')) if draft.get('sfx') != "None" else ""
+        dynamic_stage = f"[Single Shot Portrait. CINEMATIC PROSTHETIC STUDY: Apply {base_sfx} as a makeup layer.]" if base_sfx else "[Single Shot Portrait.]"
 
-    bio_layers = []
-    if draft.get('bio_fatigue'): bio_layers.append("Chronic Fatigue & Sallow Skin")
-    if draft.get('bio_lips'): bio_layers.append("Lips Volume Loss & Atrophy")
-    if bio_layers:
-        progression += f"Biological Detail Layers: {', '.join(bio_layers)}. "
+    # ترکیب نهایی دقیقاً طبق فرمول داکیومنت شما
+    final_prompt = f"{uona_signature} {tech_specs} {char_base} {dynamic_stage} 8k, hyper-realistic, subsurface scattering, focus on prosthetic makeup accuracy."
     
-    final_p = baseline + identity + appearance + progression + " 8k, hyper-realistic, subsurface scattering, focus on prosthetic makeup accuracy."
-    return " ".join(final_p.split()) if not scenario else final_p
-
+    # حذف فاصله‌های اضافه
+    return " ".join(final_prompt.split())
 # ==========================================
 # 6. موتور استایل (CSS Engine)
 # ==========================================
