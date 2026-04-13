@@ -68,7 +68,6 @@ LIGHT_DESC = {"Rembrandt Lighting": "Classic cinematic light", "Chiaroscuro Ligh
 CAM_DESC = {"85 mm Lens, Eye-Level Shot": "Classic portrait lens", "100 mm Macro Lens, Extreme Close-Up": "Macro lens for extreme detail", "50 mm Lens, Dutch Angle": "Normal lens with tilted angle", "35 mm Lens, Low-Angle (Hero Shot)": "Slightly wide, heroic angle", "24 mm Wide-Angle, High-Angle": "Wide-angle from a high angle"}
 SIZE_LIST = ["Aspect Ratio 16:9 (Widescreen)", "Aspect Ratio 4:5 (Portrait/Vertical)", "Aspect Ratio 5:4 (Portrait)", "Aspect Ratio 2.39:1 (Anamorphic / Cinemascope)", "Aspect Ratio 1:1 (Square)"]
 MAT_DESC = {"None": "", "Matte Sealer": "Non-reflective surface, velvety skin texture", "Prosthetic Adhesive": "Texture of professional bonding", "Encapsulated Silicone": "Realistic skin-like translucency"}
-
 # --- V2.0 Dynamic Stage Libraries ---
 AGING_STAGES = {
     "Wrinkles": ["Stage 1 (Age 30–40) – Dynamic Lines", "Stage 2 (Age 45–55) – Fixed Lines", "Stage 3 (Age 60–75) – Deep Creases", "Stage 4 (Age 85+) – Advanced Rhytids"],
@@ -91,7 +90,6 @@ PIGMENT_STAGES = {
     "Melasma & Hyperpigmentation": ["Stage 1 – Initial: Light tan patches", "Stage 2 – Diffuse Spread: Darker brown, uneven", "Stage 3 – Deep Pigmentation: Dense areas", "Stage 4 – Chronic State: Mask-like pattern"],
     "Freckles": ["Stage 1 – Sparse: Light distribution", "Stage 2 – Dense: Increased concentration", "Stage 3 – Heavy: Merging freckles", "Stage 4 – Full Coverage: Extensive mottled appearance"]
 }
-
 # ==========================================
 # 3. مدیریت وضعیت (State Machine)
 # ==========================================
