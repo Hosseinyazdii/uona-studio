@@ -84,7 +84,7 @@ if 'draft' not in st.session_state:
         "char": "Average Citizen", "era": "Contemporary / Modern Day", "groom": "Clean Shaven", 
         "h_tex": "Straight (Sleek)", "h_col": "Jet black / Natural black", "mat": "None", "sfx": "None",
         "cam": list(CAM_DESC.keys())[0], "light": list(LIGHT_DESC.keys())[0], "size": SIZE_LIST[0],
-        "scenario_text": "", "arc_aging": "None", "arc_sfx": "None", "arc_pigment": "None",
+        "scenario_text": "", "arc_stages": 4, "arc_aging": "None", "arc_sfx": "None", "arc_pigment": "None",
         "bio_fatigue": False, "bio_lips": False
     }
 
@@ -106,21 +106,19 @@ def generate_prompt(draft):
     groom_val = draft.get('groom', 'Clean Shaven')
     groom_desc = GROOM_DESC.get(groom_val, "")
     appearance = f"Grooming/Appearance: {groom_val} ({groom_desc}), Hair Color: {draft.get('h_col')}, Texture: {draft.get('h_tex')}. "
-    
     if draft.get('mat') != "None": appearance += f"Material Finish: {MAT_DESC.get(draft.get('mat'), '')}. "
     
     progression = ""
     is_arc_active = (draft.get('arc_aging', 'None') != "None") or (draft.get('arc_sfx', 'None') != "None") or (draft.get('arc_pigment', 'None') != "None")
     
     if is_arc_active:
-        progression = f"HORIZONTAL TRIPTYCH ARC. Four stages divided by 1px separators. Scenario Context: [{draft.get('scenario_text', '')}]. "
+        progression = f"HORIZONTAL SEQUENCE ARC. {draft.get('arc_stages', 4)} stages divided by 1px separators. Scenario Context: [{draft.get('scenario_text', '')}]. "
         if draft.get('arc_aging', 'None') != "None":
-            progression += f"SCIENTIFIC AGING LOGIC ({draft.get('arc_aging')}): Inject [Epidermal thinning, Bone density loss, Solar lentigines, Gravity-induced ptosis]. "
+            progression += f"SCIENTIFIC AGING LOGIC ({draft.get('arc_aging')}): Implement progressive biological transformation across stages. "
         if draft.get('arc_sfx', 'None') != "None":
-            sfx_arc_base = SFX_DESC.get(draft.get('arc_sfx'), draft.get('arc_sfx'))
-            progression += f"SFX Trauma Arc: Base is {sfx_arc_base}. SCIENTIFIC TRAUMA LOGIC: Apply Color Shift from wet crimson to dark scabbing, and Material Transformation to fibrous scar tissue. "
+            progression += f"SFX TRAUMA ARC ({draft.get('arc_sfx')}): Apply chronological color shift and material transformation. "
         if draft.get('arc_pigment', 'None') != "None":
-            progression += f"Pigmentation Arc: {draft.get('arc_pigment')}. Apply progressive textural and dermal shift. "
+            progression += f"PIGMENTATION ARC ({draft.get('arc_pigment')}): Apply progressive textural and dermal shift. "
         
         progression += f"PROGRESSION LABELS: Typography labels under each panel ('Initial' -> 'Spread' -> 'Damage' -> 'Final'). PROGRESS LINE ACTIVE. CRITICAL: Underlying facial identity MUST remain 100% identical across all panels. "
     else:
@@ -153,12 +151,15 @@ st.markdown("""
     .subtitle { color: #00f2ff; font-family: 'Montserrat'; font-size: 0.8rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 30px;}
     label, .stMarkdown p { color: #00e5ff !important; font-family: 'Montserrat' !important; font-weight: 700 !important; text-transform: uppercase !important; font-size: 0.75rem !important; }
     div[data-baseweb="input"] > div { background-color: rgba(0, 20, 40, 0.9) !important; border: 1px solid rgba(0, 242, 255, 0.4) !important; border-radius: 10px !important; }
-    div[data-baseweb="input"] input, div[data-baseweb="select"] { color: #ffffff !important; font-weight: bold !important; }
+    div[data-baseweb="input"] input, div[data-baseweb="select"], div[data-baseweb="slider"] { color: #ffffff !important; font-weight: bold !important; }
     .stButton > button { border: none !important; border-radius: 8px !important; font-family: 'Cinzel', serif !important; font-weight: 900 !important; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; background-color: #00f2ff !important; color: #000000 !important; box-shadow: 0 0 10px rgba(0, 242, 255, 0.3); }
     .stButton > button:hover { background-color: #ffffff !important; transform: scale(1.02); box-shadow: 0 0 20px #00f2ff;}
     .glass-panel { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(0, 242, 255, 0.15); border-radius: 15px; padding: 25px; backdrop-filter: blur(10px); margin-bottom: 20px; }
     .step-indicator { display: flex; justify-content: space-between; margin-bottom: 30px; color: #4a5d73; font-family: 'Montserrat'; font-size: 0.7rem; font-weight: 900; }
     .step-active { color: #00f2ff; text-shadow: 0 0 8px #00f2ff; }
+    div[data-testid="stExpander"] { background: rgba(10, 25, 47, 0.6) !important; border: 1px solid rgba(0, 242, 255, 0.2) !important; border-radius: 12px !important; backdrop-filter: blur(10px); margin-bottom: 15px; transition: all 0.3s ease; }
+    div[data-testid="stExpander"] summary { padding: 15px !important; }
+    div[data-testid="stExpander"] summary p { color: #ffffff !important; font-family: 'Montserrat' !important; font-size: 0.9rem !important; letter-spacing: 1px; font-weight: bold !important; text-transform: uppercase !important; }
     [data-testid="stImage"] img { border-radius: 12px !important; border: 2px solid #00f2ff !important; box-shadow: 0 0 15px rgba(0, 242, 255, 0.7) !important; }
     </style>
     """, unsafe_allow_html=True)
@@ -276,14 +277,14 @@ elif st.session_state.route == 'builder':
     st.markdown(f"""
         <div class="step-indicator">
             <span class="{'step-active' if st.session_state.step==1 else ''}">1. FULL BASELINE</span> ➔
-            <span class="{'step-active' if st.session_state.step==2 else ''}">2. ARC CONFIG (Visual UX)</span> ➔
+            <span class="{'step-active' if st.session_state.step==2 else ''}">2. ARC CONFIG (V2.0 SYSTEM)</span> ➔
             <span class="{'step-active' if st.session_state.step==3 else ''}">3. REVIEW</span>
         </div>
     """, unsafe_allow_html=True)
     
     d = st.session_state.draft
 
-    # --- Phase 1: FULL BASELINE (تمام سوالات سر جاشون هستن) ---
+    # --- Phase 1: FULL BASELINE ---
     if st.session_state.step == 1:
         st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
         st.markdown("<h3 style='color:#00f2ff; font-family:Cinzel;'>Phase 1: Complete Baseline Architecture</h3>", unsafe_allow_html=True)
@@ -317,7 +318,7 @@ elif st.session_state.route == 'builder':
         if st.button("NEXT: ARC CONFIGURATION ➔", use_container_width=True): next_step()
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # --- Phase 2: ARC CONFIG (ظاهر ۳ ستونه مخصوص همین مرحله) ---
+    # --- Phase 2: ARC CONFIG (آپدیت شده دقیقاً بر اساس دیتابیس V2.0) ---
     elif st.session_state.step == 2:
         age_val = d.get('age', AGE_LIST[2])
         is_under_22 = AGE_LIST.index(age_val) < 2 if age_val in AGE_LIST else False
@@ -325,28 +326,40 @@ elif st.session_state.route == 'builder':
 
         c_left, c_center, c_right = st.columns([3, 4.5, 2.5], gap="medium")
 
-        # 1. پنل چپ: مشخصات قفل شده
+        # 1. پنل چپ: DNA قفل شده
         with c_left:
             st.markdown('<div class="glass-panel" style="padding: 20px; height: 100%;">', unsafe_allow_html=True)
             st.markdown("<h4 style='color:#00f2ff; font-family:Cinzel;'>🔒 CHARACTER DNA</h4>", unsafe_allow_html=True)
             st.info(f"**Gender:** {d.get('gen')}\n\n**Age:** {d.get('age')}\n\n**Nat:** {d.get('nat')}\n\n**Type:** {d.get('char')}")
-            st.markdown("<div style='padding: 10px; background: rgba(0,242,255,0.1); border-left: 3px solid #00f2ff; color: #00f2ff; font-size: 0.75rem;'>🔒 Identity Locked.</div>", unsafe_allow_html=True)
+            st.markdown("<div style='padding: 10px; background: rgba(0,242,255,0.1); border-left: 3px solid #00f2ff; color: #00f2ff; font-size: 0.75rem;'>🔒 Identity Locked.<br>Base parameters are preserved for continuous execution.</div>", unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
 
-        # 2. پنل وسط: پیش‌نمایش و تایم‌لاین
+        # 2. پنل وسط: پیش‌نمایش و Overlays جدید V2.0
         with c_center:
             st.markdown('<div class="glass-panel" style="padding: 20px; height: 100%; display: flex; flex-direction: column;">', unsafe_allow_html=True)
             st.markdown("<div style='flex-grow: 1; border: 1px solid rgba(0,242,255,0.3); border-radius: 10px; background: #02060c; position:relative; overflow: hidden; display:flex; justify-content:center; align-items:center; min-height: 350px;'>", unsafe_allow_html=True)
-            st.markdown("<div style='position:absolute; top: 10px; left: 15px; color:#00f2ff; font-size:0.7rem; background: rgba(0,0,0,0.5); padding: 5px; border-radius: 4px;'>🟢 Simulation Active</div>", unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div style='position:absolute; top: 10px; left: 15px; display: flex; flex-direction: column; gap: 5px;'>
+                <span style='color:#00f2ff; font-size:0.65rem; background: rgba(0,0,0,0.6); padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(0,242,255,0.3);'>🟢 Identity Engine Active</span>
+                <span style='color:#00f2ff; font-size:0.65rem; background: rgba(0,0,0,0.6); padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(0,242,255,0.3);'>🔒 Biometric Continuity Locked</span>
+                <span style='color:#00f2ff; font-size:0.65rem; background: rgba(0,0,0,0.6); padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(0,242,255,0.3);'>⚡ Material Simulation Running</span>
+            </div>
+            """, unsafe_allow_html=True)
+
             if os.path.exists("portrait_clean.PNG"): st.image("portrait_clean.PNG", use_container_width=True)
-            else: st.markdown("<h3 style='color:rgba(255,255,255,0.1);'>[ LIVE PORTRAIT FRAME ]</h3>", unsafe_allow_html=True)
+            else: st.markdown("<h3 style='color:rgba(255,255,255,0.1);'>[ 4:5 LIVE PORTRAIT FRAME ]</h3>", unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
             
             st.markdown("""
             <div style='display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding: 10px; background: rgba(0,242,255,0.05); border-radius: 8px;'>
-                <div style='text-align:center;'><span style='color:#00f2ff; font-size:0.7rem; font-weight:bold;'>STAGE 1</span><br><span style='color:#888; font-size:0.6rem;'>Initial</span></div>
+                <div style='text-align:center;'><span style='color:#00f2ff; font-size:0.7rem; font-weight:bold;'>INITIAL</span></div>
                 <div style='flex-grow: 1; height: 2px; background: linear-gradient(90deg, rgba(0,242,255,0.5) 0%, rgba(255,255,255,0.2) 100%); margin: 0 10px;'></div>
-                <div style='text-align:center;'><span style='color:#00f2ff; font-size:0.7rem; font-weight:bold;'>STAGE 4</span><br><span style='color:#888; font-size:0.6rem;'>Final</span></div>
+                <div style='text-align:center;'><span style='color:#00f2ff; font-size:0.7rem; font-weight:bold;'>SPREAD</span></div>
+                <div style='flex-grow: 1; height: 2px; background: linear-gradient(90deg, rgba(0,242,255,0.5) 0%, rgba(255,255,255,0.2) 100%); margin: 0 10px;'></div>
+                <div style='text-align:center;'><span style='color:#00f2ff; font-size:0.7rem; font-weight:bold;'>DAMAGE</span></div>
+                <div style='flex-grow: 1; height: 2px; background: linear-gradient(90deg, rgba(0,242,255,0.5) 0%, rgba(255,255,255,0.2) 100%); margin: 0 10px;'></div>
+                <div style='text-align:center;'><span style='color:#00f2ff; font-size:0.7rem; font-weight:bold;'>FINAL</span></div>
             </div>
             """, unsafe_allow_html=True)
             
@@ -356,10 +369,10 @@ elif st.session_state.route == 'builder':
             if c_btn2.button("NEXT: REVIEW ➔", use_container_width=True): next_step()
             st.markdown('</div>', unsafe_allow_html=True)
 
-        # 3. پنل راست: موتور Arc با محدودیت‌ها
+        # 3. پنل راست: دیتابیس‌های تخصصی Arc بر اساس V2.0
         with c_right:
-            st.markdown('<div class="glass-panel" style="padding: 20px; height: 100%;">', unsafe_allow_html=True)
-            st.markdown("<h4 style='color:#ffaa00; font-family:Cinzel;'>⚙️ ADVANCED ARC</h4>", unsafe_allow_html=True)
+            st.markdown('<div class="glass-panel" style="padding: 20px; height: 100%; overflow-y: auto;">', unsafe_allow_html=True)
+            st.markdown("<h4 style='color:#ffaa00; font-family:Cinzel;'>⚙️ TRANSFORMATION ENGINE</h4>", unsafe_allow_html=True)
             
             if st.session_state.plan == "UONA Core":
                 st.markdown("""
@@ -369,24 +382,43 @@ elif st.session_state.route == 'builder':
                     <p style='color: #888; font-size: 0.7rem;'>Arc Modules require Apex tier.</p>
                 </div>
                 """, unsafe_allow_html=True)
+                d['arc_stages'] = 4
                 d['arc_aging'] = "None"; d['arc_sfx'] = "None"; d['arc_pigment'] = "None"; d['bio_fatigue'] = False; d['bio_lips'] = False; d['scenario_text'] = ""
             else:
-                d['arc_aging'] = st.selectbox("AGING ENGINE", ["None", "Wrinkles", "Volume & Sagging", "Skin Texture & Pigmentation", "Hair & Brows"])
-                if is_under_22:
-                    st.markdown("<div style='padding: 5px; border-left: 3px solid red; color: #aaa; font-size: 0.7rem;'>🔒 SFX Locked (Age < 22)</div>", unsafe_allow_html=True)
-                    d['arc_sfx'] = "None"
-                else:
-                    sfx_arc_opts = ["None"] + list(SFX_DESC.keys())
-                    d['arc_sfx'] = st.selectbox("SFX & TRAUMA ENGINE", sfx_arc_opts)
+                d['arc_stages'] = st.slider("NUMBER OF STAGES", 2, 5, d.get('arc_stages', 4))
+                
+                with st.expander("A. AGING ENGINE", expanded=True):
+                    d['arc_aging'] = st.selectbox("Aging Arc Categories", ["None", "Wrinkles", "Volume & Sagging", "Skin Texture & Pigmentation", "Hair & Brows"])
+                
+                with st.expander("B. SFX & TRAUMA ENGINE", expanded=True):
+                    if is_under_22:
+                        st.markdown("<div style='padding: 5px; border-left: 3px solid red; color: #aaa; font-size: 0.7rem;'>🔒 SFX Locked (Age Constraint)</div>", unsafe_allow_html=True)
+                        d['arc_sfx'] = "None"
+                    else:
+                        sfx_v2_opts = ["None", "Bruises", "Contusions", "Abrasions", "First & Second Degree Burns", "Chemical Burns (Acid-Type Simulation)", "Keloids (Fibrotic Overgrowth)"]
+                        d['arc_sfx'] = st.selectbox("Trauma Simulation", sfx_v2_opts)
+                        
+                with st.expander("C. PIGMENTATION ARC", expanded=True):
+                    pigment_opts = ["None", "Vitiligo", "Melasma & Hyperpigmentation", "Freckles"]
+                    d['arc_pigment'] = st.selectbox("Skin Pigmentation", pigment_opts)
                     
-                d['arc_pigment'] = st.selectbox("SKIN PIGMENTATION", ["None", "Vitiligo", "Melasma & Hyperpigmentation", "Freckles"])
-                d['bio_fatigue'] = st.checkbox("Fatigue & Illness", value=d.get('bio_fatigue', False))
-                d['bio_lips'] = st.checkbox("Lips Volume Loss", value=d.get('bio_lips', False))
-                d['scenario_text'] = st.text_input("SCENARIO", value=d.get('scenario_text', ''), placeholder="e.g. A slash wound oxidizing...")
+                with st.expander("D. BIOLOGICAL DETAILS", expanded=False):
+                    d['bio_fatigue'] = st.checkbox("Fatigue & Sallow Skin", value=d.get('bio_fatigue', False))
+                    d['bio_lips'] = st.checkbox("Lips Volume Loss", value=d.get('bio_lips', False))
+                
+                d['scenario_text'] = st.text_area("NARRATIVE (OPTIONAL)", value=d.get('scenario_text', ''), placeholder="e.g. A 40-year-old man with a deep wound, aging to 80...")
 
-            if is_female or is_under_22: f_color = "#00f2ff"
-            else: f_color = "#00ffaa"
-            st.markdown(f"<div style='margin-top: 15px; padding: 10px; border-left: 3px solid {f_color}; color: {f_color}; font-size: 0.7rem;'>✅ Continuity Preserved</div>", unsafe_allow_html=True)
+            if is_female or is_under_22: 
+                f_text = "🔒 Constraints Safely Enforced"
+                f_color = "#00f2ff"
+            elif d['arc_sfx'] != "None" and d['arc_aging'] != "None":
+                f_text = "⚠️ Arc Conflict Detected"
+                f_color = "#ffaa00"
+            else: 
+                f_text = "✅ Continuity Preserved"
+                f_color = "#00ffaa"
+                
+            st.markdown(f"<div style='margin-top: 15px; padding: 10px; border-left: 3px solid {f_color}; color: {f_color}; font-size: 0.7rem;'>{f_text}</div>", unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
 
     # --- Phase 3: REVIEW ---
