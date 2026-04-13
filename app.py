@@ -149,13 +149,9 @@ def ai_narrative_parser(text):
 # 5. موتور پردازش نهایی پرامپت (Strict Formula Mode)
 # ==========================================
 def generate_prompt(draft):
-    # بخش اول: [Uona_Signature]
     uona_signature = "Uona Studio Signature (Scientific Makeup Design)."
-    
-    # بخش دوم: [Technical_Specs]
     tech_specs = f"[Fixed Technical: {draft.get('cam')}, {draft.get('light')}, {draft.get('size')}]."
     
-    # بخش سوم: [Character_Base (Locked)]
     act_str = "VISUAL GUIDE: Use facial structure of attached subject. " if draft.get('actor') == "Yes" else ""
     nat_desc = NAT_DESC.get(draft.get('nat'), "")
     era_desc = ERA_DESC.get(draft.get('era'), "")
@@ -168,45 +164,47 @@ def generate_prompt(draft):
     
     char_base = f"[{act_str}{identity}{appearance}{mat_finish}]"
     
-    # بخش چهارم: [Dynamic_Stage_Logic]
     dynamic_stage = ""
     scenario = draft.get('scenario_text', '').strip()
     is_ui_active = (draft.get('arc_aging', 'None') != "None") or (draft.get('arc_sfx', 'None') != "None") or (draft.get('arc_pigment', 'None') != "None")
     
     if scenario:
-        # کاربر متن نوشته است -> بررسی با دیتابیس
         parsed_stages, extracted_db = ai_narrative_parser(scenario)
-        
         if extracted_db:
-            # 1. تطابق پیدا شد -> استفاده از گزینه‌های سیستم
             dynamic_stage = f"[HORIZONTAL SEQUENCE ARC. {parsed_stages} stages separated by 1px white line. "
             for arc_title, arc_details in extracted_db:
-                dynamic_stage += f"SYSTEM APPLIED {arc_title}: " + ", ".join([f"Stage {i+1} ({d})" for i, d in enumerate(arc_details)]) + ". "
+                # 🔴 FIX: Array slice to match exact stages
+                sliced_details = arc_details[:parsed_stages] if len(arc_details) >= parsed_stages else arc_details
+                dynamic_stage += f"SYSTEM APPLIED {arc_title}: " + ", ".join([f"Stage {i+1} ({d})" for i, d in enumerate(sliced_details)]) + ". "
             dynamic_stage += "CRITICAL: Underlying facial identity MUST remain 100% identical across all panels.]"
         else:
-            # 2. تطابق پیدا نشد -> جایگذاری مستقیم متن کاربر طبق فرمول
             dynamic_stage = f"[HORIZONTAL SEQUENCE ARC. {parsed_stages} stages separated by 1px white line. NARRATIVE TRANSFORMATION: '{scenario}'. Extract biological aging, SFX evolution, and grooming dynamically based on this narrative. CRITICAL: Underlying facial identity MUST remain 100% identical across all panels.]"
             
     elif is_ui_active:
-        # 3. متنی در کار نیست و کاربر از منوها (Dropdowns) استفاده کرده
-        dynamic_stage = f"[HORIZONTAL SEQUENCE ARC. {draft.get('arc_stages', 4)} stages separated by 1px white line. "
+        stages_count = draft.get('arc_stages', 4)
+        dynamic_stage = f"[HORIZONTAL SEQUENCE ARC. {stages_count} stages separated by 1px white line. "
+        
+        # 🔴 FIX: Array slice to match exact stages from UI dropdowns
         if draft.get('arc_aging', 'None') != "None":
-            dynamic_stage += f"SCIENTIFIC AGING LOGIC: {draft.get('arc_aging')}. "
+            aging_arr = AGING_STAGES.get(draft.get('arc_aging'), [])
+            sliced = aging_arr[:stages_count] if aging_arr else []
+            dynamic_stage += f"SCIENTIFIC AGING LOGIC: {draft.get('arc_aging')} (" + ", ".join(sliced) + "). "
         if draft.get('arc_sfx', 'None') != "None":
-            dynamic_stage += f"SFX TRAUMA ARC: {draft.get('arc_sfx')}. "
+            sfx_arr = SFX_STAGES.get(draft.get('arc_sfx'), [])
+            sliced = sfx_arr[:stages_count] if sfx_arr else []
+            dynamic_stage += f"SFX TRAUMA ARC: {draft.get('arc_sfx')} (" + ", ".join(sliced) + "). "
         if draft.get('arc_pigment', 'None') != "None":
-            dynamic_stage += f"PIGMENTATION ARC: {draft.get('arc_pigment')}. "
+            pig_arr = PIGMENT_STAGES.get(draft.get('arc_pigment'), [])
+            sliced = pig_arr[:stages_count] if pig_arr else []
+            dynamic_stage += f"PIGMENTATION ARC: {draft.get('arc_pigment')} (" + ", ".join(sliced) + "). "
+            
         dynamic_stage += "CRITICAL: Underlying facial identity MUST remain 100% identical across all panels.]"
         
     else:
-        # 4. بدون Arc (تک فریم)
         base_sfx = SFX_DESC.get(draft.get('sfx'), draft.get('sfx')) if draft.get('sfx') != "None" else ""
         dynamic_stage = f"[Single Shot Portrait. CINEMATIC PROSTHETIC STUDY: Apply {base_sfx} as a makeup layer.]" if base_sfx else "[Single Shot Portrait.]"
 
-    # ترکیب نهایی دقیقاً طبق فرمول داکیومنت شما
     final_prompt = f"{uona_signature} {tech_specs} {char_base} {dynamic_stage} 8k, hyper-realistic, subsurface scattering, focus on prosthetic makeup accuracy."
-    
-    # حذف فاصله‌های اضافه
     return " ".join(final_prompt.split())
 # ==========================================
 # 6. موتور استایل (CSS Engine)
