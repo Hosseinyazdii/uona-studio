@@ -50,18 +50,33 @@ def add_bg_from_local(image_file):
         """, unsafe_allow_html=True
     )
 
-# تابع هوشمند برای پیدا کردن عکس‌ها (حتی اگر پسوندها بزرگ/کوچک باشن)
+# تابع هوشمند فوق‌مطلق برای پیدا کردن عکس‌ها در مسیر فایل اجرایی
 def get_image_base64(filename):
     if not filename: return None
-    if os.path.exists(filename):
-        with open(filename, "rb") as f: return base64.b64encode(f.read()).decode()
     
-    base, ext = os.path.splitext(filename)
+    # 1. گرفتن مسیر دقیق فولدری که کد در آن اجرا می‌شود
+    try:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        file_path = os.path.join(base_dir, filename)
+    except NameError:
+        file_path = filename
+
+    # 2. بررسی فایل با نام دقیق
+    if os.path.exists(file_path):
+        with open(file_path, "rb") as f: return base64.b64encode(f.read()).decode()
+    
+    # 3. بررسی حالت‌های مختلف پسوند (حروف بزرگ و کوچک)
+    base, ext = os.path.splitext(file_path)
     possible_exts = ['.jpg', '.jpeg', '.png', '.JPG', '.JPEG', '.PNG']
     for e in possible_exts:
         alt_name = base + e
         if os.path.exists(alt_name):
             with open(alt_name, "rb") as f: return base64.b64encode(f.read()).decode()
+            
+    # 4. جستجوی ساده به عنوان راهکار آخر
+    if os.path.exists(filename):
+        with open(filename, "rb") as f: return base64.b64encode(f.read()).decode()
+        
     return None
 
 # ==========================================
@@ -246,7 +261,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # ==========================================
-# دیتابیس هوشمند صفحات جدید
+# دیتابیس هوشمند صفحات جدید با نام دقیق فایل‌های شما
 # ==========================================
 CREATIVE_CONFIG = {
     "Build a Character": {
@@ -321,7 +336,7 @@ if st.session_state.route == 'login':
     st.stop()
 
 # ==========================================
-# SHARED HEADER (نمایش Header.jpg در اینجا برای همه صفحات)
+# SHARED HEADER (نمایش Header با سایز بسیار کوچک Fix Size: 150px)
 # ==========================================
 if st.session_state.route != 'login':
     badge_color = "#ffaa00" if "Apex" in st.session_state.plan or "MASTER" in st.session_state.plan else "#00f2ff"
@@ -344,10 +359,10 @@ if st.session_state.route != 'login':
         """, unsafe_allow_html=True)
     st.markdown("<hr style='border-color: rgba(0,242,255,0.2); margin-top: 5px; margin-bottom: 20px;'>", unsafe_allow_html=True)
     
-    # === HEADER IMAGE (سایز کوچکتر و در همه صفحات) ===
+    # Header Logo - Strict width 150px
     header_b64 = get_image_base64("header.jpg")
     if header_b64:
-        st.markdown(f'<div style="text-align:center;"><img src="data:image/jpeg;base64,{header_b64}" style="width:100%; max-width:250px; border-radius:8px; margin-bottom:20px; border: 1px solid rgba(0,242,255,0.3); box-shadow: 0 0 15px rgba(0,242,255,0.1);"></div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="text-align:center;"><img src="data:image/jpeg;base64,{header_b64}" style="width:150px; border-radius:8px; margin-bottom:20px; border: 1px solid rgba(0,242,255,0.3); box-shadow: 0 0 15px rgba(0,242,255,0.1);"></div>', unsafe_allow_html=True)
 
 # ==========================================
 # ROUTES: ADMIN, LIBRARY, SETTINGS
@@ -419,9 +434,9 @@ elif st.session_state.route == 'dashboard':
             
             if img_b64:
                 mime = "image/png" if ".png" in img_file.lower() else "image/jpeg"
-                img_html = f'<img src="data:{mime};base64,{img_b64}" style="width:100%; height:140px; object-fit:cover !important; border-radius:8px; margin-top:10px; flex-shrink:0; display:block;">'
+                img_html = f'<img src="data:{mime};base64,{img_b64}" style="width:100%; height:140px; object-fit:cover; border-radius:8px; margin-top:10px;">'
             else:
-                img_html = f'<div style="width:100%; height:140px; background:rgba(0,242,255,0.05); border-radius:8px; margin-top:10px; display:flex; align-items:center; justify-content:center; border: 1px dashed rgba(0,242,255,0.3); flex-shrink:0;"><span style="color:#00f2ff; font-size: 0.7rem;">[ MISSING: {img_file} ]</span></div>'
+                img_html = f'<div style="width:100%; height:140px; background:rgba(0,242,255,0.05); border-radius:8px; margin-top:10px; display:flex; align-items:center; justify-content:center; border: 1px dashed rgba(0,242,255,0.3);"><span style="color:#00f2ff; font-size: 0.7rem;">[ MISSING: {img_file} ]</span></div>'
 
             st.markdown(f'''
             <div class="glass-panel creative-card" style="text-align:center; min-height: 280px; display:flex; flex-direction:column; justify-content:flex-start; padding: 20px;">
@@ -476,9 +491,9 @@ elif st.session_state.route == 'creative_direction':
             img_b64 = get_image_base64(img_file)
             if img_b64:
                 mime = "image/png" if ".png" in img_file.lower() else "image/jpeg"
-                img_html = f'<img src="data:{mime};base64,{img_b64}" style="width:100%; height:130px; object-fit:cover !important; border-radius:8px; margin-top:10px; flex-shrink:0; display:block;">'
+                img_html = f'<img src="data:{mime};base64,{img_b64}" style="width:100%; height:130px; object-fit:cover; border-radius:8px; margin-top:10px;">'
             else:
-                img_html = f'<div style="width:100%; height:130px; background:rgba(0,242,255,0.05); border-radius:8px; margin-top:10px; display:flex; align-items:center; justify-content:center; border: 1px dashed rgba(0,242,255,0.3); flex-shrink:0;"><span style="color:#00f2ff; font-size: 0.6rem;">[ MISSING: {img_file} ]</span></div>'
+                img_html = f'<div style="width:100%; height:130px; background:rgba(0,242,255,0.05); border-radius:8px; margin-top:10px; display:flex; align-items:center; justify-content:center; border: 1px dashed rgba(0,242,255,0.3);"><span style="color:#00f2ff; font-size: 0.6rem;">[ MISSING: {img_file} ]</span></div>'
 
         with grid[i]:
             st.markdown(f"""
@@ -601,12 +616,13 @@ elif st.session_state.route == 'builder':
             img_b64 = ""
             img_html = "<h3 style='color:rgba(255,255,255,0.1);'>[ 4:5 LIVE PORTRAIT FRAME ]</h3>"
             try:
-                if os.path.exists("arc.jpg"):
-                    img_b64 = get_image_base64("arc.jpg")
-                    if img_b64: img_html = f"<img src='data:image/jpeg;base64,{img_b64}' style='width:100%; max-height:400px; object-fit:contain; border-radius:10px;'>"
-                elif os.path.exists("portrait_clean.PNG"):
+                img_b64 = get_image_base64("arc.jpg")
+                if img_b64:
+                    img_html = f"<img src='data:image/jpeg;base64,{img_b64}' style='width:100%; max-height:400px; object-fit:contain; border-radius:10px;'>"
+                else:
                     img_b64 = get_image_base64("portrait_clean.PNG")
-                    if img_b64: img_html = f"<img src='data:image/png;base64,{img_b64}' style='width:100%; max-height:400px; object-fit:contain; border-radius:10px;'>"
+                    if img_b64:
+                        img_html = f"<img src='data:image/png;base64,{img_b64}' style='width:100%; max-height:400px; object-fit:contain; border-radius:10px;'>"
             except Exception:
                 pass
 
