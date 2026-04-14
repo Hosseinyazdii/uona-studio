@@ -359,10 +359,10 @@ if st.session_state.route != 'login':
         """, unsafe_allow_html=True)
     st.markdown("<hr style='border-color: rgba(0,242,255,0.2); margin-top: 5px; margin-bottom: 20px;'>", unsafe_allow_html=True)
     
-    # === HEADER IMAGE ===
+    # === HEADER IMAGE === (بزرگ‌تر شده به 360px)
     header_b64 = get_image_base64("header.jpg")
     if header_b64:
-        st.markdown(f'<div style="text-align:center;"><img src="data:image/jpeg;base64,{header_b64}" style="width:280px; border-radius:8px; margin-bottom:20px; border: 1px solid rgba(0,242,255,0.3); box-shadow: 0 0 15px rgba(0,242,255,0.1);"></div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="text-align:center;"><img src="data:image/jpeg;base64,{header_b64}" style="width:360px; border-radius:8px; margin-bottom:20px; border: 1px solid rgba(0,242,255,0.3); box-shadow: 0 0 15px rgba(0,242,255,0.1);"></div>', unsafe_allow_html=True)
 
 # ==========================================
 # ROUTES: ADMIN, LIBRARY, SETTINGS
@@ -403,7 +403,7 @@ elif st.session_state.route == 'settings':
     st.markdown('</div>', unsafe_allow_html=True)
 
 # ==========================================
-# 🔴 ROUTE 1.5: DASHBOARD -> INTENT SELECTION
+# 🔴 ROUTE 1.5: DASHBOARD -> INTENT SELECTION (بدون تغییر بر اساس دستور)
 # ==========================================
 elif st.session_state.route == 'dashboard':
     bg = find_bg_file()
@@ -451,7 +451,7 @@ elif st.session_state.route == 'dashboard':
                 go_to('creative_direction')
 
 # ==========================================
-# 🔴 ROUTE 2: CREATIVE DIRECTION ENGINE
+# 🔴 ROUTE 2: CREATIVE DIRECTION ENGINE (تغییرات پدینگ کارت‌ها و سایز بزرگ عکس اعمال شد)
 # ==========================================
 elif st.session_state.route == 'creative_direction':
     intent = st.session_state.intent
@@ -463,7 +463,7 @@ elif st.session_state.route == 'creative_direction':
     cards = config['cards']
     has_selection = st.session_state.selected_card is not None
     
-    # ایجاد یک گرید یکپارچه و تمیز دو در دو بدون توجه به تعداد (برای اینکه عکس‌ها جا داشته باشن)
+    # ایجاد یک گرید یکپارچه و تمیز دو در دو بدون توجه به تعداد
     r1c1, r1c2 = st.columns(2)
     r2c1, r2c2 = st.columns(2)
     grid = [r1c1, r1c2, r2c1, r2c2]
@@ -488,18 +488,20 @@ elif st.session_state.route == 'creative_direction':
             img_b64 = get_image_base64(img_file)
             if img_b64:
                 mime = "image/png" if ".png" in img_file.lower() else "image/jpeg"
-                img_html = f'<img src="data:{mime};base64,{img_b64}" style="width:100%; height:180px; object-fit:cover !important; border-radius:8px; margin-top:10px; flex-shrink:0; display:block;">'
+                # عکس بزرگتر شده به 240px و متناسب با ابعاد
+                img_html = f'<img src="data:{mime};base64,{img_b64}" style="width:100%; height:240px; object-fit:cover !important; border-radius:6px; margin-top:8px; flex-shrink:0; display:block;">'
             else:
-                img_html = f'<div style="width:100%; height:180px; background:rgba(0,242,255,0.05); border-radius:8px; margin-top:10px; display:flex; align-items:center; justify-content:center; border: 1px dashed rgba(0,242,255,0.3); flex-shrink:0;"><span style="color:#00f2ff; font-size: 0.6rem;">[ MISSING: {img_file} ]</span></div>'
+                img_html = f'<div style="width:100%; height:240px; background:rgba(0,242,255,0.05); border-radius:6px; margin-top:8px; display:flex; align-items:center; justify-content:center; border: 1px dashed rgba(0,242,255,0.3); flex-shrink:0;"><span style="color:#00f2ff; font-size: 0.6rem;">[ MISSING: {img_file} ]</span></div>'
 
         with grid[i]:
+            # تغییرات روی padding کارت (کاهش فضای خالی) و برداشتن min-height
             st.markdown(f"""
-            <div class="glass-panel creative-card {glow_class} {blur_class} {disabled_class}" style="min-height: 260px; margin-bottom: 10px; display:flex; flex-direction:column; justify-content:flex-start; padding: 20px;">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
-                    <h3 style="color:#fff; margin:0; font-family:'Cinzel'; font-size:1.1rem;">{title}</h3>
+            <div class="glass-panel creative-card {glow_class} {blur_class} {disabled_class}" style="padding: 12px; margin-bottom: 10px; display:flex; flex-direction:column; justify-content:flex-start;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px;">
+                    <h3 style="color:#fff; margin:0; font-family:'Cinzel'; font-size:1rem;">{title}</h3>
                     {tag_html}
                 </div>
-                <p style="color:#8b9eb3; font-size:0.75rem; font-family:'Montserrat'; margin:0 0 10px 0; line-height:1.4;">{card["desc"]}</p>
+                <p style="color:#8b9eb3; font-size:0.7rem; font-family:'Montserrat'; margin:0 0 4px 0; line-height:1.3;">{card["desc"]}</p>
                 {img_html}
                 <div class="expand-details">
                     <p style="color:#00f2ff; font-size:0.75rem; font-weight:bold; margin:0;"><i>⚙️ System Configuration Locked. Detailed parameters applied.</i></p>
