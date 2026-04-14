@@ -137,7 +137,7 @@ def ai_narrative_parser(text, default_stages):
 # 5. موتور پردازش نهایی پرامپت
 # ==========================================
 def generate_prompt(draft):
-    uona_signature = "Uona Studio Signature (Scientific Makeup Design)."
+    uona_signature = "Uona Group Signature (Scientific Makeup Design)."
     tech_specs = f"[Fixed Technical: {draft.get('cam')}, {draft.get('light')}, {draft.get('size')}]."
     act_str = "VISUAL GUIDE: Use facial structure of attached subject. " if draft.get('actor') == "Yes" else ""
     nat_desc = NAT_DESC.get(draft.get('nat'), "")
@@ -145,7 +145,6 @@ def generate_prompt(draft):
     groom_val = draft.get('groom', 'Clean Shaven')
     groom_desc = GROOM_DESC.get(groom_val, "")
     
-    # Injection of Creative Direction Protocol
     cd_protocol = f"[Engine Calibration: {draft.get('creative_direction', 'Standard')}] "
     
     identity = f"Character Identity: {draft.get('gen')}, Base Age {draft.get('age')}, Nationality: {draft.get('nat')} ({nat_desc}), Type: {draft.get('char')}, Era: {era_desc}. "
@@ -188,7 +187,7 @@ def generate_prompt(draft):
     return " ".join(final_prompt.split())
 
 # ==========================================
-# 6. موتور استایل (CSS Engine) آپدیت شده
+# 6. موتور استایل (CSS Engine)
 # ==========================================
 st.markdown("""
     <style>
@@ -212,11 +211,14 @@ st.markdown("""
     
     .glass-panel { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(0, 242, 255, 0.15); border-radius: 15px; padding: 25px; backdrop-filter: blur(10px); margin-bottom: 20px; }
     
-    /* سیستم هوشمند کارت‌ها */
     .creative-card { transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer; }
     .creative-card:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(0,242,255,0.2); }
     .glow-card { border: 2px solid #00f2ff !important; transform: scale(1.03) !important; box-shadow: 0 0 30px rgba(0, 242, 255, 0.4) !important; background: rgba(0, 242, 255, 0.08) !important; }
     .blur-card { filter: blur(3px) brightness(0.5); transform: scale(0.98); }
+    
+    .disabled-card { opacity: 0.4; filter: grayscale(80%); pointer-events: none; }
+    .disabled-card:hover { transform: none !important; box-shadow: none !important; }
+
     .expand-details { max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.4s ease, opacity 0.4s ease; margin-top: 0; }
     .glow-card .expand-details { max-height: 120px; opacity: 1; margin-top: 15px; padding-top: 10px; border-top: 1px dashed rgba(0,242,255,0.4); }
 
@@ -236,36 +238,36 @@ CREATIVE_CONFIG = {
     "Build a Character": {
         "sub": "Select the visual discipline for your character.",
         "cards": [
-            {"title": "Cinematic Makeup", "desc": "High-end film quality and photorealistic details.", "tag": "Recommended", "icon": "🎬"},
-            {"title": "Theatrical Makeup", "desc": "Stage-ready contrast with enhanced visibility features.", "tag": "", "icon": "🎭"},
-            {"title": "Fashion Makeup", "desc": "Editorial, high-fashion and avant-garde looks.", "tag": "", "icon": "✨"},
-            {"title": "Hair Styling", "desc": "Complete hair design, texture, and structural styling.", "tag": "", "icon": "✂️"}
+            {"title": "Cinematic Makeup", "desc": "High-end film quality and photorealistic details.", "tag": "Recommended", "icon": "🎬", "disabled": False},
+            {"title": "Theatrical Makeup", "desc": "Stage-ready contrast with enhanced visibility features.", "tag": "Coming Soon", "icon": "🎭", "disabled": True},
+            {"title": "Fashion Makeup", "desc": "Editorial, high-fashion and avant-garde looks.", "tag": "Coming Soon", "icon": "✨", "disabled": True},
+            {"title": "Hair Styling", "desc": "Complete hair design, texture, and structural styling.", "tag": "Coming Soon", "icon": "✂️", "disabled": True}
         ]
     },
     "Transform a Character": {
         "sub": "Define how the character evolves or changes.",
         "cards": [
-            {"title": "Aging Transformation", "desc": "Biological aging arc, wrinkles, and sagging.", "tag": "Recommended", "icon": "⏳"},
-            {"title": "SFX / Damage", "desc": "Trauma, wounds, burns, and physical damage.", "tag": "", "icon": "🩸"},
-            {"title": "Fantasy / Creature", "desc": "Non-human elements, mystical and creature designs.", "tag": "Pro", "icon": "🐉"},
-            {"title": "Hybrid Transformation", "desc": "Mixed effects combining aging and procedural SFX.", "tag": "", "icon": "⚡"}
+            {"title": "Aging Transformation", "desc": "Biological aging arc, wrinkles, and sagging.", "tag": "Coming Soon", "icon": "⏳", "disabled": True},
+            {"title": "SFX / Damage", "desc": "Trauma, wounds, burns, and physical damage.", "tag": "Coming Soon", "icon": "🩸", "disabled": True},
+            {"title": "Fantasy / Creature", "desc": "Non-human elements, mystical and creature designs.", "tag": "Coming Soon", "icon": "🐉", "disabled": True},
+            {"title": "Hybrid Transformation", "desc": "Mixed effects combining aging and procedural SFX.", "tag": "Coming Soon", "icon": "⚡", "disabled": True}
         ]
     },
     "Design a Makeup Look": {
         "sub": "Choose your makeup design approach.",
         "cards": [
-            {"title": "Cinematic", "desc": "Realistic on-screen application.", "tag": "Recommended", "icon": "🎬"},
-            {"title": "Theatrical", "desc": "Bold contrast for stage lighting.", "tag": "", "icon": "🎭"},
-            {"title": "Fashion / Editorial", "desc": "Runway and editorial magazine styles.", "tag": "", "icon": "📸"}
+            {"title": "Cinematic", "desc": "Realistic on-screen application.", "tag": "Recommended", "icon": "🎬", "disabled": False},
+            {"title": "Theatrical", "desc": "Bold contrast for stage lighting.", "tag": "Coming Soon", "icon": "🎭", "disabled": True},
+            {"title": "Fashion / Editorial", "desc": "Runway and editorial magazine styles.", "tag": "Coming Soon", "icon": "📸", "disabled": True}
         ]
     },
     "Test Hair Styling": {
         "sub": "Define your hair styling simulation.",
         "cards": [
-            {"title": "Natural Styling", "desc": "Everyday realism and natural flow.", "tag": "", "icon": "🍃"},
-            {"title": "Editorial Hair", "desc": "High-fashion and structural designs.", "tag": "Recommended", "icon": "✨"},
-            {"title": "Character Hair", "desc": "Specific to character era and personality.", "tag": "", "icon": "🎭"},
-            {"title": "Period / Era Hair", "desc": "Historically accurate vintage styling.", "tag": "Pro", "icon": "⏳"}
+            {"title": "Natural Styling", "desc": "Everyday realism and natural flow.", "tag": "Coming Soon", "icon": "🍃", "disabled": True},
+            {"title": "Editorial Hair", "desc": "High-fashion and structural designs.", "tag": "Coming Soon", "icon": "✨", "disabled": True},
+            {"title": "Character Hair", "desc": "Specific to character era and personality.", "tag": "Coming Soon", "icon": "🎭", "disabled": True},
+            {"title": "Period / Era Hair", "desc": "Historically accurate vintage styling.", "tag": "Coming Soon", "icon": "⏳", "disabled": True}
         ]
     }
 }
@@ -371,6 +373,12 @@ elif st.session_state.route == 'dashboard':
     bg = find_bg_file()
     if bg: add_bg_from_local(bg)
     
+    # 1. Header Image Logic
+    if os.path.exists("header.jpg"):
+        with open("header.jpg", "rb") as f:
+            header_b64 = base64.b64encode(f.read()).decode()
+        st.markdown(f'<img src="data:image/jpeg;base64,{header_b64}" style="width:100%; border-radius:15px; margin-bottom:20px; border: 1px solid rgba(0,242,255,0.3); box-shadow: 0 0 15px rgba(0,242,255,0.1);">', unsafe_allow_html=True)
+        
     st.markdown("<h2 class='title-main'>INITIATE PROTOCOL</h2>", unsafe_allow_html=True)
     st.markdown("<div class='subtitle'>Select your primary creative objective</div>", unsafe_allow_html=True)
     
@@ -379,25 +387,35 @@ elif st.session_state.route == 'dashboard':
         
     st.markdown("<br><br>", unsafe_allow_html=True)
     
+    # 2. Update to use uploaded images (card1.jpg to card4.jpg) and layout (text on top)
     c1, c2, c3, c4 = st.columns(4)
     intents = [
-        ("Build a Character", "🎬", "Define identity and core visual traits from scratch."),
-        ("Transform a Character", "⚡", "Apply physical evolutions, aging, or trauma."),
-        ("Design a Makeup Look", "👁️", "Configure cosmetics for cinematic or stage lighting."),
-        ("Test Hair Styling", "✂️", "Simulate hair structures and historical styles.")
+        ("Build a Character", "card1.jpg", "Define identity and core visual traits from scratch."),
+        ("Transform a Character", "card2.jpg", "Apply physical evolutions, aging, or trauma."),
+        ("Design a Makeup Look", "card3.jpg", "Configure cosmetics for cinematic or stage lighting."),
+        ("Test Hair Styling", "card4.jpg", "Simulate hair structures and historical styles.")
     ]
     
     cols = [c1, c2, c3, c4]
     for i, col in enumerate(cols):
         with col:
+            img_html = ""
+            img_file = intents[i][1]
+            if os.path.exists(img_file):
+                with open(img_file, "rb") as f:
+                    img_b64 = base64.b64encode(f.read()).decode()
+                img_html = f'<img src="data:image/jpeg;base64,{img_b64}" style="width:100%; height:140px; object-fit:cover; border-radius:8px; margin-top:10px;">'
+            else:
+                img_html = f'<div style="width:100%; height:140px; background:rgba(0,242,255,0.05); border-radius:8px; margin-top:10px; display:flex; align-items:center; justify-content:center; border: 1px dashed rgba(0,242,255,0.3);"><span style="color:#00f2ff; font-size: 0.7rem;">[ MISSING: {img_file} ]</span></div>'
+
             st.markdown(f'''
-            <div class="glass-panel creative-card" style="text-align:center; min-height: 220px; display:flex; flex-direction:column; justify-content:center;">
-                <h1 style="font-size:3rem; margin:0 0 10px 0; opacity:0.8;">{intents[i][1]}</h1>
-                <h4 style="color:#00f2ff; font-family:Cinzel; margin:0 0 10px 0;">{intents[i][0]}</h4>
-                <p style="color:#8b9eb3; font-size:0.75rem; font-family:Montserrat;">{intents[i][2]}</p>
+            <div class="glass-panel creative-card" style="text-align:center; min-height: 280px; display:flex; flex-direction:column; justify-content:flex-start; padding: 20px;">
+                <h4 style="color:#00f2ff; font-family:Cinzel; margin:0 0 8px 0; font-size:1.1rem;">{intents[i][0]}</h4>
+                <p style="color:#8b9eb3; font-size:0.75rem; font-family:Montserrat; line-height: 1.4; margin-bottom:10px;">{intents[i][2]}</p>
+                {img_html}
             </div>
             ''', unsafe_allow_html=True)
-            if st.button("INITIALIZE ENGINE", key=f"intent_{i}", use_container_width=True):
+            if st.button("INITIALIZE", key=f"intent_{i}", use_container_width=True):
                 st.session_state.intent = intents[i][0]
                 st.session_state.selected_card = None
                 go_to('creative_direction')
@@ -415,7 +433,6 @@ elif st.session_state.route == 'creative_direction':
     cards = config['cards']
     has_selection = st.session_state.selected_card is not None
     
-    # تنظیم Grid بر اساس تعداد کارت‌ها (۲در۲ یا ۳تایی وسط‌چین)
     if len(cards) == 4:
         r1_cols = st.columns(2)
         r2_cols = st.columns(2)
@@ -426,15 +443,21 @@ elif st.session_state.route == 'creative_direction':
         
     for i, card in enumerate(cards):
         title = card['title']
+        is_disabled = card.get('disabled', False)
         is_selected = (st.session_state.selected_card == title)
         
         blur_class = "blur-card" if (has_selection and not is_selected) else ""
         glow_class = "glow-card" if is_selected else ""
-        tag_html = f'<span style="background: rgba(0,242,255,0.15); color:#00f2ff; padding:3px 8px; border-radius:4px; font-size:0.6rem; font-weight:bold; letter-spacing:1px; border: 1px solid rgba(0,242,255,0.5);">{card["tag"].upper()}</span>' if card["tag"] else ''
+        disabled_class = "disabled-card" if is_disabled else ""
+        
+        if is_disabled:
+            tag_html = f'<span style="background: rgba(255,170,0,0.15); color:#ffaa00; padding:3px 8px; border-radius:4px; font-size:0.6rem; font-weight:bold; letter-spacing:1px; border: 1px solid rgba(255,170,0,0.5);">{card["tag"].upper()}</span>' if card["tag"] else ''
+        else:
+            tag_html = f'<span style="background: rgba(0,242,255,0.15); color:#00f2ff; padding:3px 8px; border-radius:4px; font-size:0.6rem; font-weight:bold; letter-spacing:1px; border: 1px solid rgba(0,242,255,0.5);">{card["tag"].upper()}</span>' if card["tag"] else ''
         
         with grid[i]:
             st.markdown(f"""
-            <div class="glass-panel creative-card {glow_class} {blur_class}" style="min-height: 160px; margin-bottom: 10px;">
+            <div class="glass-panel creative-card {glow_class} {blur_class} {disabled_class}" style="min-height: 160px; margin-bottom: 10px;">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                     <span style="font-size:30px; opacity:0.8;">{card["icon"]}</span>
                     {tag_html}
@@ -446,20 +469,19 @@ elif st.session_state.route == 'creative_direction':
                 </div>
             </div>
             """, unsafe_allow_html=True)
-            if st.button(f"CHOOSE {title.upper()}", key=f"cd_{i}", use_container_width=True):
+            
+            if st.button(f"CHOOSE {title.upper()}", key=f"cd_{i}", disabled=is_disabled, use_container_width=True):
                 st.session_state.selected_card = title
                 st.rerun()
 
     st.markdown("<br><hr style='border-color: rgba(0,242,255,0.2); margin-top:20px;'><br>", unsafe_allow_html=True)
     
-    # Bottom Navigation & Recommendation Engine
     col_back, col_info, col_next = st.columns([1, 2, 1])
     with col_back:
         if st.button("⬅ BACK", use_container_width=True): go_to('dashboard')
         
     with col_info:
         if has_selection:
-            # Smart Recommendation Logic
             rec_text = "Standard processing parameters applied."
             if "Theatrical" in st.session_state.selected_card:
                 rec_text = "Theatrical makeup is designed for visibility under stage lighting. System applied: Exaggeration boost, high contrast visuals."
