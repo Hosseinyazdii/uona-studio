@@ -232,42 +232,42 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # ==========================================
-# دیتابیس هوشمند صفحات جدید
+# دیتابیس هوشمند صفحات جدید (آپدیت با تصاویر اختصاصی هر کارت)
 # ==========================================
 CREATIVE_CONFIG = {
     "Build a Character": {
         "sub": "Select the visual discipline for your character.",
         "cards": [
-            {"title": "Cinematic Makeup", "desc": "High-end film quality and photorealistic details.", "tag": "Recommended", "icon": "🎬", "disabled": False},
-            {"title": "Theatrical Makeup", "desc": "Stage-ready contrast with enhanced visibility features.", "tag": "Coming Soon", "icon": "🎭", "disabled": True},
-            {"title": "Fashion Makeup", "desc": "Editorial, high-fashion and avant-garde looks.", "tag": "Coming Soon", "icon": "✨", "disabled": True},
-            {"title": "Hair Styling", "desc": "Complete hair design, texture, and structural styling.", "tag": "Coming Soon", "icon": "✂️", "disabled": True}
+            {"title": "Cinematic Makeup", "desc": "High-end film quality and photorealistic details.", "tag": "Recommended", "image": "cinematic_makeup_card.jpg", "disabled": False},
+            {"title": "Theatrical Makeup", "desc": "Stage-ready contrast with enhanced visibility features.", "tag": "Coming Soon", "image": "theatrical_makeup_card.jpg", "disabled": True},
+            {"title": "Fashion Makeup", "desc": "Editorial, high-fashion and avant-garde looks.", "tag": "Coming Soon", "image": "fashion_card.jpg", "disabled": True},
+            {"title": "Hair Styling", "desc": "Complete hair design, texture, and structural styling.", "tag": "Coming Soon", "image": "hairstyling_card.jpg", "disabled": True}
         ]
     },
     "Transform a Character": {
         "sub": "Define how the character evolves or changes.",
         "cards": [
-            {"title": "Aging Transformation", "desc": "Biological aging arc, wrinkles, and sagging.", "tag": "Coming Soon", "icon": "⏳", "disabled": True},
-            {"title": "SFX / Damage", "desc": "Trauma, wounds, burns, and physical damage.", "tag": "Coming Soon", "icon": "🩸", "disabled": True},
-            {"title": "Fantasy / Creature", "desc": "Non-human elements, mystical and creature designs.", "tag": "Coming Soon", "icon": "🐉", "disabled": True},
-            {"title": "Hybrid Transformation", "desc": "Mixed effects combining aging and procedural SFX.", "tag": "Coming Soon", "icon": "⚡", "disabled": True}
+            {"title": "Aging Transformation", "desc": "Biological aging arc, wrinkles, and sagging.", "tag": "Coming Soon", "image": "aging_transformation_card.jpg", "disabled": True},
+            {"title": "SFX / Damage", "desc": "Trauma, wounds, burns, and physical damage.", "tag": "Coming Soon", "image": "sfx_damaged_card.jpg", "disabled": True},
+            {"title": "Fantasy / Creature", "desc": "Non-human elements, mystical and creature designs.", "tag": "Coming Soon", "image": "fantasy_card.jpg", "disabled": True},
+            {"title": "Hybrid Transformation", "desc": "Mixed effects combining aging and procedural SFX.", "tag": "Coming Soon", "image": "", "disabled": True}
         ]
     },
     "Design a Makeup Look": {
         "sub": "Choose your makeup design approach.",
         "cards": [
-            {"title": "Cinematic", "desc": "Realistic on-screen application.", "tag": "Recommended", "icon": "🎬", "disabled": False},
-            {"title": "Theatrical", "desc": "Bold contrast for stage lighting.", "tag": "Coming Soon", "icon": "🎭", "disabled": True},
-            {"title": "Fashion / Editorial", "desc": "Runway and editorial magazine styles.", "tag": "Coming Soon", "icon": "📸", "disabled": True}
+            {"title": "Cinematic", "desc": "Realistic on-screen application.", "tag": "Recommended", "image": "cinematic_makeup_card.jpg", "disabled": False},
+            {"title": "Theatrical", "desc": "Bold contrast for stage lighting.", "tag": "Coming Soon", "image": "theatrical_makeup_card.jpg", "disabled": True},
+            {"title": "Fashion / Editorial", "desc": "Runway and editorial magazine styles.", "tag": "Coming Soon", "image": "fashion_card.jpg", "disabled": True}
         ]
     },
     "Test Hair Styling": {
         "sub": "Define your hair styling simulation.",
         "cards": [
-            {"title": "Natural Styling", "desc": "Everyday realism and natural flow.", "tag": "Coming Soon", "icon": "🍃", "disabled": True},
-            {"title": "Editorial Hair", "desc": "High-fashion and structural designs.", "tag": "Coming Soon", "icon": "✨", "disabled": True},
-            {"title": "Character Hair", "desc": "Specific to character era and personality.", "tag": "Coming Soon", "icon": "🎭", "disabled": True},
-            {"title": "Period / Era Hair", "desc": "Historically accurate vintage styling.", "tag": "Coming Soon", "icon": "⏳", "disabled": True}
+            {"title": "Natural Styling", "desc": "Everyday realism and natural flow.", "tag": "Coming Soon", "image": "", "disabled": True},
+            {"title": "Editorial Hair", "desc": "High-fashion and structural designs.", "tag": "Coming Soon", "image": "fashion_card.jpg", "disabled": True},
+            {"title": "Character Hair", "desc": "Specific to character era and personality.", "tag": "Coming Soon", "image": "hairstyling_card.jpg", "disabled": True},
+            {"title": "Period / Era Hair", "desc": "Historically accurate vintage styling.", "tag": "Coming Soon", "image": "", "disabled": True}
         ]
     }
 }
@@ -367,17 +367,17 @@ elif st.session_state.route == 'settings':
     st.markdown('</div>', unsafe_allow_html=True)
 
 # ==========================================
-# 🔴 ROUTE 1.5 (NEW): DASHBOARD -> INTENT SELECTION
+# 🔴 ROUTE 1.5: DASHBOARD -> INTENT SELECTION
 # ==========================================
 elif st.session_state.route == 'dashboard':
     bg = find_bg_file()
     if bg: add_bg_from_local(bg)
     
-    # 1. Header Image Logic
+    # 1. Header Image Logic - Resized and Centered
     if os.path.exists("header.jpg"):
         with open("header.jpg", "rb") as f:
             header_b64 = base64.b64encode(f.read()).decode()
-        st.markdown(f'<img src="data:image/jpeg;base64,{header_b64}" style="width:100%; border-radius:15px; margin-bottom:20px; border: 1px solid rgba(0,242,255,0.3); box-shadow: 0 0 15px rgba(0,242,255,0.1);">', unsafe_allow_html=True)
+        st.markdown(f'<div style="text-align:center;"><img src="data:image/jpeg;base64,{header_b64}" style="width:60%; max-width:800px; border-radius:15px; margin-bottom:20px; border: 1px solid rgba(0,242,255,0.3); box-shadow: 0 0 15px rgba(0,242,255,0.1);"></div>', unsafe_allow_html=True)
         
     st.markdown("<h2 class='title-main'>INITIATE PROTOCOL</h2>", unsafe_allow_html=True)
     st.markdown("<div class='subtitle'>Select your primary creative objective</div>", unsafe_allow_html=True)
@@ -387,7 +387,6 @@ elif st.session_state.route == 'dashboard':
         
     st.markdown("<br><br>", unsafe_allow_html=True)
     
-    # 2. Update to use uploaded images (card1.jpg to card4.jpg) and layout (text on top)
     c1, c2, c3, c4 = st.columns(4)
     intents = [
         ("Build a Character", "card1.jpg", "Define identity and core visual traits from scratch."),
@@ -421,7 +420,7 @@ elif st.session_state.route == 'dashboard':
                 go_to('creative_direction')
 
 # ==========================================
-# 🔴 ROUTE 2 (NEW): CREATIVE DIRECTION ENGINE
+# 🔴 ROUTE 2: CREATIVE DIRECTION ENGINE
 # ==========================================
 elif st.session_state.route == 'creative_direction':
     intent = st.session_state.intent
@@ -455,15 +454,26 @@ elif st.session_state.route == 'creative_direction':
         else:
             tag_html = f'<span style="background: rgba(0,242,255,0.15); color:#00f2ff; padding:3px 8px; border-radius:4px; font-size:0.6rem; font-weight:bold; letter-spacing:1px; border: 1px solid rgba(0,242,255,0.5);">{card["tag"].upper()}</span>' if card["tag"] else ''
         
+        # هندل کردن عکس برای کارت‌ها با استایل درخواستی (عکس پایین، متن بالا)
+        img_html = ""
+        img_file = card.get("image", "")
+        if img_file:
+            if os.path.exists(img_file):
+                with open(img_file, "rb") as f:
+                    img_b64 = base64.b64encode(f.read()).decode()
+                img_html = f'<img src="data:image/jpeg;base64,{img_b64}" style="width:100%; height:130px; object-fit:cover; border-radius:8px; margin-top:10px;">'
+            else:
+                img_html = f'<div style="width:100%; height:130px; background:rgba(0,242,255,0.05); border-radius:8px; margin-top:10px; display:flex; align-items:center; justify-content:center; border: 1px dashed rgba(0,242,255,0.3);"><span style="color:#00f2ff; font-size: 0.6rem;">[ MISSING: {img_file} ]</span></div>'
+
         with grid[i]:
             st.markdown(f"""
-            <div class="glass-panel creative-card {glow_class} {blur_class} {disabled_class}" style="min-height: 160px; margin-bottom: 10px;">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                    <span style="font-size:30px; opacity:0.8;">{card["icon"]}</span>
+            <div class="glass-panel creative-card {glow_class} {blur_class} {disabled_class}" style="min-height: 260px; margin-bottom: 10px; display:flex; flex-direction:column; justify-content:flex-start; padding: 20px;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+                    <h3 style="color:#fff; margin:0; font-family:'Cinzel'; font-size:1.1rem;">{title}</h3>
                     {tag_html}
                 </div>
-                <h3 style="color:#fff; margin:15px 0 5px 0; font-family:'Cinzel'; font-size:1.2rem;">{title}</h3>
-                <p style="color:#8b9eb3; font-size:0.8rem; font-family:'Montserrat'; margin:0; line-height:1.4;">{card["desc"]}</p>
+                <p style="color:#8b9eb3; font-size:0.75rem; font-family:'Montserrat'; margin:0 0 10px 0; line-height:1.4;">{card["desc"]}</p>
+                {img_html}
                 <div class="expand-details">
                     <p style="color:#00f2ff; font-size:0.75rem; font-weight:bold; margin:0;"><i>⚙️ System Configuration Locked. Detailed parameters applied.</i></p>
                 </div>
