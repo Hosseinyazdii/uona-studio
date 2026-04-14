@@ -50,6 +50,20 @@ def add_bg_from_local(image_file):
         """, unsafe_allow_html=True
     )
 
+# تابع هوشمند برای پیدا کردن عکس‌ها (حتی اگر پسوندها بزرگ/کوچک باشن)
+def get_image_base64(filename):
+    if not filename: return None
+    if os.path.exists(filename):
+        with open(filename, "rb") as f: return base64.b64encode(f.read()).decode()
+    
+    base, ext = os.path.splitext(filename)
+    possible_exts = ['.jpg', '.jpeg', '.png', '.JPG', '.JPEG', '.PNG']
+    for e in possible_exts:
+        alt_name = base + e
+        if os.path.exists(alt_name):
+            with open(alt_name, "rb") as f: return base64.b64encode(f.read()).decode()
+    return None
+
 # ==========================================
 # 2. دیتابیس مگا پرامپت (V2.0)
 # ==========================================
@@ -114,7 +128,7 @@ def next_step(): st.session_state.step += 1; st.rerun()
 def prev_step(): st.session_state.step -= 1; st.rerun()
 
 # ==========================================
-# 4. موتور پارسر هوشمند (AI Narrative Parser)
+# 4. موتور پارسر هوشمند
 # ==========================================
 def ai_narrative_parser(text, default_stages):
     text = text.lower()
@@ -216,7 +230,7 @@ st.markdown("""
     .glow-card { border: 2px solid #00f2ff !important; transform: scale(1.03) !important; box-shadow: 0 0 30px rgba(0, 242, 255, 0.4) !important; background: rgba(0, 242, 255, 0.08) !important; }
     .blur-card { filter: blur(3px) brightness(0.5); transform: scale(0.98); }
     
-    .disabled-card { opacity: 0.4; filter: grayscale(80%); pointer-events: none; }
+    .disabled-card { opacity: 0.5; filter: grayscale(80%); pointer-events: none; }
     .disabled-card:hover { transform: none !important; box-shadow: none !important; }
 
     .expand-details { max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.4s ease, opacity 0.4s ease; margin-top: 0; }
@@ -232,7 +246,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # ==========================================
-# دیتابیس هوشمند صفحات جدید (آپدیت با تصاویر اختصاصی هر کارت)
+# دیتابیس هوشمند صفحات جدید
 # ==========================================
 CREATIVE_CONFIG = {
     "Build a Character": {
@@ -279,7 +293,9 @@ if st.session_state.route == 'login':
     c1, c2 = st.columns([1, 1.2])
     with c1:
         st.markdown("<br><br><br>", unsafe_allow_html=True)
-        if os.path.exists("logo.PNG"): st.image("logo.PNG", width=280)
+        logo_b64 = get_image_base64("logo.PNG")
+        if logo_b64:
+            st.markdown(f'<img src="data:image/png;base64,{logo_b64}" width="280">', unsafe_allow_html=True)
     with c2:
         st.markdown("<h1 style='color:#ffffff; font-family:Cinzel; margin-top:80px;'>RESTRICTED ACCESS</h1>", unsafe_allow_html=True)
         st.markdown("<p style='color:#7b8ea8; font-family:Montserrat; font-size:0.8rem; margin-bottom:20px;'>Authorized Personnel Only. Please login to access UONA STUDIO.</p>", unsafe_allow_html=True)
@@ -305,7 +321,7 @@ if st.session_state.route == 'login':
     st.stop()
 
 # ==========================================
-# SHARED HEADER
+# SHARED HEADER (نمایش Header.jpg در اینجا برای همه صفحات)
 # ==========================================
 if st.session_state.route != 'login':
     badge_color = "#ffaa00" if "Apex" in st.session_state.plan or "MASTER" in st.session_state.plan else "#00f2ff"
@@ -327,6 +343,11 @@ if st.session_state.route != 'login':
             </div>
         """, unsafe_allow_html=True)
     st.markdown("<hr style='border-color: rgba(0,242,255,0.2); margin-top: 5px; margin-bottom: 20px;'>", unsafe_allow_html=True)
+    
+    # === HEADER IMAGE (سایز کوچکتر و در همه صفحات) ===
+    header_b64 = get_image_base64("header.jpg")
+    if header_b64:
+        st.markdown(f'<div style="text-align:center;"><img src="data:image/jpeg;base64,{header_b64}" style="width:100%; max-width:250px; border-radius:8px; margin-bottom:20px; border: 1px solid rgba(0,242,255,0.3); box-shadow: 0 0 15px rgba(0,242,255,0.1);"></div>', unsafe_allow_html=True)
 
 # ==========================================
 # ROUTES: ADMIN, LIBRARY, SETTINGS
@@ -372,12 +393,6 @@ elif st.session_state.route == 'settings':
 elif st.session_state.route == 'dashboard':
     bg = find_bg_file()
     if bg: add_bg_from_local(bg)
-    
-    # 1. Header Image Logic - Resized and Centered
-    if os.path.exists("header.jpg"):
-        with open("header.jpg", "rb") as f:
-            header_b64 = base64.b64encode(f.read()).decode()
-        st.markdown(f'<div style="text-align:center;"><img src="data:image/jpeg;base64,{header_b64}" style="width:60%; max-width:800px; border-radius:15px; margin-bottom:20px; border: 1px solid rgba(0,242,255,0.3); box-shadow: 0 0 15px rgba(0,242,255,0.1);"></div>', unsafe_allow_html=True)
         
     st.markdown("<h2 class='title-main'>INITIATE PROTOCOL</h2>", unsafe_allow_html=True)
     st.markdown("<div class='subtitle'>Select your primary creative objective</div>", unsafe_allow_html=True)
@@ -400,10 +415,11 @@ elif st.session_state.route == 'dashboard':
         with col:
             img_html = ""
             img_file = intents[i][1]
-            if os.path.exists(img_file):
-                with open(img_file, "rb") as f:
-                    img_b64 = base64.b64encode(f.read()).decode()
-                img_html = f'<img src="data:image/jpeg;base64,{img_b64}" style="width:100%; height:140px; object-fit:cover; border-radius:8px; margin-top:10px;">'
+            img_b64 = get_image_base64(img_file)
+            
+            if img_b64:
+                mime = "image/png" if ".png" in img_file.lower() else "image/jpeg"
+                img_html = f'<img src="data:{mime};base64,{img_b64}" style="width:100%; height:140px; object-fit:cover; border-radius:8px; margin-top:10px;">'
             else:
                 img_html = f'<div style="width:100%; height:140px; background:rgba(0,242,255,0.05); border-radius:8px; margin-top:10px; display:flex; align-items:center; justify-content:center; border: 1px dashed rgba(0,242,255,0.3);"><span style="color:#00f2ff; font-size: 0.7rem;">[ MISSING: {img_file} ]</span></div>'
 
@@ -454,14 +470,13 @@ elif st.session_state.route == 'creative_direction':
         else:
             tag_html = f'<span style="background: rgba(0,242,255,0.15); color:#00f2ff; padding:3px 8px; border-radius:4px; font-size:0.6rem; font-weight:bold; letter-spacing:1px; border: 1px solid rgba(0,242,255,0.5);">{card["tag"].upper()}</span>' if card["tag"] else ''
         
-        # هندل کردن عکس برای کارت‌ها با استایل درخواستی (عکس پایین، متن بالا)
         img_html = ""
         img_file = card.get("image", "")
         if img_file:
-            if os.path.exists(img_file):
-                with open(img_file, "rb") as f:
-                    img_b64 = base64.b64encode(f.read()).decode()
-                img_html = f'<img src="data:image/jpeg;base64,{img_b64}" style="width:100%; height:130px; object-fit:cover; border-radius:8px; margin-top:10px;">'
+            img_b64 = get_image_base64(img_file)
+            if img_b64:
+                mime = "image/png" if ".png" in img_file.lower() else "image/jpeg"
+                img_html = f'<img src="data:{mime};base64,{img_b64}" style="width:100%; height:130px; object-fit:cover; border-radius:8px; margin-top:10px;">'
             else:
                 img_html = f'<div style="width:100%; height:130px; background:rgba(0,242,255,0.05); border-radius:8px; margin-top:10px; display:flex; align-items:center; justify-content:center; border: 1px dashed rgba(0,242,255,0.3);"><span style="color:#00f2ff; font-size: 0.6rem;">[ MISSING: {img_file} ]</span></div>'
 
@@ -533,7 +548,6 @@ elif st.session_state.route == 'builder':
     
     d = st.session_state.draft
 
-    # --- Phase 1: FULL BASELINE ---
     if st.session_state.step == 1:
         st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
         st.markdown("<h3 style='color:#00f2ff; font-family:Cinzel;'>Phase 1: Complete Baseline Architecture</h3>", unsafe_allow_html=True)
@@ -567,7 +581,6 @@ elif st.session_state.route == 'builder':
         if st.button("NEXT: ARC CONFIGURATION ➔", use_container_width=True): next_step()
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # --- Phase 2: ARC CONFIG ---
     elif st.session_state.step == 2:
         age_val = d.get('age', AGE_LIST[2])
         is_under_22 = AGE_LIST.index(age_val) < 2 if age_val in AGE_LIST else False
@@ -575,7 +588,6 @@ elif st.session_state.route == 'builder':
 
         c_left, c_center, c_right = st.columns([3, 4.5, 2.5], gap="medium")
 
-        # 1. پنل چپ: DNA قفل شده
         with c_left:
             st.markdown('<div class="glass-panel" style="padding: 20px; height: 100%;">', unsafe_allow_html=True)
             st.markdown("<h4 style='color:#00f2ff; font-family:Cinzel;'>🔒 CHARACTER DNA</h4>", unsafe_allow_html=True)
@@ -583,7 +595,6 @@ elif st.session_state.route == 'builder':
             st.markdown("<div style='padding: 10px; background: rgba(0,242,255,0.1); border-left: 3px solid #00f2ff; color: #00f2ff; font-size: 0.75rem;'>🔒 Identity Locked.<br>Base parameters are preserved for continuous execution.</div>", unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
 
-        # 2. پنل وسط: پیش‌نمایش با تصویر در بک‌گراند
         with c_center:
             st.markdown('<div class="glass-panel" style="padding: 20px; height: 100%; display: flex; flex-direction: column;">', unsafe_allow_html=True)
             
@@ -591,13 +602,11 @@ elif st.session_state.route == 'builder':
             img_html = "<h3 style='color:rgba(255,255,255,0.1);'>[ 4:5 LIVE PORTRAIT FRAME ]</h3>"
             try:
                 if os.path.exists("arc.jpg"):
-                    with open("arc.jpg", "rb") as f: 
-                        img_b64 = base64.b64encode(f.read()).decode()
-                        img_html = f"<img src='data:image/jpeg;base64,{img_b64}' style='width:100%; max-height:400px; object-fit:contain; border-radius:10px;'>"
+                    img_b64 = get_image_base64("arc.jpg")
+                    if img_b64: img_html = f"<img src='data:image/jpeg;base64,{img_b64}' style='width:100%; max-height:400px; object-fit:contain; border-radius:10px;'>"
                 elif os.path.exists("portrait_clean.PNG"):
-                    with open("portrait_clean.PNG", "rb") as f: 
-                        img_b64 = base64.b64encode(f.read()).decode()
-                        img_html = f"<img src='data:image/png;base64,{img_b64}' style='width:100%; max-height:400px; object-fit:contain; border-radius:10px;'>"
+                    img_b64 = get_image_base64("portrait_clean.PNG")
+                    if img_b64: img_html = f"<img src='data:image/png;base64,{img_b64}' style='width:100%; max-height:400px; object-fit:contain; border-radius:10px;'>"
             except Exception:
                 pass
 
@@ -632,7 +641,6 @@ elif st.session_state.route == 'builder':
             if c_btn2.button("NEXT: REVIEW ➔", use_container_width=True): next_step()
             st.markdown('</div>', unsafe_allow_html=True)
 
-        # 3. پنل راست: دیتابیس‌های تخصصی
         with c_right:
             st.markdown('<div class="glass-panel" style="padding: 20px; height: 100%; overflow-y: auto;">', unsafe_allow_html=True)
             st.markdown("<h4 style='color:#ffaa00; font-family:Cinzel;'>⚙️ TRANSFORMATION ENGINE</h4>", unsafe_allow_html=True)
@@ -686,7 +694,6 @@ elif st.session_state.route == 'builder':
             st.markdown(f"<div style='margin-top: 15px; padding: 10px; border-left: 3px solid {f_color}; color: {f_color}; font-size: 0.7rem;'>{f_text}</div>", unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
 
-    # --- Phase 3: REVIEW ---
     elif st.session_state.step == 3:
         st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
         st.markdown("<h3 style='color:#00f2ff; font-family:Cinzel;'>Phase 3: Logic Engine Output</h3>", unsafe_allow_html=True)
@@ -699,9 +706,6 @@ elif st.session_state.route == 'builder':
         if c_btn2.button("PROCEED TO SIMULATION 🚀", use_container_width=True): go_to('simulation')
         st.markdown('</div>', unsafe_allow_html=True)
 
-# ==========================================
-# ROUTE 4 & 5: SIMULATION AND ENGINE
-# ==========================================
 elif st.session_state.route == 'simulation':
     st.markdown("<h2 class='title-main'>VISUAL SIMULATION</h2>", unsafe_allow_html=True)
     c1, c2 = st.columns([2, 1])
