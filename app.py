@@ -261,7 +261,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # ==========================================
-# دیتابیس هوشمند صفحات جدید
+# داشبورد دیتابیس هوشمند صفحات جدید
 # ==========================================
 CREATIVE_CONFIG = {
     "Build a Character": {
@@ -403,7 +403,7 @@ elif st.session_state.route == 'settings':
     st.markdown('</div>', unsafe_allow_html=True)
 
 # ==========================================
-# 🔴 ROUTE 1.5: DASHBOARD -> INTENT SELECTION 
+# 🔴 ROUTE 1.5: DASHBOARD -> INTENT SELECTION (تغییر سایز کارت‌ها اعمال شد)
 # ==========================================
 elif st.session_state.route == 'dashboard':
     bg = find_bg_file()
@@ -434,14 +434,16 @@ elif st.session_state.route == 'dashboard':
             
             if img_b64:
                 mime = "image/png" if ".png" in img_file.lower() else "image/jpeg"
-                img_html = f'<img src="data:{mime};base64,{img_b64}" style="width:100%; height:140px; object-fit:cover; border-radius:8px; margin-top:10px;">'
+                # عکس بزرگتر شده (height: 180px) و متناسب با ابعاد
+                img_html = f'<img src="data:{mime};base64,{img_b64}" style="width:100%; height:180px; object-fit:cover !important; border-radius:8px; margin-top:10px;">'
             else:
-                img_html = f'<div style="width:100%; height:140px; background:rgba(0,242,255,0.05); border-radius:8px; margin-top:10px; display:flex; align-items:center; justify-content:center; border: 1px dashed rgba(0,242,255,0.3);"><span style="color:#00f2ff; font-size: 0.7rem;">[ MISSING: {img_file} ]</span></div>'
+                img_html = f'<div style="width:100%; height:180px; background:rgba(0,242,255,0.05); border-radius:8px; margin-top:10px; display:flex; align-items:center; justify-content:center; border: 1px dashed rgba(0,242,255,0.3);"><span style="color:#00f2ff; font-size: 0.7rem;">[ MISSING: {img_file} ]</span></div>'
 
+            # پدینگ و min-height کارت افزایش یافته تا بزرگتر شود
             st.markdown(f'''
-            <div class="glass-panel creative-card" style="text-align:center; min-height: 280px; display:flex; flex-direction:column; justify-content:flex-start; padding: 20px;">
-                <h4 style="color:#00f2ff; font-family:Cinzel; margin:0 0 8px 0; font-size:1.1rem;">{intents[i][0]}</h4>
-                <p style="color:#8b9eb3; font-size:0.75rem; font-family:Montserrat; line-height: 1.4; margin-bottom:10px;">{intents[i][2]}</p>
+            <div class="glass-panel creative-card" style="text-align:center; min-height: 330px; display:flex; flex-direction:column; justify-content:flex-start; padding: 25px;">
+                <h4 style="color:#00f2ff; font-family:Cinzel; margin:0 0 10px 0; font-size:1.1rem;">{intents[i][0]}</h4>
+                <p style="color:#8b9eb3; font-size:0.8rem; font-family:Montserrat; line-height: 1.5; margin-bottom:12px;">{intents[i][2]}</p>
                 {img_html}
             </div>
             ''', unsafe_allow_html=True)
