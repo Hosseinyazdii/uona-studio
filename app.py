@@ -49,11 +49,7 @@ def add_bg_from_local(image_file):
         }}
         </style>
         """, unsafe_allow_html=True
-    )
-
-# ==========================================
-# 2. دیتابیس مگا پرامپت (V2.0)
-# ==========================================# --- Phase 2: ARC CONFIG ---
+    )# --- Phase 2: ARC CONFIG ---
     elif st.session_state.step == 2:
         age_val = d.get('age', AGE_LIST[2])
         is_under_22 = AGE_LIST.index(age_val) < 2 if age_val in AGE_LIST else False
@@ -92,7 +88,6 @@ def add_bg_from_local(image_file):
             # تایم‌لاین داینامیک بر اساس تعداد استیج‌های انتخاب شده یا نوشته شده
             stages_count_ui = d.get('arc_stages', 4)
             if d.get('scenario_text', '').strip():
-                # اگر متن نوشته بود، تعداد استیج رو از متن میخونه
                 stages_count_ui, _ = ai_narrative_parser(d['scenario_text'], stages_count_ui)
                 
             timeline_html = "<div style='display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding: 10px; background: rgba(0,242,255,0.05); border-radius: 8px;'>"
@@ -110,7 +105,8 @@ def add_bg_from_local(image_file):
             if c_btn1.button("⬅ BACK", use_container_width=True): prev_step()
             if c_btn2.button("NEXT: REVIEW ➔", use_container_width=True): next_step()
             st.markdown('</div>', unsafe_allow_html=True)
-# 3. پنل راست: دیتابیس‌های تخصصی
+
+        # 3. پنل راست: دیتابیس‌های تخصصی
         with c_right:
             st.markdown('<div class="glass-panel" style="padding: 20px; height: 100%; overflow-y: auto;">', unsafe_allow_html=True)
             st.markdown("<h4 style='color:#ffaa00; font-family:Cinzel;'>⚙️ TRANSFORMATION ENGINE</h4>", unsafe_allow_html=True)
