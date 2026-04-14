@@ -16,7 +16,6 @@ st.set_page_config(
 
 DB_FILE = ".users_db.json"
 PROJ_FILE = ".projects_db.json"
-
 ADMIN_USER = "sep"
 ADMIN_PASS = "1386sy"
 
@@ -56,7 +55,6 @@ def add_bg_from_local(image_file):
 # ==========================================
 GENDER_LIST = ["Masculine / Male", "Feminine / Female", "Androgynous"]
 AGE_LIST = ["Child / Pre-adolescent", "Adolescent / Teenager", "Young Adult (Early 20s)", "Middle-aged (Late 40s)", "Elderly / Senior", "Ancient / Centenarian"]
-
 NAT_DESC = {"Iranian": "Indo-Aryan features", "Egyptian": "North African features", "Emirati": "Gulf Arab features", "Saudi": "Peninsular Arab features", "Kuwaiti": "Northern Gulf features", "Syrian": "Levantine features", "Turkish": "Eurasian features", "Indian": "South Asian features", "American": "Diverse North American features", "European": "Caucasian features", "African": "Sub-Saharan features", "Chinese": "East Asian features"}
 ERA_DESC = {"Contemporary / Modern Day": "Current lighting, sharp details", "Stone Age / Prehistoric": "Primitive aesthetic, raw textures", "Before Common Era (BCE)": "Ancient civilization styling", "Pre-Islamic Era": "Traditional regional heritage", "Ancient Era (Hellenistic/Roman)": "Classical features", "Medieval / Dark Ages": "Gritty, rustic, heavy textures", "150 years ago (Victorian Era)": "Formal, structured, pale complexions", "100 Years ago (Roaring 20s)": "Vintage aesthetic", "50 Years ago (1970s Retro)": "Analog film look", "Futuristic / Cyberpunk": "Neon accents", "Post-Apocalyptic": "Dirty, weathered textures"}
 CONCEPTS = {"Heroic Warrior": "Strong jawline, confident gaze", "Sinister Villain": "Harsh shadows, menacing expression", "Scholar / Intellectual": "Refined appearance", "Royal / Aristocratic": "Elegant posture", "Mercenary / Outlaw": "Rugged, weathered", "Mystic / Shaman": "Otherworldly look", "Corporate Executive / CEO": "Clean-cut, authoritative", "Elite Athlete / Fitness Pro": "Defined muscularity", "Bohemian Artist": "Creative styling", "Average Citizen": "Naturalistic", "Blue-collar / Technician": "Grime, work-worn skin", "Academic Student": "Youthful, inquisitive", "High-fashion Model": "Angular features", "Retiree / Grandparent": "Dignified aging", "Urban / Street Style": "Modern edge", "Rural / Outdoorsman": "Sun-damaged skin", "Red Carpet / Gala Guest": "Glamorous, high-contrast", "Ailing / Sickly Character": "Pale skin, dark circles"}
@@ -69,14 +67,12 @@ CAM_DESC = {"85 mm Lens, Eye-Level Shot": "Classic portrait lens", "100 mm Macro
 SIZE_LIST = ["Aspect Ratio 16:9 (Widescreen)", "Aspect Ratio 4:5 (Portrait/Vertical)", "Aspect Ratio 5:4 (Portrait)", "Aspect Ratio 2.39:1 (Anamorphic / Cinemascope)", "Aspect Ratio 1:1 (Square)"]
 MAT_DESC = {"None": "", "Matte Sealer": "Non-reflective surface, velvety skin texture", "Prosthetic Adhesive": "Texture of professional bonding", "Encapsulated Silicone": "Realistic skin-like translucency"}
 
-# --- V2.0 Dynamic Stage Libraries ---
 AGING_STAGES = {
     "Wrinkles": ["Stage 1 (Age 30–40) – Dynamic Lines", "Stage 2 (Age 45–55) – Fixed Lines", "Stage 3 (Age 60–75) – Deep Creases", "Stage 4 (Age 85+) – Advanced Rhytids"],
     "Volume & Sagging": ["Stage 1 (Age 30–40) – Youthful Volume", "Stage 2 (Age 45–55) – Early Sagging", "Stage 3 (Age 60–75) – Structural Shift", "Stage 4 (Age 85+) – Facial Atrophy"],
     "Skin Texture & Pigmentation": ["Stage 1 (Age 30–40) – Uniform Tone", "Stage 2 (Age 45–55) – Textural Change", "Stage 3 (Age 60–75) – Pigment Shift", "Stage 4 (Age 85+) – Senile Texture"],
     "Hair & Brows": ["Stage 1 - Initial Graying", "Stage 2 - Moderate Graying", "Stage 3 - Significant Graying", "Stage 4 - Full White/Thinning"]
 }
-
 SFX_STAGES = {
     "Bruises": ["Stage 1 – Initial (Fresh Trauma)", "Stage 2 – Spread (Hematoma Stage)", "Stage 3 – Mid (Oxidation)", "Stage 4 – Final (Resolution)"],
     "Contusions": ["Stage 1 – Initial (Impact Point)", "Stage 2 – Spread (Active Edema)", "Stage 3 – Mid (Tissue Shift)", "Stage 4 – Final (Leveling)"],
@@ -85,7 +81,6 @@ SFX_STAGES = {
     "Chemical Burns (Acid-Type Simulation)": ["Stage 1 – Initial (Chemical Reaction)", "Stage 2 – Spread (Deep Corrosion)", "Stage 3 – Mid (Eschar Stage)", "Stage 4 – Final (Atrophic Scar)"],
     "Keloids (Fibrotic Overgrowth)": ["Stage 1 – Initial (Early Fibrosis)", "Stage 2 – Spread (Hypertrophic Growth)", "Stage 3 – Mid (Mature Keloid)", "Stage 4 – Final (Aging Keloid)"]
 }
-
 PIGMENT_STAGES = {
     "Vitiligo": ["Stage 1 – Initial: Small, symmetrical spots", "Stage 2 – Expansion: Larger map-like patches", "Stage 3 – Bilateral Spread: Widespread loss", "Stage 4 – Final / Integrated: Mostly depigmented"],
     "Melasma & Hyperpigmentation": ["Stage 1 – Initial: Light tan patches", "Stage 2 – Diffuse Spread: Darker brown, uneven", "Stage 3 – Deep Pigmentation: Dense areas", "Stage 4 – Chronic State: Mask-like pattern"],
@@ -100,6 +95,8 @@ if 'is_admin' not in st.session_state: st.session_state.is_admin = False
 if 'plan' not in st.session_state: st.session_state.plan = "UONA Core"
 if 'route' not in st.session_state: st.session_state.route = 'login'
 if 'step' not in st.session_state: st.session_state.step = 1
+if 'intent' not in st.session_state: st.session_state.intent = "Build a Character"
+if 'selected_card' not in st.session_state: st.session_state.selected_card = None
 
 if 'draft' not in st.session_state: 
     st.session_state.draft = {
@@ -109,7 +106,7 @@ if 'draft' not in st.session_state:
         "cam": list(CAM_DESC.keys())[0], "light": list(LIGHT_DESC.keys())[0], "size": SIZE_LIST[0],
         "scenario_text": "", "arc_stages": 4, "arc_aging": "None", "arc_sfx": "None", "arc_pigment": "None",
         "arc_aging_stage": "All Stages (Progression Arc)", "arc_sfx_stage": "All Stages (Progression Arc)", "arc_pigment_stage": "All Stages (Progression Arc)",
-        "bio_fatigue": False, "bio_lips": False
+        "bio_fatigue": False, "bio_lips": False, "creative_direction": ""
     }
 
 def go_to(route): st.session_state.route = route; st.rerun()
@@ -122,115 +119,107 @@ def prev_step(): st.session_state.step -= 1; st.rerun()
 def ai_narrative_parser(text, default_stages):
     text = text.lower()
     extracted_data = []
-    
     stages = default_stages
     if "2" in text or "two" in text or "۲" in text: stages = 2
     elif "3" in text or "three" in text or "۳" in text: stages = 3
     elif "5" in text or "five" in text or "۵" in text: stages = 5
 
-    if "acid" in text or "chemical" in text or "اسید" in text or "asid" in text:
-        extracted_data.append(("SFX ARC [Chemical Burns]", SFX_STAGES["Chemical Burns (Acid-Type Simulation)"]))
-    elif "burn" in text or "fire" in text or "سوختگی" in text or "آتش" in text or "sukhtegi" in text or "atash" in text:
-        extracted_data.append(("SFX ARC [First & Second Degree Burns]", SFX_STAGES["First & Second Degree Burns"]))
-    elif "bruise" in text or "punch" in text or "کبودی" in text or "مشت" in text or "kabudi" in text or "mosht" in text:
-        extracted_data.append(("SFX ARC [Bruises]", SFX_STAGES["Bruises"]))
-    elif "sword" in text or "slash" in text or "cut" in text or "شمشیر" in text or "زخم" in text or "zakhm" in text:
-        extracted_data.append(("SFX ARC [Abrasions]", SFX_STAGES["Abrasions"]))
-
-    if "age" in text or "old" in text or "years" in text or "پیر" in text or "سن" in text or "pir" in text or "sen" in text:
-        extracted_data.append(("AGING ARC [Volume & Sagging]", AGING_STAGES["Volume & Sagging"]))
-
-    if "vitiligo" in text or "پیسی" in text or "pisi" in text:
-        extracted_data.append(("PIGMENTATION ARC [Vitiligo]", PIGMENT_STAGES["Vitiligo"]))
-    elif "freckle" in text or "کک" in text or "مک" in text or "kak" in text or "mak" in text:
-        extracted_data.append(("PIGMENTATION ARC [Freckles]", PIGMENT_STAGES["Freckles"]))
-        
+    if "acid" in text or "chemical" in text or "اسید" in text or "asid" in text: extracted_data.append(("SFX ARC [Chemical Burns]", SFX_STAGES["Chemical Burns (Acid-Type Simulation)"]))
+    elif "burn" in text or "fire" in text or "سوختگی" in text or "آتش" in text or "sukhtegi" in text or "atash" in text: extracted_data.append(("SFX ARC [First & Second Degree Burns]", SFX_STAGES["First & Second Degree Burns"]))
+    elif "bruise" in text or "punch" in text or "کبودی" in text or "مشت" in text or "kabudi" in text or "mosht" in text: extracted_data.append(("SFX ARC [Bruises]", SFX_STAGES["Bruises"]))
+    elif "sword" in text or "slash" in text or "cut" in text or "شمشیر" in text or "زخم" in text or "zakhm" in text: extracted_data.append(("SFX ARC [Abrasions]", SFX_STAGES["Abrasions"]))
+    if "age" in text or "old" in text or "years" in text or "پیر" in text or "سن" in text or "pir" in text or "sen" in text: extracted_data.append(("AGING ARC [Volume & Sagging]", AGING_STAGES["Volume & Sagging"]))
+    if "vitiligo" in text or "پیسی" in text or "pisi" in text: extracted_data.append(("PIGMENTATION ARC [Vitiligo]", PIGMENT_STAGES["Vitiligo"]))
+    elif "freckle" in text or "کک" in text or "مک" in text or "kak" in text or "mak" in text: extracted_data.append(("PIGMENTATION ARC [Freckles]", PIGMENT_STAGES["Freckles"]))
     return stages, extracted_data
 
 # ==========================================
-# 5. موتور پردازش نهایی پرامپت (Strict Formula Mode)
+# 5. موتور پردازش نهایی پرامپت
 # ==========================================
 def generate_prompt(draft):
     uona_signature = "Uona Studio Signature (Scientific Makeup Design)."
     tech_specs = f"[Fixed Technical: {draft.get('cam')}, {draft.get('light')}, {draft.get('size')}]."
-    
     act_str = "VISUAL GUIDE: Use facial structure of attached subject. " if draft.get('actor') == "Yes" else ""
     nat_desc = NAT_DESC.get(draft.get('nat'), "")
     era_desc = ERA_DESC.get(draft.get('era'), "")
     groom_val = draft.get('groom', 'Clean Shaven')
     groom_desc = GROOM_DESC.get(groom_val, "")
     
+    # Injection of Creative Direction Protocol
+    cd_protocol = f"[Engine Calibration: {draft.get('creative_direction', 'Standard')}] "
+    
     identity = f"Character Identity: {draft.get('gen')}, Base Age {draft.get('age')}, Nationality: {draft.get('nat')} ({nat_desc}), Type: {draft.get('char')}, Era: {era_desc}. "
     appearance = f"Grooming/Appearance: {groom_val} ({groom_desc}), Hair Color: {draft.get('h_col')}, Texture: {draft.get('h_tex')}. "
     mat_finish = f"Material Finish: {MAT_DESC.get(draft.get('mat'), '')}. " if draft.get('mat') != "None" else ""
-    
     char_base = f"[{act_str}{identity}{appearance}{mat_finish}]"
     
     dynamic_stage = ""
     scenario = draft.get('scenario_text', '').strip()
     is_ui_active = (draft.get('arc_aging', 'None') != "None") or (draft.get('arc_sfx', 'None') != "None") or (draft.get('arc_pigment', 'None') != "None")
-    
     ui_stages = draft.get('arc_stages', 4) 
     
     if scenario:
         parsed_stages, extracted_db = ai_narrative_parser(scenario, ui_stages)
-        
         if extracted_db:
             dynamic_stage = f"[HORIZONTAL SEQUENCE ARC. {parsed_stages} stages separated by 1px white line. "
             for arc_title, arc_details in extracted_db:
                 sliced_details = arc_details[:parsed_stages] if len(arc_details) >= parsed_stages else arc_details
                 dynamic_stage += f"SYSTEM APPLIED {arc_title}: " + ", ".join([f"Stage {i+1} ({d})" for i, d in enumerate(sliced_details)]) + ". "
-            
-            dynamic_stage += f"NARRATIVE TIMELINE CONTEXT: Evolve the physical traits and SFX strictly based on this chronological timeline: '{scenario}'. "
-            dynamic_stage += "CRITICAL: Underlying facial identity MUST remain 100% identical across all panels.]"
+            dynamic_stage += f"NARRATIVE TIMELINE CONTEXT: Evolve the physical traits and SFX strictly based on this chronological timeline: '{scenario}'. CRITICAL: Underlying facial identity MUST remain 100% identical across all panels.]"
         else:
             dynamic_stage = f"[HORIZONTAL SEQUENCE ARC. {parsed_stages} stages separated by 1px white line. NARRATIVE TRANSFORMATION: '{scenario}'. Extract biological aging, SFX evolution, and grooming dynamically based on this narrative. CRITICAL: Underlying facial identity MUST remain 100% identical across all panels.]"
-            
     elif is_ui_active:
-        stages_count = ui_stages
-        dynamic_stage = f"[HORIZONTAL SEQUENCE ARC. {stages_count} stages separated by 1px white line. "
-        
+        dynamic_stage = f"[HORIZONTAL SEQUENCE ARC. {ui_stages} stages separated by 1px white line. "
         if draft.get('arc_aging', 'None') != "None":
             aging_arr = AGING_STAGES.get(draft.get('arc_aging'), [])
-            sliced = aging_arr[:stages_count] if aging_arr else []
-            dynamic_stage += f"SCIENTIFIC AGING LOGIC: {draft.get('arc_aging')} (" + ", ".join(sliced) + "). "
+            dynamic_stage += f"SCIENTIFIC AGING LOGIC: {draft.get('arc_aging')} (" + ", ".join(aging_arr[:ui_stages] if aging_arr else []) + "). "
         if draft.get('arc_sfx', 'None') != "None":
             sfx_arr = SFX_STAGES.get(draft.get('arc_sfx'), [])
-            sliced = sfx_arr[:stages_count] if sfx_arr else []
-            dynamic_stage += f"SFX TRAUMA ARC: {draft.get('arc_sfx')} (" + ", ".join(sliced) + "). "
+            dynamic_stage += f"SFX TRAUMA ARC: {draft.get('arc_sfx')} (" + ", ".join(sfx_arr[:ui_stages] if sfx_arr else []) + "). "
         if draft.get('arc_pigment', 'None') != "None":
             pig_arr = PIGMENT_STAGES.get(draft.get('arc_pigment'), [])
-            sliced = pig_arr[:stages_count] if pig_arr else []
-            dynamic_stage += f"PIGMENTATION ARC: {draft.get('arc_pigment')} (" + ", ".join(sliced) + "). "
-            
+            dynamic_stage += f"PIGMENTATION ARC: {draft.get('arc_pigment')} (" + ", ".join(pig_arr[:ui_stages] if pig_arr else []) + "). "
         dynamic_stage += "CRITICAL: Underlying facial identity MUST remain 100% identical across all panels.]"
-        
     else:
         base_sfx = SFX_DESC.get(draft.get('sfx'), draft.get('sfx')) if draft.get('sfx') != "None" else ""
         dynamic_stage = f"[Single Shot Portrait. CINEMATIC PROSTHETIC STUDY: Apply {base_sfx} as a makeup layer.]" if base_sfx else "[Single Shot Portrait.]"
 
-    final_prompt = f"{uona_signature} {tech_specs} {char_base} {dynamic_stage} 8k, hyper-realistic, subsurface scattering, focus on prosthetic makeup accuracy."
+    final_prompt = f"{uona_signature} {tech_specs} {cd_protocol} {char_base} {dynamic_stage} 8k, hyper-realistic, subsurface scattering, focus on prosthetic makeup accuracy."
     return " ".join(final_prompt.split())
 
 # ==========================================
-# 6. موتور استایل (CSS Engine)
+# 6. موتور استایل (CSS Engine) آپدیت شده
 # ==========================================
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@800&family=Montserrat:wght@300;400;700;900&display=swap');
     html, body, [data-testid="stAppViewContainer"] { background: radial-gradient(circle at center, #0a192f 0%, #02060c 100%); height: 100vh; overflow-x: hidden; }
     #MainMenu, footer, header {visibility: hidden;} .stDeployButton {display:none;}
+    
     div.element-container:has(.logo-marker) + div.element-container button { background-color: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; height: auto !important; display: flex !important; justify-content: flex-start !important; }
     div.element-container:has(.logo-marker) + div.element-container button p { color: #00f2ff !important; font-family: 'Cinzel', serif !important; font-size: 1.5rem !important; font-weight: 900 !important; margin: 0 !important; padding: 0 !important; text-transform: uppercase !important; transition: all 0.3s ease !important; }
     div.element-container:has(.logo-marker) + div.element-container button:hover p { color: #ffffff !important; text-shadow: 0 0 15px #00f2ff !important; transform: scale(1.02) !important; }
-    .title-main { font-family: 'Cinzel'; color: #ffffff !important; font-size: 2.5rem; font-weight: 800; letter-spacing: 10px; margin: 0; text-shadow: 0 0 15px rgba(0, 242, 255, 0.5); }
-    .subtitle { color: #00f2ff; font-family: 'Montserrat'; font-size: 0.8rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 30px;}
+    
+    .title-main { font-family: 'Cinzel'; color: #ffffff !important; font-size: 2.5rem; font-weight: 800; letter-spacing: 10px; margin: 0; text-shadow: 0 0 15px rgba(0, 242, 255, 0.5); text-align: center; }
+    .subtitle { color: #00f2ff; font-family: 'Montserrat'; font-size: 0.8rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 30px; text-align: center; }
+    
     label, .stMarkdown p { color: #00e5ff !important; font-family: 'Montserrat' !important; font-weight: 700 !important; text-transform: uppercase !important; font-size: 0.75rem !important; }
     div[data-baseweb="input"] > div, div[data-baseweb="textarea"] > div { background-color: rgba(0, 20, 40, 0.9) !important; border: 1px solid rgba(0, 242, 255, 0.4) !important; border-radius: 10px !important; }
     div[data-baseweb="input"] input, div[data-baseweb="select"], div[data-baseweb="slider"], textarea { color: #ffffff !important; font-weight: bold !important; font-family: 'Montserrat', sans-serif !important; }
+    
     .stButton > button { border: none !important; border-radius: 8px !important; font-family: 'Cinzel', serif !important; font-weight: 900 !important; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; background-color: #00f2ff !important; color: #000000 !important; box-shadow: 0 0 10px rgba(0, 242, 255, 0.3); }
     .stButton > button:hover { background-color: #ffffff !important; transform: scale(1.02); box-shadow: 0 0 20px #00f2ff;}
+    
     .glass-panel { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(0, 242, 255, 0.15); border-radius: 15px; padding: 25px; backdrop-filter: blur(10px); margin-bottom: 20px; }
+    
+    /* سیستم هوشمند کارت‌ها */
+    .creative-card { transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer; }
+    .creative-card:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(0,242,255,0.2); }
+    .glow-card { border: 2px solid #00f2ff !important; transform: scale(1.03) !important; box-shadow: 0 0 30px rgba(0, 242, 255, 0.4) !important; background: rgba(0, 242, 255, 0.08) !important; }
+    .blur-card { filter: blur(3px) brightness(0.5); transform: scale(0.98); }
+    .expand-details { max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.4s ease, opacity 0.4s ease; margin-top: 0; }
+    .glow-card .expand-details { max-height: 120px; opacity: 1; margin-top: 15px; padding-top: 10px; border-top: 1px dashed rgba(0,242,255,0.4); }
+
     .step-indicator { display: flex; justify-content: space-between; margin-bottom: 30px; color: #4a5d73; font-family: 'Montserrat'; font-size: 0.7rem; font-weight: 900; }
     .step-active { color: #00f2ff; text-shadow: 0 0 8px #00f2ff; }
     div[data-testid="stExpander"] { background: rgba(10, 25, 47, 0.6) !important; border: 1px solid rgba(0, 242, 255, 0.2) !important; border-radius: 12px !important; backdrop-filter: blur(10px); margin-bottom: 15px; transition: all 0.3s ease; }
@@ -239,6 +228,47 @@ st.markdown("""
     [data-testid="stImage"] img { border-radius: 12px !important; border: 2px solid #00f2ff !important; box-shadow: 0 0 15px rgba(0, 242, 255, 0.7) !important; }
     </style>
     """, unsafe_allow_html=True)
+
+# ==========================================
+# دیتابیس هوشمند صفحات جدید
+# ==========================================
+CREATIVE_CONFIG = {
+    "Build a Character": {
+        "sub": "Select the visual discipline for your character.",
+        "cards": [
+            {"title": "Cinematic Makeup", "desc": "High-end film quality and photorealistic details.", "tag": "Recommended", "icon": "🎬"},
+            {"title": "Theatrical Makeup", "desc": "Stage-ready contrast with enhanced visibility features.", "tag": "", "icon": "🎭"},
+            {"title": "Fashion Makeup", "desc": "Editorial, high-fashion and avant-garde looks.", "tag": "", "icon": "✨"},
+            {"title": "Hair Styling", "desc": "Complete hair design, texture, and structural styling.", "tag": "", "icon": "✂️"}
+        ]
+    },
+    "Transform a Character": {
+        "sub": "Define how the character evolves or changes.",
+        "cards": [
+            {"title": "Aging Transformation", "desc": "Biological aging arc, wrinkles, and sagging.", "tag": "Recommended", "icon": "⏳"},
+            {"title": "SFX / Damage", "desc": "Trauma, wounds, burns, and physical damage.", "tag": "", "icon": "🩸"},
+            {"title": "Fantasy / Creature", "desc": "Non-human elements, mystical and creature designs.", "tag": "Pro", "icon": "🐉"},
+            {"title": "Hybrid Transformation", "desc": "Mixed effects combining aging and procedural SFX.", "tag": "", "icon": "⚡"}
+        ]
+    },
+    "Design a Makeup Look": {
+        "sub": "Choose your makeup design approach.",
+        "cards": [
+            {"title": "Cinematic", "desc": "Realistic on-screen application.", "tag": "Recommended", "icon": "🎬"},
+            {"title": "Theatrical", "desc": "Bold contrast for stage lighting.", "tag": "", "icon": "🎭"},
+            {"title": "Fashion / Editorial", "desc": "Runway and editorial magazine styles.", "tag": "", "icon": "📸"}
+        ]
+    },
+    "Test Hair Styling": {
+        "sub": "Define your hair styling simulation.",
+        "cards": [
+            {"title": "Natural Styling", "desc": "Everyday realism and natural flow.", "tag": "", "icon": "🍃"},
+            {"title": "Editorial Hair", "desc": "High-fashion and structural designs.", "tag": "Recommended", "icon": "✨"},
+            {"title": "Character Hair", "desc": "Specific to character era and personality.", "tag": "", "icon": "🎭"},
+            {"title": "Period / Era Hair", "desc": "Historically accurate vintage styling.", "tag": "Pro", "icon": "⏳"}
+        ]
+    }
+}
 
 # ==========================================
 # ROUTE 1: ENTRY FLOW (LOGIN ONLY)
@@ -259,7 +289,7 @@ if st.session_state.route == 'login':
         if st.button("AUTHENTICATE", use_container_width=True):
             if u_name == ADMIN_USER and u_pass == ADMIN_PASS:
                 st.session_state.auth = True; st.session_state.user = u_name; st.session_state.is_admin = True; st.session_state.plan = "MASTER APEX"
-                go_to('admin_panel')
+                go_to('dashboard')
             elif u_name in users:
                 user_data = users[u_name]
                 db_pass = user_data if isinstance(user_data, str) else user_data.get("pass", "")
@@ -277,11 +307,16 @@ if st.session_state.route == 'login':
 # ==========================================
 if st.session_state.route != 'login':
     badge_color = "#ffaa00" if "Apex" in st.session_state.plan or "MASTER" in st.session_state.plan else "#00f2ff"
-    c_head1, c_head2 = st.columns([1, 3])
-    with c_head1:
+    
+    colA, colB, colC, colD = st.columns([1.5, 0.8, 0.8, 3])
+    with colA:
         st.markdown('<span class="logo-marker"></span>', unsafe_allow_html=True)
         if st.button("UONA STUDIO", key="top_home_btn"): go_to('dashboard')
-    with c_head2:
+    with colB:
+        if st.button("📂 LIBRARY", key="top_lib"): go_to('library')
+    with colC:
+        if st.button("⚙️ SETTINGS", key="top_set"): go_to('settings')
+    with colD:
         st.markdown(f"""
             <div style="display: flex; justify-content: flex-end; align-items: center; height: 100%; padding-top: 10px;">
                 <span style="color:{badge_color}; font-family:Cinzel; font-weight:bold; font-size:0.7rem; border:1px solid {badge_color}; padding:3px 8px; border-radius:4px; margin-right:15px; box-shadow: 0 0 8px rgba(0,0,0,0.5);">💎 {st.session_state.plan.upper()}</span>
@@ -292,7 +327,7 @@ if st.session_state.route != 'login':
     st.markdown("<hr style='border-color: rgba(0,242,255,0.2); margin-top: 5px; margin-bottom: 20px;'>", unsafe_allow_html=True)
 
 # ==========================================
-# ROUTES: ADMIN, DASHBOARD, LIBRARY, SETTINGS
+# ROUTES: ADMIN, LIBRARY, SETTINGS
 # ==========================================
 if st.session_state.route == 'admin_panel':
     if not st.session_state.is_admin: go_to('dashboard')
@@ -317,23 +352,6 @@ if st.session_state.route == 'admin_panel':
             if col_btn.button("REVOKE", key=f"del_{usr}"): del users[usr]; save_json(DB_FILE, users); st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
 
-elif st.session_state.route == 'dashboard':
-    bg = find_bg_file()
-    if bg: add_bg_from_local(bg)
-    st.markdown("<h2 style='color:#fff; font-family:Cinzel; text-align:center;'>CONTROL CENTER</h2><div class='subtitle' style='text-align:center;'>Select a module to begin</div>", unsafe_allow_html=True)
-    if st.session_state.is_admin:
-        if st.button("⚙️ RETURN TO ADMIN PANEL"): go_to('admin_panel')
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        st.markdown('<div class="glass-panel" style="text-align:center;"><h1>🎬</h1><h3>NEW CHARACTER</h3></div>', unsafe_allow_html=True)
-        if st.button("START PROJECT", key="b1", use_container_width=True): st.session_state.step = 1; go_to('builder')
-    with c2:
-        st.markdown('<div class="glass-panel" style="text-align:center;"><h1>📂</h1><h3>LIBRARY</h3></div>', unsafe_allow_html=True)
-        if st.button("OPEN LIBRARY", key="b2", use_container_width=True): go_to('library')
-    with c3:
-        st.markdown('<div class="glass-panel" style="text-align:center;"><h1>⚙️</h1><h3>SETTINGS</h3></div>', unsafe_allow_html=True)
-        if st.button("OPEN SETTINGS", key="b3", use_container_width=True): go_to('settings')
-
 elif st.session_state.route == 'library':
     st.markdown("<h2 class='title-main'>PROJECT LIBRARY</h2>", unsafe_allow_html=True)
     projects = load_json(PROJ_FILE, [])
@@ -345,6 +363,129 @@ elif st.session_state.route == 'settings':
     st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
     st.selectbox("Default AI Engine", ["Midjourney V6", "Gemini Pro Vision", "Stable Diffusion XL"])
     st.markdown('</div>', unsafe_allow_html=True)
+
+# ==========================================
+# 🔴 ROUTE 1.5 (NEW): DASHBOARD -> INTENT SELECTION
+# ==========================================
+elif st.session_state.route == 'dashboard':
+    bg = find_bg_file()
+    if bg: add_bg_from_local(bg)
+    
+    st.markdown("<h2 class='title-main'>INITIATE PROTOCOL</h2>", unsafe_allow_html=True)
+    st.markdown("<div class='subtitle'>Select your primary creative objective</div>", unsafe_allow_html=True)
+    
+    if st.session_state.is_admin:
+        if st.button("⚙️ RETURN TO ADMIN PANEL"): go_to('admin_panel')
+        
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    
+    c1, c2, c3, c4 = st.columns(4)
+    intents = [
+        ("Build a Character", "🎬", "Define identity and core visual traits from scratch."),
+        ("Transform a Character", "⚡", "Apply physical evolutions, aging, or trauma."),
+        ("Design a Makeup Look", "👁️", "Configure cosmetics for cinematic or stage lighting."),
+        ("Test Hair Styling", "✂️", "Simulate hair structures and historical styles.")
+    ]
+    
+    cols = [c1, c2, c3, c4]
+    for i, col in enumerate(cols):
+        with col:
+            st.markdown(f'''
+            <div class="glass-panel creative-card" style="text-align:center; min-height: 220px; display:flex; flex-direction:column; justify-content:center;">
+                <h1 style="font-size:3rem; margin:0 0 10px 0; opacity:0.8;">{intents[i][1]}</h1>
+                <h4 style="color:#00f2ff; font-family:Cinzel; margin:0 0 10px 0;">{intents[i][0]}</h4>
+                <p style="color:#8b9eb3; font-size:0.75rem; font-family:Montserrat;">{intents[i][2]}</p>
+            </div>
+            ''', unsafe_allow_html=True)
+            if st.button("INITIALIZE ENGINE", key=f"intent_{i}", use_container_width=True):
+                st.session_state.intent = intents[i][0]
+                st.session_state.selected_card = None
+                go_to('creative_direction')
+
+# ==========================================
+# 🔴 ROUTE 2 (NEW): CREATIVE DIRECTION ENGINE
+# ==========================================
+elif st.session_state.route == 'creative_direction':
+    intent = st.session_state.intent
+    config = CREATIVE_CONFIG[intent]
+    
+    st.markdown("<h2 class='title-main'>Choose your creative direction</h2>", unsafe_allow_html=True)
+    st.markdown(f"<div class='subtitle'>{config['sub']}</div>", unsafe_allow_html=True)
+    
+    cards = config['cards']
+    has_selection = st.session_state.selected_card is not None
+    
+    # تنظیم Grid بر اساس تعداد کارت‌ها (۲در۲ یا ۳تایی وسط‌چین)
+    if len(cards) == 4:
+        r1_cols = st.columns(2)
+        r2_cols = st.columns(2)
+        grid = [r1_cols[0], r1_cols[1], r2_cols[0], r2_cols[1]]
+    else:
+        _, c1, c2, c3, _ = st.columns([1, 2, 2, 2, 1])
+        grid = [c1, c2, c3]
+        
+    for i, card in enumerate(cards):
+        title = card['title']
+        is_selected = (st.session_state.selected_card == title)
+        
+        blur_class = "blur-card" if (has_selection and not is_selected) else ""
+        glow_class = "glow-card" if is_selected else ""
+        tag_html = f'<span style="background: rgba(0,242,255,0.15); color:#00f2ff; padding:3px 8px; border-radius:4px; font-size:0.6rem; font-weight:bold; letter-spacing:1px; border: 1px solid rgba(0,242,255,0.5);">{card["tag"].upper()}</span>' if card["tag"] else ''
+        
+        with grid[i]:
+            st.markdown(f"""
+            <div class="glass-panel creative-card {glow_class} {blur_class}" style="min-height: 160px; margin-bottom: 10px;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <span style="font-size:30px; opacity:0.8;">{card["icon"]}</span>
+                    {tag_html}
+                </div>
+                <h3 style="color:#fff; margin:15px 0 5px 0; font-family:'Cinzel'; font-size:1.2rem;">{title}</h3>
+                <p style="color:#8b9eb3; font-size:0.8rem; font-family:'Montserrat'; margin:0; line-height:1.4;">{card["desc"]}</p>
+                <div class="expand-details">
+                    <p style="color:#00f2ff; font-size:0.75rem; font-weight:bold; margin:0;"><i>⚙️ System Configuration Locked. Detailed parameters applied.</i></p>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            if st.button(f"CHOOSE {title.upper()}", key=f"cd_{i}", use_container_width=True):
+                st.session_state.selected_card = title
+                st.rerun()
+
+    st.markdown("<br><hr style='border-color: rgba(0,242,255,0.2); margin-top:20px;'><br>", unsafe_allow_html=True)
+    
+    # Bottom Navigation & Recommendation Engine
+    col_back, col_info, col_next = st.columns([1, 2, 1])
+    with col_back:
+        if st.button("⬅ BACK", use_container_width=True): go_to('dashboard')
+        
+    with col_info:
+        if has_selection:
+            # Smart Recommendation Logic
+            rec_text = "Standard processing parameters applied."
+            if "Theatrical" in st.session_state.selected_card:
+                rec_text = "Theatrical makeup is designed for visibility under stage lighting. System applied: Exaggeration boost, high contrast visuals."
+            elif intent == "Transform a Character":
+                rec_text = "Transformation protocol initiated. System applied: Aging Engine enabled, Timeline System pre-loaded, Realism constraints activated."
+            elif "Fashion" in st.session_state.selected_card or "Editorial" in st.session_state.selected_card:
+                rec_text = "Editorial protocol initiated. Optimizing for runway lighting and avant-garde cinematic textures."
+            elif "Fantasy" in st.session_state.selected_card:
+                rec_text = "Pro features unlocked: Non-human anatomical mapping and procedural creature generation activated."
+                
+            st.markdown(f"""
+            <div style="text-align:center; padding: 10px; background: rgba(0,242,255,0.05); border-radius:8px; border:1px solid rgba(0,242,255,0.3); box-shadow: 0 0 15px rgba(0,242,255,0.1);">
+                <span style="color:#00ffaa; font-size:0.75rem; font-weight:bold; letter-spacing:1px;">✅ RECOMMENDED FOR YOUR GOAL</span><br>
+                <span style="color:#ccc; font-size:0.8rem; font-family:Montserrat; display:block; margin-top:5px;">{rec_text}</span>
+            </div>
+            """, unsafe_allow_html=True)
+            
+    with col_next:
+        if has_selection:
+            if st.button("CONTINUE ➔", use_container_width=True):
+                st.session_state.draft['intent'] = intent
+                st.session_state.draft['creative_direction'] = st.session_state.selected_card
+                st.session_state.step = 1
+                go_to('builder')
+        else:
+            st.button("CONTINUE ➔", disabled=True, use_container_width=True)
 
 # ==========================================
 # 🔴 ROUTE 3: CHARACTER BUILDER 🔴
@@ -414,7 +555,6 @@ elif st.session_state.route == 'builder':
         with c_center:
             st.markdown('<div class="glass-panel" style="padding: 20px; height: 100%; display: flex; flex-direction: column;">', unsafe_allow_html=True)
             
-            # --- تزریق عکس داخل باکس با Base64 ---
             img_b64 = ""
             img_html = "<h3 style='color:rgba(255,255,255,0.1);'>[ 4:5 LIVE PORTRAIT FRAME ]</h3>"
             try:
@@ -440,7 +580,6 @@ elif st.session_state.route == 'builder':
             </div>
             """, unsafe_allow_html=True)
             
-            # تایم‌لاین داینامیک بر اساس تعداد استیج‌های انتخاب شده یا نوشته شده
             stages_count_ui = d.get('arc_stages', 4)
             if d.get('scenario_text', '').strip():
                 stages_count_ui, _ = ai_narrative_parser(d['scenario_text'], stages_count_ui)
@@ -474,13 +613,7 @@ elif st.session_state.route == 'builder':
                     <p style='color: #888; font-size: 0.7rem;'>Arc Modules require Apex tier.</p>
                 </div>
                 """, unsafe_allow_html=True)
-                d['arc_stages'] = 4
-                d['arc_aging'] = "None"
-                d['arc_sfx'] = "None"
-                d['arc_pigment'] = "None"
-                d['bio_fatigue'] = False
-                d['bio_lips'] = False
-                d['scenario_text'] = ""
+                d['arc_stages'] = 4; d['arc_aging'] = "None"; d['arc_sfx'] = "None"; d['arc_pigment'] = "None"; d['bio_fatigue'] = False; d['bio_lips'] = False; d['scenario_text'] = ""
             else:
                 d['arc_stages'] = st.slider("NUMBER OF STAGES", 2, 5, d.get('arc_stages', 4))
                 
@@ -514,15 +647,9 @@ elif st.session_state.route == 'builder':
                 
                 d['scenario_text'] = st.text_area("NARRATIVE (OPTIONAL)", value=d.get('scenario_text', ''), placeholder="e.g. A 40-year-old man with a deep wound, aging to 80...")
 
-            if is_female or is_under_22: 
-                f_text = "🔒 Constraints Safely Enforced"
-                f_color = "#00f2ff"
-            elif d['arc_sfx'] != "None" and d['arc_aging'] != "None":
-                f_text = "⚠️ Arc Conflict Detected"
-                f_color = "#ffaa00"
-            else: 
-                f_text = "✅ Continuity Preserved"
-                f_color = "#00ffaa"
+            if is_female or is_under_22: f_text = "🔒 Constraints Safely Enforced"; f_color = "#00f2ff"
+            elif d['arc_sfx'] != "None" and d['arc_aging'] != "None": f_text = "⚠️ Arc Conflict Detected"; f_color = "#ffaa00"
+            else: f_text = "✅ Continuity Preserved"; f_color = "#00ffaa"
                 
             st.markdown(f"<div style='margin-top: 15px; padding: 10px; border-left: 3px solid {f_color}; color: {f_color}; font-size: 0.7rem;'>{f_text}</div>", unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
