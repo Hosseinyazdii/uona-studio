@@ -410,25 +410,35 @@ elif st.session_state.route == 'builder':
             st.markdown("<div style='padding: 10px; background: rgba(0,242,255,0.1); border-left: 3px solid #00f2ff; color: #00f2ff; font-size: 0.75rem;'>🔒 Identity Locked.<br>Base parameters are preserved for continuous execution.</div>", unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
 
-        # 2. پنل وسط: پیش‌نمایش
+        # 2. پنل وسط: پیش‌نمایش با تصویر در بک‌گراند
         with c_center:
             st.markdown('<div class="glass-panel" style="padding: 20px; height: 100%; display: flex; flex-direction: column;">', unsafe_allow_html=True)
-            st.markdown("<div style='flex-grow: 1; border: 1px solid rgba(0,242,255,0.3); border-radius: 10px; background: #02060c; position:relative; overflow: hidden; display:flex; justify-content:center; align-items:center; min-height: 350px;'>", unsafe_allow_html=True)
             
-            st.markdown("""
-            <div style='position:absolute; top: 10px; left: 15px; display: flex; flex-direction: column; gap: 5px;'>
-                <span style='color:#00f2ff; font-size:0.65rem; background: rgba(0,0,0,0.6); padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(0,242,255,0.3);'>🟢 Identity Engine Active</span>
-                <span style='color:#00f2ff; font-size:0.65rem; background: rgba(0,0,0,0.6); padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(0,242,255,0.3);'>🔒 Biometric Continuity Locked</span>
-                <span style='color:#00f2ff; font-size:0.65rem; background: rgba(0,0,0,0.6); padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(0,242,255,0.3);'>⚡ Material Simulation Running</span>
+            # --- تزریق عکس داخل باکس با Base64 ---
+            img_b64 = ""
+            img_html = "<h3 style='color:rgba(255,255,255,0.1);'>[ 4:5 LIVE PORTRAIT FRAME ]</h3>"
+            try:
+                if os.path.exists("arc.jpg"):
+                    with open("arc.jpg", "rb") as f: 
+                        img_b64 = base64.b64encode(f.read()).decode()
+                        img_html = f"<img src='data:image/jpeg;base64,{img_b64}' style='width:100%; max-height:400px; object-fit:contain; border-radius:10px;'>"
+                elif os.path.exists("portrait_clean.PNG"):
+                    with open("portrait_clean.PNG", "rb") as f: 
+                        img_b64 = base64.b64encode(f.read()).decode()
+                        img_html = f"<img src='data:image/png;base64,{img_b64}' style='width:100%; max-height:400px; object-fit:contain; border-radius:10px;'>"
+            except Exception:
+                pass
+
+            st.markdown(f"""
+            <div style='flex-grow: 1; border: 1px solid rgba(0,242,255,0.3); border-radius: 10px; background: #02060c; position:relative; overflow: hidden; display:flex; justify-content:center; align-items:center; min-height: 350px;'>
+                <div style='position:absolute; top: 10px; left: 15px; display: flex; flex-direction: column; gap: 5px; z-index:10;'>
+                    <span style='color:#00f2ff; font-size:0.65rem; background: rgba(0,0,0,0.6); padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(0,242,255,0.3);'>🟢 Identity Engine Active</span>
+                    <span style='color:#00f2ff; font-size:0.65rem; background: rgba(0,0,0,0.6); padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(0,242,255,0.3);'>🔒 Biometric Continuity Locked</span>
+                    <span style='color:#00f2ff; font-size:0.65rem; background: rgba(0,0,0,0.6); padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(0,242,255,0.3);'>⚡ Material Simulation Running</span>
+                </div>
+                {img_html}
             </div>
             """, unsafe_allow_html=True)
-
-            # لود کردن عکس arc.jpg به جای باکس مشکی
-            if os.path.exists("arc.jpg"): st.image("arc.jpg", use_container_width=True)
-            elif os.path.exists("portrait_clean.PNG"): st.image("portrait_clean.PNG", use_container_width=True)
-            else: st.markdown("<div style='min-height:350px; display:flex; align-items:center; justify-content:center;'><h3 style='color:rgba(255,255,255,0.1);'>[ 4:5 LIVE PORTRAIT FRAME ]</h3></div>", unsafe_allow_html=True)
-            
-            st.markdown("</div>", unsafe_allow_html=True)
             
             # تایم‌لاین داینامیک بر اساس تعداد استیج‌های انتخاب شده یا نوشته شده
             stages_count_ui = d.get('arc_stages', 4)
