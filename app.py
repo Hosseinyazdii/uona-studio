@@ -110,8 +110,7 @@ def add_bg_from_local(image_file):
             if c_btn1.button("⬅ BACK", use_container_width=True): prev_step()
             if c_btn2.button("NEXT: REVIEW ➔", use_container_width=True): next_step()
             st.markdown('</div>', unsafe_allow_html=True)
-
-        # 3. پنل راست: دیتابیس‌های تخصصی
+# 3. پنل راست: دیتابیس‌های تخصصی
         with c_right:
             st.markdown('<div class="glass-panel" style="padding: 20px; height: 100%; overflow-y: auto;">', unsafe_allow_html=True)
             st.markdown("<h4 style='color:#ffaa00; font-family:Cinzel;'>⚙️ TRANSFORMATION ENGINE</h4>", unsafe_allow_html=True)
@@ -125,7 +124,12 @@ def add_bg_from_local(image_file):
                 </div>
                 """, unsafe_allow_html=True)
                 d['arc_stages'] = 4
-                d['arc_aging'] = "None"; d['arc_sfx'] = "None"; d['arc_pigment'] = "None"; d['bio_fatigue'] = False; d['bio_lips'] = False; d['scenario_text'] = ""
+                d['arc_aging'] = "None"
+                d['arc_sfx'] = "None"
+                d['arc_pigment'] = "None"
+                d['bio_fatigue'] = False
+                d['bio_lips'] = False
+                d['scenario_text'] = ""
             else:
                 d['arc_stages'] = st.slider("NUMBER OF STAGES", 2, 5, d.get('arc_stages', 4))
                 
@@ -149,7 +153,28 @@ def add_bg_from_local(image_file):
                 with st.expander("C. PIGMENTATION ARC", expanded=True):
                     pigment_opts = ["None", "Vitiligo", "Melasma & Hyperpigmentation", "Freckles"]
                     d['arc_pigment'] = st.selectbox("Skin Pigmentation", pigment_opts)
-                    if d['
+                    if d['arc_pigment'] != "None":
+                        pig_stages = PIGMENT_STAGES.get(d['arc_pigment'], ["Stage 1", "Stage 2", "Stage 3", "Stage 4"])
+                        d['arc_pigment_stage'] = st.selectbox("Select Stage", ["All Stages (Progression Arc)"] + pig_stages)
+                    
+                with st.expander("D. BIOLOGICAL DETAILS", expanded=False):
+                    d['bio_fatigue'] = st.checkbox("Fatigue & Sallow Skin", value=d.get('bio_fatigue', False))
+                    d['bio_lips'] = st.checkbox("Lips Volume Loss", value=d.get('bio_lips', False))
+                
+                d['scenario_text'] = st.text_area("NARRATIVE (OPTIONAL)", value=d.get('scenario_text', ''), placeholder="e.g. A 40-year-old man with a deep wound, aging to 80...")
+
+            if is_female or is_under_22: 
+                f_text = "🔒 Constraints Safely Enforced"
+                f_color = "#00f2ff"
+            elif d['arc_sfx'] != "None" and d['arc_aging'] != "None":
+                f_text = "⚠️ Arc Conflict Detected"
+                f_color = "#ffaa00"
+            else: 
+                f_text = "✅ Continuity Preserved"
+                f_color = "#00ffaa"
+                
+            st.markdown(f"<div style='margin-top: 15px; padding: 10px; border-left: 3px solid {f_color}; color: {f_color}; font-size: 0.7rem;'>{f_text}</div>", unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
 # ==========================================
 # 3. مدیریت وضعیت (State Machine)
 # ==========================================
