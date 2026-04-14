@@ -359,10 +359,10 @@ if st.session_state.route != 'login':
         """, unsafe_allow_html=True)
     st.markdown("<hr style='border-color: rgba(0,242,255,0.2); margin-top: 5px; margin-bottom: 20px;'>", unsafe_allow_html=True)
     
-    # === HEADER IMAGE === (بزرگ‌تر شده به 360px)
+    # === HEADER IMAGE === (حدود 3 برابر بزرگتر شده: عرض 900px)
     header_b64 = get_image_base64("header.jpg")
     if header_b64:
-        st.markdown(f'<div style="text-align:center;"><img src="data:image/jpeg;base64,{header_b64}" style="width:360px; border-radius:8px; margin-bottom:20px; border: 1px solid rgba(0,242,255,0.3); box-shadow: 0 0 15px rgba(0,242,255,0.1);"></div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="text-align:center;"><img src="data:image/jpeg;base64,{header_b64}" style="width:100%; max-width:900px; border-radius:8px; margin-bottom:20px; border: 1px solid rgba(0,242,255,0.3); box-shadow: 0 0 15px rgba(0,242,255,0.1);"></div>', unsafe_allow_html=True)
 
 # ==========================================
 # ROUTES: ADMIN, LIBRARY, SETTINGS
@@ -403,7 +403,7 @@ elif st.session_state.route == 'settings':
     st.markdown('</div>', unsafe_allow_html=True)
 
 # ==========================================
-# 🔴 ROUTE 1.5: DASHBOARD -> INTENT SELECTION (بدون تغییر بر اساس دستور)
+# 🔴 ROUTE 1.5: DASHBOARD -> INTENT SELECTION (بدون تغییر)
 # ==========================================
 elif st.session_state.route == 'dashboard':
     bg = find_bg_file()
@@ -451,7 +451,7 @@ elif st.session_state.route == 'dashboard':
                 go_to('creative_direction')
 
 # ==========================================
-# 🔴 ROUTE 2: CREATIVE DIRECTION ENGINE (تغییرات پدینگ کارت‌ها و سایز بزرگ عکس اعمال شد)
+# 🔴 ROUTE 2: CREATIVE DIRECTION ENGINE 
 # ==========================================
 elif st.session_state.route == 'creative_direction':
     intent = st.session_state.intent
@@ -463,10 +463,14 @@ elif st.session_state.route == 'creative_direction':
     cards = config['cards']
     has_selection = st.session_state.selected_card is not None
     
-    # ایجاد یک گرید یکپارچه و تمیز دو در دو بدون توجه به تعداد
-    r1c1, r1c2 = st.columns(2)
-    r2c1, r2c2 = st.columns(2)
-    grid = [r1c1, r1c2, r2c1, r2c2]
+    # ساختار گرید برای فشرده‌تر کردن کارت‌ها در وسط صفحه (ایجاد فاصله از اطراف)
+    if len(cards) == 4:
+        _, c1, c2, _ = st.columns([1, 2, 2, 1])
+        _, c3, c4, _ = st.columns([1, 2, 2, 1])
+        grid = [c1, c2, c3, c4]
+    else:
+        _, c1, c2, c3, _ = st.columns([1.5, 2, 2, 2, 1.5])
+        grid = [c1, c2, c3]
         
     for i, card in enumerate(cards):
         title = card['title']
@@ -478,9 +482,9 @@ elif st.session_state.route == 'creative_direction':
         disabled_class = "disabled-card" if is_disabled else ""
         
         if is_disabled:
-            tag_html = f'<span style="background: rgba(255,170,0,0.15); color:#ffaa00; padding:3px 8px; border-radius:4px; font-size:0.6rem; font-weight:bold; letter-spacing:1px; border: 1px solid rgba(255,170,0,0.5);">{card["tag"].upper()}</span>' if card["tag"] else ''
+            tag_html = f'<span style="background: rgba(255,170,0,0.15); color:#ffaa00; padding:2px 6px; border-radius:4px; font-size:0.55rem; font-weight:bold; letter-spacing:1px; border: 1px solid rgba(255,170,0,0.5);">{card["tag"].upper()}</span>' if card["tag"] else ''
         else:
-            tag_html = f'<span style="background: rgba(0,242,255,0.15); color:#00f2ff; padding:3px 8px; border-radius:4px; font-size:0.6rem; font-weight:bold; letter-spacing:1px; border: 1px solid rgba(0,242,255,0.5);">{card["tag"].upper()}</span>' if card["tag"] else ''
+            tag_html = f'<span style="background: rgba(0,242,255,0.15); color:#00f2ff; padding:2px 6px; border-radius:4px; font-size:0.55rem; font-weight:bold; letter-spacing:1px; border: 1px solid rgba(0,242,255,0.5);">{card["tag"].upper()}</span>' if card["tag"] else ''
         
         img_html = ""
         img_file = card.get("image", "")
@@ -488,30 +492,33 @@ elif st.session_state.route == 'creative_direction':
             img_b64 = get_image_base64(img_file)
             if img_b64:
                 mime = "image/png" if ".png" in img_file.lower() else "image/jpeg"
-                # عکس بزرگتر شده به 240px و متناسب با ابعاد
-                img_html = f'<img src="data:{mime};base64,{img_b64}" style="width:100%; height:240px; object-fit:cover !important; border-radius:6px; margin-top:8px; flex-shrink:0; display:block;">'
+                # عکس بسیار بزرگ‌تر شده (280px) و کل کارت رو می‌پوشونه
+                img_html = f'<img src="data:{mime};base64,{img_b64}" style="width:100%; height:280px; object-fit:cover !important; border-radius:6px; margin-top:5px; flex-shrink:0; display:block;">'
             else:
-                img_html = f'<div style="width:100%; height:240px; background:rgba(0,242,255,0.05); border-radius:6px; margin-top:8px; display:flex; align-items:center; justify-content:center; border: 1px dashed rgba(0,242,255,0.3); flex-shrink:0;"><span style="color:#00f2ff; font-size: 0.6rem;">[ MISSING: {img_file} ]</span></div>'
+                img_html = f'<div style="width:100%; height:280px; background:rgba(0,242,255,0.05); border-radius:6px; margin-top:5px; display:flex; align-items:center; justify-content:center; border: 1px dashed rgba(0,242,255,0.3); flex-shrink:0;"><span style="color:#00f2ff; font-size: 0.6rem;">[ MISSING: {img_file} ]</span></div>'
 
         with grid[i]:
-            # تغییرات روی padding کارت (کاهش فضای خالی) و برداشتن min-height
+            # پدینگ (padding) کارت بسیار کم شده (8px) و max-width بهش داده شده تا جمع‌وجور بمونه
             st.markdown(f"""
-            <div class="glass-panel creative-card {glow_class} {blur_class} {disabled_class}" style="padding: 12px; margin-bottom: 10px; display:flex; flex-direction:column; justify-content:flex-start;">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px;">
-                    <h3 style="color:#fff; margin:0; font-family:'Cinzel'; font-size:1rem;">{title}</h3>
+            <div class="glass-panel creative-card {glow_class} {blur_class} {disabled_class}" style="padding: 8px; margin: 0 auto 10px auto; max-width: 340px; display:flex; flex-direction:column; justify-content:flex-start;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px; padding: 0 4px;">
+                    <h3 style="color:#fff; margin:0; font-family:'Cinzel'; font-size:0.9rem;">{title}</h3>
                     {tag_html}
                 </div>
-                <p style="color:#8b9eb3; font-size:0.7rem; font-family:'Montserrat'; margin:0 0 4px 0; line-height:1.3;">{card["desc"]}</p>
+                <p style="color:#8b9eb3; font-size:0.65rem; font-family:'Montserrat'; margin:0 0 4px 0; line-height:1.3; padding: 0 4px;">{card["desc"]}</p>
                 {img_html}
                 <div class="expand-details">
-                    <p style="color:#00f2ff; font-size:0.75rem; font-weight:bold; margin:0;"><i>⚙️ System Configuration Locked. Detailed parameters applied.</i></p>
+                    <p style="color:#00f2ff; font-size:0.75rem; font-weight:bold; margin:0;"><i>⚙️ System Configuration Locked.</i></p>
                 </div>
             </div>
             """, unsafe_allow_html=True)
             
+            # عرض دکمه هم با کارت متناسب شده
+            st.markdown('<div style="max-width: 340px; margin: 0 auto;">', unsafe_allow_html=True)
             if st.button(f"CHOOSE {title.upper()}", key=f"cd_{i}", disabled=is_disabled, use_container_width=True):
                 st.session_state.selected_card = title
                 st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown("<br><hr style='border-color: rgba(0,242,255,0.2); margin-top:20px;'><br>", unsafe_allow_html=True)
     
