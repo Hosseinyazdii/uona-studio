@@ -49,128 +49,49 @@ def add_bg_from_local(image_file):
         }}
         </style>
         """, unsafe_allow_html=True
-    )# --- Phase 2: ARC CONFIG ---
-    elif st.session_state.step == 2:
-        age_val = d.get('age', AGE_LIST[2])
-        is_under_22 = AGE_LIST.index(age_val) < 2 if age_val in AGE_LIST else False
-        is_female = d.get('gen') in ["Feminine / Female", "Female"]
+    )
 
-        c_left, c_center, c_right = st.columns([3, 4.5, 2.5], gap="medium")
+# ==========================================
+# 2. دیتابیس مگا پرامپت (V2.0)
+# ==========================================
+GENDER_LIST = ["Masculine / Male", "Feminine / Female", "Androgynous"]
+AGE_LIST = ["Child / Pre-adolescent", "Adolescent / Teenager", "Young Adult (Early 20s)", "Middle-aged (Late 40s)", "Elderly / Senior", "Ancient / Centenarian"]
 
-        # 1. پنل چپ: DNA قفل شده
-        with c_left:
-            st.markdown('<div class="glass-panel" style="padding: 20px; height: 100%;">', unsafe_allow_html=True)
-            st.markdown("<h4 style='color:#00f2ff; font-family:Cinzel;'>🔒 CHARACTER DNA</h4>", unsafe_allow_html=True)
-            st.info(f"**Gender:** {d.get('gen')}\n\n**Age:** {d.get('age')}\n\n**Nat:** {d.get('nat')}\n\n**Type:** {d.get('char')}")
-            st.markdown("<div style='padding: 10px; background: rgba(0,242,255,0.1); border-left: 3px solid #00f2ff; color: #00f2ff; font-size: 0.75rem;'>🔒 Identity Locked.<br>Base parameters are preserved for continuous execution.</div>", unsafe_allow_html=True)
-            st.markdown('</div>', unsafe_allow_html=True)
+NAT_DESC = {"Iranian": "Indo-Aryan features", "Egyptian": "North African features", "Emirati": "Gulf Arab features", "Saudi": "Peninsular Arab features", "Kuwaiti": "Northern Gulf features", "Syrian": "Levantine features", "Turkish": "Eurasian features", "Indian": "South Asian features", "American": "Diverse North American features", "European": "Caucasian features", "African": "Sub-Saharan features", "Chinese": "East Asian features"}
+ERA_DESC = {"Contemporary / Modern Day": "Current lighting, sharp details", "Stone Age / Prehistoric": "Primitive aesthetic, raw textures", "Before Common Era (BCE)": "Ancient civilization styling", "Pre-Islamic Era": "Traditional regional heritage", "Ancient Era (Hellenistic/Roman)": "Classical features", "Medieval / Dark Ages": "Gritty, rustic, heavy textures", "150 years ago (Victorian Era)": "Formal, structured, pale complexions", "100 Years ago (Roaring 20s)": "Vintage aesthetic", "50 Years ago (1970s Retro)": "Analog film look", "Futuristic / Cyberpunk": "Neon accents", "Post-Apocalyptic": "Dirty, weathered textures"}
+CONCEPTS = {"Heroic Warrior": "Strong jawline, confident gaze", "Sinister Villain": "Harsh shadows, menacing expression", "Scholar / Intellectual": "Refined appearance", "Royal / Aristocratic": "Elegant posture", "Mercenary / Outlaw": "Rugged, weathered", "Mystic / Shaman": "Otherworldly look", "Corporate Executive / CEO": "Clean-cut, authoritative", "Elite Athlete / Fitness Pro": "Defined muscularity", "Bohemian Artist": "Creative styling", "Average Citizen": "Naturalistic", "Blue-collar / Technician": "Grime, work-worn skin", "Academic Student": "Youthful, inquisitive", "High-fashion Model": "Angular features", "Retiree / Grandparent": "Dignified aging", "Urban / Street Style": "Modern edge", "Rural / Outdoorsman": "Sun-damaged skin", "Red Carpet / Gala Guest": "Glamorous, high-contrast", "Ailing / Sickly Character": "Pale skin, dark circles"}
+GROOM_DESC = {"Clean Shaven": "Smooth skin, no stubble", "Saudi Anchor Beard": "Sharp and angular form", "Pyramidal Moustache": "Mustache with wide edges", "Light Stubble": "Very short, even stubble", "Heavy Stubble": "Thicker, rough texture", "Designer Stubble": "Precisely trimmed", "Shadow Fade Beard": "Faded sides", "Classic Goatee": "Chin beard connected to mustache", "Short Boxed Beard": "Short, full beard, precise edges", "Long Full Beard": "Long, thick natural growth", "Unkempt Beard": "Messy natural growth", "Warrior Beard": "Thick, rugged, battle-worn"}
+HAIR_TEX_DESC = {"Straight (Sleek)": "Linear alignment, silky", "Wavy (Type 2)": "Natural S-shape waves", "Curly (Type 3)": "Defined ringlets", "Afro-Textured": "Kinky-coily patterns", "Disheveled & Matted": "Tangled clumps, distressed"}
+HAIR_COLORS = {"Jet black / Natural black": "Deep and rich natural black", "Deep espresso brown": "Warm undertones", "Light chestnut / Sandy brown": "Honey or sandy tones", "Salt and pepper, 30% grey": "Noticeable white strands", "Salt and pepper, 70% grey": "Mostly white hair", "Ash blonde / Golden blonde": "Cool or warm blonde tones"}
+SFX_DESC = {"Fresh Katana/Sword Slash": "Deep sword wound", "Blunt Force Contusion": "Severe swelling, inflamed redness", "1-Week old wound (Granulation)": "Pink granulation tissue", "1-Year Old Keloid Scar": "Raised excess tissue", "Fresh Periorbital Hematoma": "Purplish-red redness", "24-Hour Old Bruise (Deep Purple)": "Deep purple and blue", "Chemical Acid Burn (Corrosive)": "Melted tissue", "2nd Degree Burn with Blisters": "Fluid-filled blisters"}
+LIGHT_DESC = {"Rembrandt Lighting": "Classic cinematic light", "Chiaroscuro Lighting": "Severe contrast between shadow and light", "Teal and Orange Lighting": "Classic cinematic mix", "Cinematic Golden Hour": "Warm and soft sunset light", "High-Key Studio Lighting": "Flat and bright light", "Low-Key Moody Lighting": "Very low and dark light", "Neon Cyberpunk Rim Light": "Colorful neon edge lights"}
+CAM_DESC = {"85 mm Lens, Eye-Level Shot": "Classic portrait lens", "100 mm Macro Lens, Extreme Close-Up": "Macro lens for extreme detail", "50 mm Lens, Dutch Angle": "Normal lens with tilted angle", "35 mm Lens, Low-Angle (Hero Shot)": "Slightly wide, heroic angle", "24 mm Wide-Angle, High-Angle": "Wide-angle from a high angle"}
+SIZE_LIST = ["Aspect Ratio 16:9 (Widescreen)", "Aspect Ratio 4:5 (Portrait/Vertical)", "Aspect Ratio 5:4 (Portrait)", "Aspect Ratio 2.39:1 (Anamorphic / Cinemascope)", "Aspect Ratio 1:1 (Square)"]
+MAT_DESC = {"None": "", "Matte Sealer": "Non-reflective surface, velvety skin texture", "Prosthetic Adhesive": "Texture of professional bonding", "Encapsulated Silicone": "Realistic skin-like translucency"}
 
-        # 2. پنل وسط: پیش‌نمایش
-        with c_center:
-            st.markdown('<div class="glass-panel" style="padding: 20px; height: 100%; display: flex; flex-direction: column;">', unsafe_allow_html=True)
-            st.markdown("<div style='flex-grow: 1; border: 1px solid rgba(0,242,255,0.3); border-radius: 10px; background: #02060c; position:relative; overflow: hidden; display:flex; justify-content:center; align-items:center; min-height: 350px;'>", unsafe_allow_html=True)
-            
-            st.markdown("""
-            <div style='position:absolute; top: 10px; left: 15px; display: flex; flex-direction: column; gap: 5px;'>
-                <span style='color:#00f2ff; font-size:0.65rem; background: rgba(0,0,0,0.6); padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(0,242,255,0.3);'>🟢 Identity Engine Active</span>
-                <span style='color:#00f2ff; font-size:0.65rem; background: rgba(0,0,0,0.6); padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(0,242,255,0.3);'>🔒 Biometric Continuity Locked</span>
-                <span style='color:#00f2ff; font-size:0.65rem; background: rgba(0,0,0,0.6); padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(0,242,255,0.3);'>⚡ Material Simulation Running</span>
-            </div>
-            """, unsafe_allow_html=True)
+# --- V2.0 Dynamic Stage Libraries ---
+AGING_STAGES = {
+    "Wrinkles": ["Stage 1 (Age 30–40) – Dynamic Lines", "Stage 2 (Age 45–55) – Fixed Lines", "Stage 3 (Age 60–75) – Deep Creases", "Stage 4 (Age 85+) – Advanced Rhytids"],
+    "Volume & Sagging": ["Stage 1 (Age 30–40) – Youthful Volume", "Stage 2 (Age 45–55) – Early Sagging", "Stage 3 (Age 60–75) – Structural Shift", "Stage 4 (Age 85+) – Facial Atrophy"],
+    "Skin Texture & Pigmentation": ["Stage 1 (Age 30–40) – Uniform Tone", "Stage 2 (Age 45–55) – Textural Change", "Stage 3 (Age 60–75) – Pigment Shift", "Stage 4 (Age 85+) – Senile Texture"],
+    "Hair & Brows": ["Stage 1 - Initial Graying", "Stage 2 - Moderate Graying", "Stage 3 - Significant Graying", "Stage 4 - Full White/Thinning"]
+}
 
-            # لود کردن عکس arc.jpg به جای باکس مشکی
-            if os.path.exists("arc.jpg"): st.image("arc.jpg", use_container_width=True)
-            elif os.path.exists("portrait_clean.PNG"): st.image("portrait_clean.PNG", use_container_width=True)
-            else: st.markdown("<div style='min-height:350px; display:flex; align-items:center; justify-content:center;'><h3 style='color:rgba(255,255,255,0.1);'>[ 4:5 LIVE PORTRAIT FRAME ]</h3></div>", unsafe_allow_html=True)
-            
-            st.markdown("</div>", unsafe_allow_html=True)
-            
-            # تایم‌لاین داینامیک بر اساس تعداد استیج‌های انتخاب شده یا نوشته شده
-            stages_count_ui = d.get('arc_stages', 4)
-            if d.get('scenario_text', '').strip():
-                stages_count_ui, _ = ai_narrative_parser(d['scenario_text'], stages_count_ui)
-                
-            timeline_html = "<div style='display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding: 10px; background: rgba(0,242,255,0.05); border-radius: 8px;'>"
-            for i in range(stages_count_ui):
-                timeline_html += f"<div style='text-align:center;'><span style='color:#00f2ff; font-size:0.7rem; font-weight:bold;'>STAGE {i+1}</span></div>"
-                if i < stages_count_ui - 1:
-                    timeline_html += "<div style='flex-grow: 1; height: 2px; background: linear-gradient(90deg, rgba(0,242,255,0.5) 0%, rgba(255,255,255,0.2) 100%); margin: 0 5px;'></div>"
-                    timeline_html += "<div style='color:#00f2ff; font-size:0.8rem;'>➔</div>"
-                    timeline_html += "<div style='flex-grow: 1; height: 2px; background: linear-gradient(90deg, rgba(255,255,255,0.2) 0%, rgba(0,242,255,0.5) 100%); margin: 0 5px;'></div>"
-            timeline_html += "</div>"
-            st.markdown(timeline_html, unsafe_allow_html=True)
-            
-            st.markdown("<br>", unsafe_allow_html=True)
-            c_btn1, c_btn2 = st.columns(2)
-            if c_btn1.button("⬅ BACK", use_container_width=True): prev_step()
-            if c_btn2.button("NEXT: REVIEW ➔", use_container_width=True): next_step()
-            st.markdown('</div>', unsafe_allow_html=True)
+SFX_STAGES = {
+    "Bruises": ["Stage 1 – Initial (Fresh Trauma)", "Stage 2 – Spread (Hematoma Stage)", "Stage 3 – Mid (Oxidation)", "Stage 4 – Final (Resolution)"],
+    "Contusions": ["Stage 1 – Initial (Impact Point)", "Stage 2 – Spread (Active Edema)", "Stage 3 – Mid (Tissue Shift)", "Stage 4 – Final (Leveling)"],
+    "Abrasions": ["Stage 1 – Initial (Friction Marks)", "Stage 2 – Spread (Coagulation)", "Stage 3 – Mid (Scab Development)", "Stage 4 – Final (New Skin)"],
+    "First & Second Degree Burns": ["Stage 1 – Initial (Flash Burn)", "Stage 2 – Spread (Vesiculation)", "Stage 3 – Mid (Exudate Stage)", "Stage 4 – Final (Desquamation)"],
+    "Chemical Burns (Acid-Type Simulation)": ["Stage 1 – Initial (Chemical Reaction)", "Stage 2 – Spread (Deep Corrosion)", "Stage 3 – Mid (Eschar Stage)", "Stage 4 – Final (Atrophic Scar)"],
+    "Keloids (Fibrotic Overgrowth)": ["Stage 1 – Initial (Early Fibrosis)", "Stage 2 – Spread (Hypertrophic Growth)", "Stage 3 – Mid (Mature Keloid)", "Stage 4 – Final (Aging Keloid)"]
+}
 
-        # 3. پنل راست: دیتابیس‌های تخصصی
-        with c_right:
-            st.markdown('<div class="glass-panel" style="padding: 20px; height: 100%; overflow-y: auto;">', unsafe_allow_html=True)
-            st.markdown("<h4 style='color:#ffaa00; font-family:Cinzel;'>⚙️ TRANSFORMATION ENGINE</h4>", unsafe_allow_html=True)
-            
-            if st.session_state.plan == "UONA Core":
-                st.markdown("""
-                <div style='margin-top: 20px; padding: 15px; background: rgba(255, 170, 0, 0.05); border: 1px solid rgba(255, 170, 0, 0.3); border-radius: 8px; text-align: center;'>
-                    <span style='font-size: 2rem;'>🔒</span><br>
-                    <b style='color: #ffaa00; font-size: 0.85rem; text-transform: uppercase;'>Premium Feature</b>
-                    <p style='color: #888; font-size: 0.7rem;'>Arc Modules require Apex tier.</p>
-                </div>
-                """, unsafe_allow_html=True)
-                d['arc_stages'] = 4
-                d['arc_aging'] = "None"
-                d['arc_sfx'] = "None"
-                d['arc_pigment'] = "None"
-                d['bio_fatigue'] = False
-                d['bio_lips'] = False
-                d['scenario_text'] = ""
-            else:
-                d['arc_stages'] = st.slider("NUMBER OF STAGES", 2, 5, d.get('arc_stages', 4))
-                
-                with st.expander("A. AGING ENGINE", expanded=True):
-                    d['arc_aging'] = st.selectbox("Aging Categories", ["None", "Wrinkles", "Volume & Sagging", "Skin Texture & Pigmentation", "Hair & Brows"])
-                    if d['arc_aging'] != "None":
-                        aging_stages = AGING_STAGES.get(d['arc_aging'], ["Stage 1", "Stage 2", "Stage 3", "Stage 4"])
-                        d['arc_aging_stage'] = st.selectbox("Select Stage", ["All Stages (Progression Arc)"] + aging_stages)
-                
-                with st.expander("B. SFX & TRAUMA ENGINE", expanded=True):
-                    if is_under_22:
-                        st.markdown("<div style='padding: 5px; border-left: 3px solid red; color: #aaa; font-size: 0.7rem;'>🔒 SFX Locked (Age Constraint)</div>", unsafe_allow_html=True)
-                        d['arc_sfx'] = "None"
-                    else:
-                        sfx_v2_opts = ["None", "Bruises", "Contusions", "Abrasions", "First & Second Degree Burns", "Chemical Burns (Acid-Type Simulation)", "Keloids (Fibrotic Overgrowth)"]
-                        d['arc_sfx'] = st.selectbox("Trauma Simulation", sfx_v2_opts)
-                        if d['arc_sfx'] != "None":
-                            sfx_stages = SFX_STAGES.get(d['arc_sfx'], ["Stage 1", "Stage 2", "Stage 3", "Stage 4"])
-                            d['arc_sfx_stage'] = st.selectbox("Select Stage", ["All Stages (Progression Arc)"] + sfx_stages)
-                        
-                with st.expander("C. PIGMENTATION ARC", expanded=True):
-                    pigment_opts = ["None", "Vitiligo", "Melasma & Hyperpigmentation", "Freckles"]
-                    d['arc_pigment'] = st.selectbox("Skin Pigmentation", pigment_opts)
-                    if d['arc_pigment'] != "None":
-                        pig_stages = PIGMENT_STAGES.get(d['arc_pigment'], ["Stage 1", "Stage 2", "Stage 3", "Stage 4"])
-                        d['arc_pigment_stage'] = st.selectbox("Select Stage", ["All Stages (Progression Arc)"] + pig_stages)
-                    
-                with st.expander("D. BIOLOGICAL DETAILS", expanded=False):
-                    d['bio_fatigue'] = st.checkbox("Fatigue & Sallow Skin", value=d.get('bio_fatigue', False))
-                    d['bio_lips'] = st.checkbox("Lips Volume Loss", value=d.get('bio_lips', False))
-                
-                d['scenario_text'] = st.text_area("NARRATIVE (OPTIONAL)", value=d.get('scenario_text', ''), placeholder="e.g. A 40-year-old man with a deep wound, aging to 80...")
+PIGMENT_STAGES = {
+    "Vitiligo": ["Stage 1 – Initial: Small, symmetrical spots", "Stage 2 – Expansion: Larger map-like patches", "Stage 3 – Bilateral Spread: Widespread loss", "Stage 4 – Final / Integrated: Mostly depigmented"],
+    "Melasma & Hyperpigmentation": ["Stage 1 – Initial: Light tan patches", "Stage 2 – Diffuse Spread: Darker brown, uneven", "Stage 3 – Deep Pigmentation: Dense areas", "Stage 4 – Chronic State: Mask-like pattern"],
+    "Freckles": ["Stage 1 – Sparse: Light distribution", "Stage 2 – Dense: Increased concentration", "Stage 3 – Heavy: Merging freckles", "Stage 4 – Full Coverage: Extensive mottled appearance"]
+}
 
-            if is_female or is_under_22: 
-                f_text = "🔒 Constraints Safely Enforced"
-                f_color = "#00f2ff"
-            elif d['arc_sfx'] != "None" and d['arc_aging'] != "None":
-                f_text = "⚠️ Arc Conflict Detected"
-                f_color = "#ffaa00"
-            else: 
-                f_text = "✅ Continuity Preserved"
-                f_color = "#00ffaa"
-                
-            st.markdown(f"<div style='margin-top: 15px; padding: 10px; border-left: 3px solid {f_color}; color: {f_color}; font-size: 0.7rem;'>{f_text}</div>", unsafe_allow_html=True)
-            st.markdown('</div>', unsafe_allow_html=True)
 # ==========================================
 # 3. مدیریت وضعیت (State Machine)
 # ==========================================
@@ -194,6 +115,7 @@ if 'draft' not in st.session_state:
 def go_to(route): st.session_state.route = route; st.rerun()
 def next_step(): st.session_state.step += 1; st.rerun()
 def prev_step(): st.session_state.step -= 1; st.rerun()
+
 # ==========================================
 # 4. موتور پارسر هوشمند (AI Narrative Parser)
 # ==========================================
@@ -201,13 +123,11 @@ def ai_narrative_parser(text, default_stages):
     text = text.lower()
     extracted_data = []
     
-    # 🔴 FIX: اگر در متن عددی نبود، از همان عدد منوی UI (default_stages) استفاده می‌کند
     stages = default_stages
     if "2" in text or "two" in text or "۲" in text: stages = 2
     elif "3" in text or "three" in text or "۳" in text: stages = 3
     elif "5" in text or "five" in text or "۵" in text: stages = 5
 
-    # 🔴 FIX: اضافه شدن کلمات فینگلیش برای تشخیص دقیق
     if "acid" in text or "chemical" in text or "اسید" in text or "asid" in text:
         extracted_data.append(("SFX ARC [Chemical Burns]", SFX_STAGES["Chemical Burns (Acid-Type Simulation)"]))
     elif "burn" in text or "fire" in text or "سوختگی" in text or "آتش" in text or "sukhtegi" in text or "atash" in text:
@@ -226,6 +146,7 @@ def ai_narrative_parser(text, default_stages):
         extracted_data.append(("PIGMENTATION ARC [Freckles]", PIGMENT_STAGES["Freckles"]))
         
     return stages, extracted_data
+
 # ==========================================
 # 5. موتور پردازش نهایی پرامپت (Strict Formula Mode)
 # ==========================================
@@ -260,7 +181,6 @@ def generate_prompt(draft):
                 sliced_details = arc_details[:parsed_stages] if len(arc_details) >= parsed_stages else arc_details
                 dynamic_stage += f"SYSTEM APPLIED {arc_title}: " + ", ".join([f"Stage {i+1} ({d})" for i, d in enumerate(sliced_details)]) + ". "
             
-            # 🔴 FIX: اضافه کردن خط زمانی داستان کاربر به استیج‌های دیتابیس برای SFX و زمان‌بندی
             dynamic_stage += f"NARRATIVE TIMELINE CONTEXT: Evolve the physical traits and SFX strictly based on this chronological timeline: '{scenario}'. "
             dynamic_stage += "CRITICAL: Underlying facial identity MUST remain 100% identical across all panels.]"
         else:
@@ -291,6 +211,7 @@ def generate_prompt(draft):
 
     final_prompt = f"{uona_signature} {tech_specs} {char_base} {dynamic_stage} 8k, hyper-realistic, subsurface scattering, focus on prosthetic makeup accuracy."
     return " ".join(final_prompt.split())
+
 # ==========================================
 # 6. موتور استایل (CSS Engine)
 # ==========================================
@@ -502,21 +423,27 @@ elif st.session_state.route == 'builder':
             </div>
             """, unsafe_allow_html=True)
 
-            if os.path.exists("portrait_clean.PNG"): st.image("portrait_clean.PNG", use_container_width=True)
-            else: st.markdown("<h3 style='color:rgba(255,255,255,0.1);'>[ 4:5 LIVE PORTRAIT FRAME ]</h3>", unsafe_allow_html=True)
+            # لود کردن عکس arc.jpg به جای باکس مشکی
+            if os.path.exists("arc.jpg"): st.image("arc.jpg", use_container_width=True)
+            elif os.path.exists("portrait_clean.PNG"): st.image("portrait_clean.PNG", use_container_width=True)
+            else: st.markdown("<div style='min-height:350px; display:flex; align-items:center; justify-content:center;'><h3 style='color:rgba(255,255,255,0.1);'>[ 4:5 LIVE PORTRAIT FRAME ]</h3></div>", unsafe_allow_html=True)
+            
             st.markdown("</div>", unsafe_allow_html=True)
             
-            st.markdown("""
-            <div style='display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding: 10px; background: rgba(0,242,255,0.05); border-radius: 8px;'>
-                <div style='text-align:center;'><span style='color:#00f2ff; font-size:0.7rem; font-weight:bold;'>INITIAL</span></div>
-                <div style='flex-grow: 1; height: 2px; background: linear-gradient(90deg, rgba(0,242,255,0.5) 0%, rgba(255,255,255,0.2) 100%); margin: 0 10px;'></div>
-                <div style='text-align:center;'><span style='color:#00f2ff; font-size:0.7rem; font-weight:bold;'>SPREAD</span></div>
-                <div style='flex-grow: 1; height: 2px; background: linear-gradient(90deg, rgba(0,242,255,0.5) 0%, rgba(255,255,255,0.2) 100%); margin: 0 10px;'></div>
-                <div style='text-align:center;'><span style='color:#00f2ff; font-size:0.7rem; font-weight:bold;'>DAMAGE</span></div>
-                <div style='flex-grow: 1; height: 2px; background: linear-gradient(90deg, rgba(0,242,255,0.5) 0%, rgba(255,255,255,0.2) 100%); margin: 0 10px;'></div>
-                <div style='text-align:center;'><span style='color:#00f2ff; font-size:0.7rem; font-weight:bold;'>FINAL</span></div>
-            </div>
-            """, unsafe_allow_html=True)
+            # تایم‌لاین داینامیک بر اساس تعداد استیج‌های انتخاب شده یا نوشته شده
+            stages_count_ui = d.get('arc_stages', 4)
+            if d.get('scenario_text', '').strip():
+                stages_count_ui, _ = ai_narrative_parser(d['scenario_text'], stages_count_ui)
+                
+            timeline_html = "<div style='display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding: 10px; background: rgba(0,242,255,0.05); border-radius: 8px;'>"
+            for i in range(stages_count_ui):
+                timeline_html += f"<div style='text-align:center;'><span style='color:#00f2ff; font-size:0.7rem; font-weight:bold;'>STAGE {i+1}</span></div>"
+                if i < stages_count_ui - 1:
+                    timeline_html += "<div style='flex-grow: 1; height: 2px; background: linear-gradient(90deg, rgba(0,242,255,0.5) 0%, rgba(255,255,255,0.2) 100%); margin: 0 5px;'></div>"
+                    timeline_html += "<div style='color:#00f2ff; font-size:0.8rem;'>➔</div>"
+                    timeline_html += "<div style='flex-grow: 1; height: 2px; background: linear-gradient(90deg, rgba(255,255,255,0.2) 0%, rgba(0,242,255,0.5) 100%); margin: 0 5px;'></div>"
+            timeline_html += "</div>"
+            st.markdown(timeline_html, unsafe_allow_html=True)
             
             st.markdown("<br>", unsafe_allow_html=True)
             c_btn1, c_btn2 = st.columns(2)
@@ -538,7 +465,12 @@ elif st.session_state.route == 'builder':
                 </div>
                 """, unsafe_allow_html=True)
                 d['arc_stages'] = 4
-                d['arc_aging'] = "None"; d['arc_sfx'] = "None"; d['arc_pigment'] = "None"; d['bio_fatigue'] = False; d['bio_lips'] = False; d['scenario_text'] = ""
+                d['arc_aging'] = "None"
+                d['arc_sfx'] = "None"
+                d['arc_pigment'] = "None"
+                d['bio_fatigue'] = False
+                d['bio_lips'] = False
+                d['scenario_text'] = ""
             else:
                 d['arc_stages'] = st.slider("NUMBER OF STAGES", 2, 5, d.get('arc_stages', 4))
                 
