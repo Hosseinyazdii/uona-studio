@@ -321,7 +321,7 @@ if st.session_state.route == 'login':
     st.stop()
 
 # ==========================================
-# SHARED HEADER (نمایش Header.jpg در اینجا برای همه صفحات)
+# SHARED HEADER 
 # ==========================================
 if st.session_state.route != 'login':
     badge_color = "#ffaa00" if "Apex" in st.session_state.plan or "MASTER" in st.session_state.plan else "#00f2ff"
@@ -344,10 +344,10 @@ if st.session_state.route != 'login':
         """, unsafe_allow_html=True)
     st.markdown("<hr style='border-color: rgba(0,242,255,0.2); margin-top: 5px; margin-bottom: 20px;'>", unsafe_allow_html=True)
     
-    # === HEADER IMAGE (سایز کوچکتر و در همه صفحات) ===
+    # === HEADER IMAGE (بزرگتر شده به درخواست کاربر) ===
     header_b64 = get_image_base64("header.jpg")
     if header_b64:
-        st.markdown(f'<div style="text-align:center;"><img src="data:image/jpeg;base64,{header_b64}" style="width:100%; max-width:250px; border-radius:8px; margin-bottom:20px; border: 1px solid rgba(0,242,255,0.3); box-shadow: 0 0 15px rgba(0,242,255,0.1);"></div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="text-align:center;"><img src="data:image/jpeg;base64,{header_b64}" style="width:220px; border-radius:8px; margin-bottom:20px; border: 1px solid rgba(0,242,255,0.3); box-shadow: 0 0 15px rgba(0,242,255,0.1);"></div>', unsafe_allow_html=True)
 
 # ==========================================
 # ROUTES: ADMIN, LIBRARY, SETTINGS
@@ -402,7 +402,11 @@ elif st.session_state.route == 'dashboard':
         
     st.markdown("<br><br>", unsafe_allow_html=True)
     
-    c1, c2, c3, c4 = st.columns(4)
+    # 🔴 تغییر بزرگ: چیدمان کارت‌ها از 4 ستون به گرید 2x2 برای رفع فشردگی عکس‌ها
+    r1c1, r1c2 = st.columns(2)
+    r2c1, r2c2 = st.columns(2)
+    cols = [r1c1, r1c2, r2c1, r2c2]
+    
     intents = [
         ("Build a Character", "card1.jpg", "Define identity and core visual traits from scratch."),
         ("Transform a Character", "card2.jpg", "Apply physical evolutions, aging, or trauma."),
@@ -410,7 +414,6 @@ elif st.session_state.route == 'dashboard':
         ("Test Hair Styling", "card4.jpg", "Simulate hair structures and historical styles.")
     ]
     
-    cols = [c1, c2, c3, c4]
     for i, col in enumerate(cols):
         with col:
             img_html = ""
@@ -419,9 +422,9 @@ elif st.session_state.route == 'dashboard':
             
             if img_b64:
                 mime = "image/png" if ".png" in img_file.lower() else "image/jpeg"
-                img_html = f'<img src="data:{mime};base64,{img_b64}" style="width:100%; height:140px; object-fit:cover !important; border-radius:8px; margin-top:10px; flex-shrink:0; display:block;">'
+                img_html = f'<img src="data:{mime};base64,{img_b64}" style="width:100%; height:180px; object-fit:cover !important; border-radius:8px; margin-top:10px; flex-shrink:0; display:block;">'
             else:
-                img_html = f'<div style="width:100%; height:140px; background:rgba(0,242,255,0.05); border-radius:8px; margin-top:10px; display:flex; align-items:center; justify-content:center; border: 1px dashed rgba(0,242,255,0.3); flex-shrink:0;"><span style="color:#00f2ff; font-size: 0.7rem;">[ MISSING: {img_file} ]</span></div>'
+                img_html = f'<div style="width:100%; height:180px; background:rgba(0,242,255,0.05); border-radius:8px; margin-top:10px; display:flex; align-items:center; justify-content:center; border: 1px dashed rgba(0,242,255,0.3); flex-shrink:0;"><span style="color:#00f2ff; font-size: 0.7rem;">[ MISSING: {img_file} ]</span></div>'
 
             st.markdown(f'''
             <div class="glass-panel creative-card" style="text-align:center; min-height: 280px; display:flex; flex-direction:column; justify-content:flex-start; padding: 20px;">
